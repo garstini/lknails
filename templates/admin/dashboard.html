@@ -1,0 +1,251 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}Dashboard - LK Nails & Lashes Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ff69b4;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(255,105,180,0.3);
+}
+
+.stat-label {
+    font-size: 1.1em;
+    color: #666;
+}
+
+.chart-container {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.appointments-table th,
+.appointments-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.appointments-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.status-pending { background-color: #fff3cd; color: #856404; }
+.status-confirmed { background-color: #d1edff; color: #0c5460; }
+.status-completed { background-color: #d4edda; color: #155724; }
+.status-cancelled { background-color: #f8d7da; color: #721c24; }
+
+.quick-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.quick-actions .button {
+    padding: 10px 20px;
+    background-color: #d4af37;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.quick-actions .button:hover {
+    background-color: #b8941f;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Dashboard - LK Nails & Lashes</h1>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <a href="/admin/salon/appointment/add/" class="button">Neuer Termin</a>
+        <a href="/admin/salon/service/" class="button">Services verwalten</a>
+        <a href="/admin/salon/blogpost/add/" class="button">Neuer Blog-Beitrag</a>
+        <a href="/salon-admin/business-hours/" class="button">Öffnungszeiten</a>
+        <a href="/salon-admin/email-config/" class="button">E-Mail Konfiguration</a>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_customers }}</div>
+            <div class="stat-label">Kunden</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_appointments }}</div>
+            <div class="stat-label">Termine Gesamt</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ this_week_appointments }}</div>
+            <div class="stat-label">Termine Diese Woche</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">€{{ this_month_revenue|floatformat:0 }}</div>
+            <div class="stat-label">Umsatz Diesen Monat</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_services }}</div>
+            <div class="stat-label">Aktive Services</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_staff }}</div>
+            <div class="stat-label">Mitarbeiterinnen</div>
+        </div>
+    </div>
+
+    <!-- Pending Approvals -->
+    {% if pending_reviews or unpublished_posts %}
+    <div class="alert-info">
+        <strong>Ausstehende Genehmigungen:</strong>
+        {% if pending_reviews %}{{ pending_reviews }} Bewertungen{% endif %}
+        {% if pending_reviews and unpublished_posts %}, {% endif %}
+        {% if unpublished_posts %}{{ unpublished_posts }} unveröffentlichte Blog-Beiträge{% endif %}
+    </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+        <div>
+            <!-- Today's Appointments -->
+            <div class="chart-container">
+                <h3>Heutige Termine ({{ today|date:"d.m.Y" }})</h3>
+                {% if todays_appointments %}
+                    <table class="appointments-table">
+                        <thead>
+                            <tr>
+                                <th>Zeit</th>
+                                <th>Kunde</th>
+                                <th>Services</th>
+                                <th>Mitarbeiterin</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in todays_appointments %}
+                            <tr>
+                                <td>{{ appointment.time|time:"H:i" }}</td>
+                                <td>{{ appointment.customer.user.get_full_name }}</td>
+                                <td>{{ appointment.get_services_list|truncatechars:30 }}</td>
+                                <td>{{ appointment.staff.user.get_full_name }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ appointment.status }}">
+                                        {% if appointment.status == 'pending' %}Ausstehend{% endif %}
+                                        {% if appointment.status == 'confirmed' %}Bestätigt{% endif %}
+                                        {% if appointment.status == 'completed' %}Abgeschlossen{% endif %}
+                                        {% if appointment.status == 'cancelled' %}Storniert{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Keine Termine für heute.</p>
+                {% endif %}
+            </div>
+
+            <!-- Monthly Trends -->
+            <div class="chart-container">
+                <h3>Termintrends (Letzte 6 Monate)</h3>
+                <div style="display: flex; align-items: end; height: 200px; gap: 10px;">
+                    {% for trend in monthly_trends %}
+                    <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                        <div style="background-color: #d4af37; width: 30px; height: {{ trend.chart_height }}px; margin-bottom: 10px;"></div>
+                        <small style="transform: rotate(-45deg); white-space: nowrap;">{{ trend.month|truncatechars:8 }}</small>
+                        <small>{{ trend.appointments }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <!-- Popular Services -->
+            <div class="chart-container">
+                <h3>Beliebteste Services</h3>
+                {% for service in popular_services %}
+                <div style="margin-bottom: 10px;">
+                    <strong>{{ service.name|truncatechars:25 }}</strong><br>
+                    <small>{{ service.booking_count }} Buchungen - €{{ service.price }}</small>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Recent Reviews -->
+            <div class="chart-container">
+                <h3>Neueste Bewertungen</h3>
+                {% for review in recent_reviews %}
+                <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                    <div style="color: #ffa500;">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                    <small><strong>{{ review.customer.user.get_full_name }}</strong></small><br>
+                    <small>{{ review.comment|truncatechars:100 }}</small>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Staff Performance -->
+            <div class="chart-container">
+                <h3>Mitarbeiter Performance</h3>
+                {% for staff in staff_performance %}
+                <div style="margin-bottom: 10px;">
+                    <strong>{{ staff.user.get_full_name }}</strong><br>
+                    <small>{{ staff.appointments_count }} Termine diesen Monat</small>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

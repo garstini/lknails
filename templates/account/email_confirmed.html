@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "E-Mail bestätigt" %} - LK Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg border-0" style="border-radius: 20px; background: linear-gradient(135deg, var(--soft-pink) 0%, var(--light-color) 100%);">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <img src="http://142.171.70.173/wordpress/wp-content/uploads/2024/09/zipwp-image-4128-scaled-300x300.jpg" alt="LK Nails & Lashes" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 20px;">
+                        
+                        <div class="success-icon mb-3">
+                            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        </div>
+                        
+                        <h2 class="font-playfair text-primary-custom mb-3">{% trans "E-Mail erfolgreich bestätigt!" %}</h2>
+                        <p class="text-muted font-quicksand mb-4">{% trans "Ihr Konto wurde erfolgreich aktiviert. Sie können sich jetzt anmelden und Termine buchen." %}</p>
+                    </div>
+
+                    <div class="alert alert-success mb-4" style="border-radius: 15px; background: linear-gradient(135deg, #d1edff 0%, #e8f5e8 100%); border: 2px solid #28a745;">
+                        <i class="fas fa-user-check text-success me-2"></i>
+                        <strong>{% trans "Konto aktiviert!" %}</strong><br>
+                        <small class="font-quicksand">{% trans "Sie können jetzt alle Funktionen unserer Website nutzen." %}</small>
+                    </div>
+
+                    <div class="d-grid gap-3 mb-4">
+                        <a href="{% url 'account_login' %}" class="btn btn-primary-custom py-3" style="border-radius: 15px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); border: none; font-family: 'Quicksand', sans-serif; font-weight: 600; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);">
+                            <i class="fas fa-sign-in-alt me-2"></i>{% trans "Jetzt anmelden" %}
+                        </a>
+                        
+                        <a href="{% url 'book_appointment' %}" class="btn btn-outline-primary py-2" style="border-radius: 15px; font-family: 'Quicksand', sans-serif; font-weight: 500; border-color: var(--primary-color); color: var(--primary-color);">
+                            <i class="fas fa-calendar-plus me-2"></i>{% trans "Termin buchen" %}
+                        </a>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5 class="text-primary-custom mb-3">{% trans "Was Sie jetzt tun können:" %}</h5>
+                        <div class="row text-start">
+                            <div class="col-12 mb-2">
+                                <i class="fas fa-calendar-check text-primary-custom me-2"></i>
+                                <small>{% trans "Online Termine buchen" %}</small>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <i class="fas fa-user-cog text-primary-custom me-2"></i>
+                                <small>{% trans "Ihr Profil verwalten" %}</small>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <i class="fas fa-history text-primary-custom me-2"></i>
+                                <small>{% trans "Terminhistorie einsehen" %}</small>
+                            </div>
+                            <div class="col-12">
+                                <i class="fas fa-envelope text-primary-custom me-2"></i>
+                                <small>{% trans "E-Mail-Benachrichtigungen erhalten" %}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.success-icon {
+    animation: bounceIn 0.8s ease-out;
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2 {
+    font-family: 'Dancing Script', cursive;
+    font-weight: 600;
+    font-size: 2.2rem;
+}
+
+.font-quicksand {
+    font-family: 'Quicksand', sans-serif;
+}
+</style>
+{% endblock %}

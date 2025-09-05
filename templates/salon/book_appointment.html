@@ -1,0 +1,1190 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block extra_css %}
+<!-- Google Fonts for beautiful typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Flatpickr CSS for beautiful date picker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_pink.css">
+{% endblock %}
+
+{% block title %}Termin buchen - LK Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="font-playfair">Termin buchen</h1>
+                {% if service %}
+                    <p class="lead">Buchen Sie einen Termin für: <strong>{{ service.name }}</strong></p>
+                    <div class="alert alert-info">
+                        <div class="row">
+                            <div class="col-md-4"><strong>Service:</strong> {{ service.name }}</div>
+                            <div class="col-md-4"><strong>Dauer:</strong> {{ service.get_duration_display }}</div>
+                            <div class="col-md-4"><strong>Preis:</strong> €{{ service.price }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="lead">Wählen Sie Ihren gewünschten Service und Termin</p>
+                {% endif %}
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" id="appointmentForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <label class="form-label">Services auswählen *</label>
+                                <div class="services-selection">
+                                    <!-- Use services from context instead of form queryset -->
+                                    {% if not services_by_category %}
+                                        <div class="alert alert-warning">
+                                            Keine Services verfügbar. Bitte kontaktieren Sie uns.
+                                        </div>
+                                    {% endif %}
+                                    {% for category_name, services_list in services_by_category.items %}
+                                        <div class="category-group mb-4 p-3 border rounded">
+                                            <h5 class="text-primary-custom mb-3">{{ category_name }}</h5>
+                                            <div class="row">
+                                                {% for service in services_list %}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="service-option p-3 border rounded {% if service in form.services.initial %}selected{% endif %}" data-service-id="{{ service.id }}">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" name="services" value="{{ service.id }}" id="service_{{ service.id }}" 
+                                                           data-price="{{ service.price }}" 
+                                                           data-duration="{{ service.duration_minutes }}" 
+                                                           data-name="{{ service.name }}"
+                                                           {% if service in form.services.initial %}checked{% endif %}>
+                                                                <label class="form-check-label w-100" for="service_{{ service.id }}">
+                                                                    <div class="d-flex justify-content-between align-items-start">
+                                                                        <div>
+                                                                            <strong>{{ service.name }}</strong>
+                                                                            <small class="text-muted d-block">{{ service.description|truncatewords:10 }}</small>
+                                                                        </div>
+                                                                        <div class="text-end">
+                                                                            <div class="text-primary-custom fw-bold">€{{ service.price }}</div>
+                                                                            <small class="text-muted">{{ service.get_duration_display }}</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% if form.services.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.services.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Selected Services Summary -->
+                                <div id="selectedSummary" class="mt-3 p-3 bg-light rounded" style="display: none;">
+                                    <h6>Gewählte Services:</h6>
+                                    <div id="selectedServicesList"></div>
+                                    <div class="row mt-2">
+                                        <div class="col-6">
+                                            <strong>Gesamtdauer: <span id="totalDuration">0 Min</span></strong>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <strong>Gesamtpreis: <span id="totalPrice">€0.00</span></strong>
+                                        </div>
+                                    </div>
+                                    <div id="appointmentTime" class="appointment-time-display mt-3 p-3 rounded" style="display: none;">
+                                        <div class="row text-center align-items-center">
+                                            <div class="col-12 mb-2">
+                                                <h6 class="mb-0 text-primary-custom">
+                                                    <i class="fas fa-clock me-2"></i>Ihre Terminzeiten
+                                                </h6>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="time-card">
+                                                    <small class="text-muted">Startzeit</small>
+                                                    <div class="fw-bold fs-5 text-primary-custom" id="startTime">--:--</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="time-card">
+                                                    <small class="text-muted">Voraussichtliches Ende</small>
+                                                    <div class="fw-bold fs-5 text-success" id="endTime">--:--</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.date.id_for_label }}" class="form-label">Datum auswählen *</label>
+                                {{ form.date }}
+                                {% if form.date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.date.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.time.id_for_label }}" class="form-label">Uhrzeit auswählen *</label>
+                                {{ form.time }}
+                                {% if form.time.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.time.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Ihre Angaben</label>
+                                <div class="user-info-card">
+                                    {% if user.is_authenticated %}
+                                        <strong>{{ user.get_full_name|default:user.username }}</strong>
+                                        <small class="text-muted">{{ user.email }}</small>
+                                    {% else %}
+                                        <small class="text-muted">Sie müssen angemeldet sein, um einen Termin zu buchen.</small>
+                                        <div class="mt-3 d-flex gap-2 flex-column flex-sm-row">
+                                            <a href="{% url 'account_login' %}?next={% url 'book_appointment' %}" class="btn btn-sm btn-outline-primary">Anmelden</a>
+                                            <a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline-secondary">Registrieren</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Available Times - Full Width -->
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div id="availableTimesContainer" class="mt-2" style="display: none;">
+                                    <small class="text-muted">Verfügbare Zeiten:</small>
+                                    <div id="availableTimes" class="d-flex flex-wrap gap-2 mt-1"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">Anmerkungen</label>
+                            {{ form.notes }}
+                            <small class="text-muted">Besondere Wünsche oder Anmerkungen zu Ihrem Termin</small>
+                            {% if form.notes.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.notes.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Important Information -->
+                        <div class="alert alert-info mb-4">
+                            <h6><i class="fas fa-info-circle me-2"></i>Wichtige Hinweise:</h6>
+                            <ul class="mb-0">
+                                <li>Termine können bis zu 24 Stunden im Voraus storniert werden</li>
+                                <li>Bei Verspätung von mehr als 15 Minuten kann der Termin nicht stattfinden</li>
+                                <li>Wir haben nur 3 Mitarbeiterinnen - pro Zeitslot sind maximal 3 Termine möglich</li>
+                                <li>Bitte kommen Sie 5 Minuten vor Ihrem Termin</li>
+                            </ul>
+                        </div>
+                        
+                        {% if user.is_authenticated %}
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary-custom btn-lg">
+                                    <i class="fas fa-calendar-check me-2"></i>Termin buchen
+                                </button>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Service Selection Help -->
+            {% if not service %}
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h3 class="text-center mb-4">Nicht sicher, welchen Service Sie wählen sollen?</h3>
+                        <div class="text-center">
+                            <a href="{% url 'services' %}" class="btn btn-outline-primary me-3">
+                                <i class="fas fa-list me-2"></i>Alle Services ansehen
+                            </a>
+                            <a href="{% url 'contact' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-phone me-2"></i>Uns kontaktieren
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+/* Enhanced Typography */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    color: var(--primary-color);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.lead {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+}
+.service-option {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 15px !important;
+    background: linear-gradient(135deg, #ffffff 0%, var(--soft-pink) 100%);
+}
+
+.service-option:hover {
+    background: linear-gradient(135deg, var(--light-pink) 0%, var(--secondary-color) 100%);
+    border-color: var(--primary-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+}
+
+.service-option.selected {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    border-color: var(--primary-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+    color: white;
+}
+
+.service-option.selected .text-primary-custom {
+    color: white !important;
+}
+
+.service-option.selected .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.category-group {
+    border: 2px solid var(--light-pink) !important;
+    border-radius: 20px !important;
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.1) 0%, rgba(255, 228, 225, 0.1) 100%);
+}
+
+.category-group h5 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+}
+
+#selectedSummary {
+    border-radius: 15px !important;
+    background: linear-gradient(135deg, var(--soft-pink) 0%, var(--light-color) 100%);
+    border: 2px solid var(--secondary-color);
+}
+
+/* Enhanced Form Controls */
+.form-control {
+    border-radius: 12px;
+    border: 2px solid rgba(255, 182, 193, 0.3);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.15rem rgba(255, 105, 180, 0.15);
+    background: white;
+    transform: translateY(-1px);
+}
+
+.form-control:hover {
+    border-color: rgba(255, 105, 180, 0.5);
+    background: white;
+}
+
+/* Beautiful Date Input */
+input[type="date"].form-control {
+    position: relative;
+    color: var(--dark-color);
+    font-weight: 500;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e91e63' stroke-width='2'%3e%3crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3e%3cline x1='16' y1='2' x2='16' y2='6'/%3e%3cline x1='8' y1='2' x2='8' y2='6'/%3e%3cline x1='3' y1='10' x2='21' y2='10'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+    padding-right: 45px;
+}
+
+input[type="date"].form-control::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+input[type="time"].form-control {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e91e63' stroke-width='2'%3e%3ccircle cx='12' cy='12' r='10'/%3e%3cpolyline points='12,6 12,12 16,14'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+    padding-right: 45px;
+    font-weight: 600;
+}
+
+/* Textarea Enhancement */
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.btn-primary-custom {
+    border-radius: 25px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border: none;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+}
+
+.alert-info {
+    border-radius: 15px;
+    background: linear-gradient(135deg, var(--soft-pink) 0%, #fff 100%);
+    border: 2px solid var(--secondary-color);
+    color: var(--dark-color);
+}
+
+.card {
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(255, 105, 180, 0.15);
+    border: none;
+}
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--primary-color);
+}
+
+/* Enhanced Form Labels */
+.form-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--dark-color);
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+    margin-bottom: 8px;
+}
+
+/* User Information Card Enhancement */
+.user-info-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 182, 193, 0.1) 100%);
+    border: 2px solid rgba(255, 182, 193, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.user-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+}
+
+.user-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.15);
+}
+
+.user-info-card strong {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--dark-color);
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.user-info-card .text-muted {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: rgba(33, 37, 41, 0.65) !important;
+    font-size: 0.9rem;
+}
+
+/* Auth buttons in user card */
+.user-info-card .btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.user-info-card .btn-outline-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.user-info-card .btn-outline-primary:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.user-info-card .btn-outline-secondary {
+    border-color: rgba(255, 182, 193, 0.8);
+    color: var(--dark-color);
+}
+
+.user-info-card .btn-outline-secondary:hover {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-1px);
+}
+
+/* Available Times Styling */
+#availableTimesContainer {
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.1) 0%, rgba(255, 228, 225, 0.1) 100%);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 182, 193, 0.2);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+#availableTimesContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+}
+
+#availableTimesContainer small {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    display: block;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+}
+
+#availableTimes {
+    gap: 8px !important;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 5px 0;
+}
+
+/* Custom scrollbar for available times */
+#availableTimes::-webkit-scrollbar {
+    width: 6px;
+}
+
+#availableTimes::-webkit-scrollbar-track {
+    background: rgba(255, 182, 193, 0.2);
+    border-radius: 3px;
+}
+
+#availableTimes::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+/* Time slot buttons */
+#availableTimes .btn {
+    border-radius: 20px !important;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 10px 16px;
+    min-width: 120px;
+    transition: all 0.3s ease;
+    border: 2px solid var(--secondary-color);
+    color: var(--primary-color);
+    background: white;
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.1);
+    white-space: nowrap;
+}
+
+#availableTimes .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--light-pink) 0%, white 100%);
+}
+
+#availableTimes .btn-outline-primary {
+    border-color: var(--secondary-color);
+    color: var(--primary-color);
+    background: white;
+}
+
+#availableTimes .btn-outline-primary:hover {
+    background: linear-gradient(135deg, var(--light-pink) 0%, white 100%);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+#availableTimes .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+#availableTimes .btn-primary:hover {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+/* Loading and error states */
+#availableTimes .text-muted {
+    font-family: 'Poppins', sans-serif;
+    font-style: italic;
+    color: var(--primary-color) !important;
+    text-align: center;
+    display: block;
+    padding: 20px;
+}
+
+#availableTimes .text-warning {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #ff9800 !important;
+    text-align: center;
+    display: block;
+    padding: 15px;
+    background: rgba(255, 152, 0, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+#availableTimes .text-danger {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #f44336 !important;
+    text-align: center;
+    display: block;
+    padding: 15px;
+    background: rgba(244, 67, 54, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #availableTimes {
+        gap: 6px !important;
+    }
+    
+    #availableTimes .btn {
+        font-size: 0.75rem;
+        padding: 8px 10px;
+        min-width: 100px;
+        font-weight: 500;
+    }
+    
+    #availableTimesContainer {
+        margin-top: 15px;
+        padding: 15px;
+    }
+    
+    /* Stack the user info buttons vertically on tablet */
+    .user-info-card .d-flex.gap-2.flex-column.flex-sm-row {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    
+    .user-info-card .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    #availableTimes .btn {
+        font-size: 0.7rem;
+        padding: 6px 8px;
+        min-width: 90px;
+    }
+    
+    #availableTimesContainer {
+        margin-top: 10px;
+        padding: 12px;
+    }
+    
+    /* Make user info card more compact */
+    .user-info-card {
+        padding: 15px;
+    }
+    
+    .user-info-card strong {
+        font-size: 1rem;
+    }
+    
+    .user-info-card .text-muted {
+        font-size: 0.8rem;
+    }
+}
+
+/* Appointment Time Display Styling */
+.appointment-time-display {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);
+    border: 2px solid rgba(40, 167, 69, 0.2);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: slideInUp 0.5s ease-out;
+}
+
+.appointment-time-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+}
+
+.appointment-time-display h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.time-card {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 15px 10px;
+    margin: 5px;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.time-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+}
+
+.time-card small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.time-card .fw-bold {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Animation for appointment time display */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile responsive for appointment time */
+@media (max-width: 768px) {
+    .appointment-time-display {
+        margin-top: 15px !important;
+        padding: 20px 15px !important;
+    }
+    
+    .time-card {
+        padding: 12px 8px;
+        margin: 3px;
+    }
+    
+    .time-card .fw-bold {
+        font-size: 1.1rem !important;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('id_date');
+    const timeInput = document.getElementById('id_time');
+    const availableTimesContainer = document.getElementById('availableTimesContainer');
+    const availableTimesDiv = document.getElementById('availableTimes');
+    const selectedSummary = document.getElementById('selectedSummary');
+    const selectedServicesList = document.getElementById('selectedServicesList');
+    const totalDuration = document.getElementById('totalDuration');
+    const totalPrice = document.getElementById('totalPrice');
+    const appointmentTime = document.getElementById('appointmentTime');
+    const startTimeEl = document.getElementById('startTime');
+    const endTimeEl = document.getElementById('endTime');
+    
+    // Services data for calculations - Using data attributes (most reliable approach)
+    const servicesData = {};
+    
+    // Build services data from data attributes on checkboxes
+    document.querySelectorAll('input[name="services"]').forEach(checkbox => {
+        const serviceId = checkbox.value;
+        const name = checkbox.dataset.name || 'Unknown Service';
+        const price = parseFloat(checkbox.dataset.price) || 0;
+        const duration = parseInt(checkbox.dataset.duration) || 60; // Default 60 min if not set
+        
+        servicesData[serviceId] = {
+            name: name,
+            price: price,
+            duration: duration
+        };
+        
+        console.log('Service loaded from data attributes:', {
+            id: serviceId,
+            name: name,
+            price: price,
+            duration: duration
+        });
+    });
+    
+    // Debug: Check if services data is loaded
+    console.log('Services Data Loaded from DOM:', servicesData);
+    console.log('Services count:', Object.keys(servicesData).length);
+    
+    // Function to calculate and display appointment times
+    function updateAppointmentTimes(totalDur) {
+        console.log('updateAppointmentTimes called with totalDur:', totalDur);
+        const selectedTime = timeInput ? timeInput.value : null;
+        console.log('selectedTime:', selectedTime);
+        
+        if (selectedTime && totalDur > 0) {
+            // Parse start time
+            const [hours, minutes] = selectedTime.split(':').map(Number);
+            const startDate = new Date();
+            startDate.setHours(hours, minutes, 0, 0);
+            
+            // Calculate end time
+            const endDate = new Date(startDate.getTime() + (totalDur * 60000));
+            
+            // Format times
+            const startTimeStr = startDate.toLocaleTimeString('de-DE', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            const endTimeStr = endDate.toLocaleTimeString('de-DE', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            console.log('Calculated times - Start:', startTimeStr, 'End:', endTimeStr);
+            
+            // Update display
+            if (startTimeEl && endTimeEl && appointmentTime) {
+                startTimeEl.textContent = startTimeStr;
+                endTimeEl.textContent = endTimeStr;
+                appointmentTime.style.display = 'block';
+                console.log('Appointment time section shown');
+            } else {
+                console.error('Missing time display elements:', {
+                    startTimeEl: !!startTimeEl,
+                    endTimeEl: !!endTimeEl, 
+                    appointmentTime: !!appointmentTime
+                });
+            }
+        } else {
+            console.log('Hiding appointment time section - selectedTime:', selectedTime, 'totalDur:', totalDur);
+            if (appointmentTime) {
+                appointmentTime.style.display = 'none';
+            }
+        }
+    }
+    
+    // Handle service selection - Simplified approach
+    function updateServiceSelection() {
+        console.log('updateServiceSelection called');
+        
+        const checkboxes = document.querySelectorAll('input[name="services"]:checked');
+        const serviceOptions = document.querySelectorAll('.service-option');
+        
+        console.log('Selected checkboxes:', checkboxes.length);
+        
+        // Update visual states
+        serviceOptions.forEach(option => {
+            const checkbox = option.querySelector('input[type="checkbox"]');
+            if (checkbox && checkbox.checked) {
+                option.classList.add('selected');
+            } else {
+                option.classList.remove('selected');
+            }
+        });
+        
+        // Check if required elements exist
+        if (!selectedSummary || !selectedServicesList || !totalDuration || !totalPrice) {
+            console.error('Required elements missing for summary display');
+            return;
+        }
+        
+        // Update summary
+        if (checkboxes.length > 0) {
+            let totalDur = 0;
+            let totalPr = 0;
+            let servicesList = '';
+            
+            checkboxes.forEach(checkbox => {
+                const serviceId = checkbox.value;
+                const service = servicesData[serviceId];
+                console.log('Processing service ID:', serviceId, 'Data:', service);
+                
+                if (service) {
+                    totalDur += service.duration;
+                    totalPr += service.price;
+                    servicesList += `<div class="d-flex justify-content-between mb-1">
+                        <span>${service.name}</span>
+                        <span>€${service.price.toFixed(2)} (${service.duration}min)</span>
+                    </div>`;
+                } else {
+                    console.error('Service not found for ID:', serviceId);
+                }
+            });
+            
+            console.log('Calculated totals - Duration:', totalDur, 'Price:', totalPr);
+            
+            // Update display elements
+            try {
+                selectedServicesList.innerHTML = servicesList;
+                totalDuration.textContent = totalDur + ' Min';
+                totalPrice.textContent = '€' + totalPr.toFixed(2);
+                selectedSummary.style.display = 'block';
+                
+                console.log('Summary updated and shown');
+                
+                // Update appointment times
+                updateAppointmentTimes(totalDur);
+            } catch (error) {
+                console.error('Error updating summary display:', error);
+            }
+        } else {
+            // Hide summary when no services selected
+            selectedSummary.style.display = 'none';
+            if (appointmentTime) {
+                appointmentTime.style.display = 'none';
+            }
+            console.log('No services selected, hiding summary');
+        }
+        
+        // Load available times if date is selected
+        if (dateInput && dateInput.value) {
+            loadAvailableTimes();
+        }
+    }
+    
+    function loadAvailableTimes() {
+        const selectedDate = dateInput.value;
+        const checkedServices = document.querySelectorAll('input[name="services"]:checked');
+        
+        if (!selectedDate || checkedServices.length === 0) {
+            availableTimesContainer.style.display = 'none';
+            return;
+        }
+        
+        // Calculate total duration for selected services
+        let totalDur = 0;
+        checkedServices.forEach(checkbox => {
+            const serviceId = checkbox.value;
+            const service = servicesData[serviceId];
+            if (service) {
+                totalDur += service.duration;
+            }
+        });
+        
+        // Show loading
+        availableTimesDiv.innerHTML = '<span class="text-muted">Lade verfügbare Zeiten...</span>';
+        availableTimesContainer.style.display = 'block';
+        
+        // Fetch available times using the new API (with language prefix)
+        const currentLanguage = window.location.pathname.split('/')[1] || 'de'; // Get language from URL or default to 'de'
+        fetch(`/${currentLanguage}/api/available-times/?date=${selectedDate}&total_duration=${totalDur}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.available_times && data.available_times.length > 0) {
+                    availableTimesDiv.innerHTML = '';
+                    data.available_times.forEach(time => {
+                        const timeButton = document.createElement('button');
+                        timeButton.type = 'button';
+                        timeButton.className = 'btn btn-outline-primary';
+                        
+                        // Calculate end time for display
+                        const [hours, minutes] = time.split(':').map(Number);
+                        const startTime = new Date();
+                        startTime.setHours(hours, minutes, 0, 0);
+                        const endTime = new Date(startTime.getTime() + (totalDur * 60000));
+                        const endTimeStr = endTime.toLocaleTimeString('de-DE', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        });
+                        
+                        timeButton.textContent = `${time} - ${endTimeStr}`;
+                        timeButton.dataset.startTime = time;
+                        timeButton.onclick = function() {
+                            timeInput.value = timeButton.dataset.startTime;
+                            // Update button states
+                            availableTimesDiv.querySelectorAll('button').forEach(btn => {
+                                btn.classList.remove('btn-primary');
+                                btn.classList.add('btn-outline-primary');
+                            });
+                            timeButton.classList.remove('btn-outline-primary');
+                            timeButton.classList.add('btn-primary');
+                            
+                            // Update appointment times
+                            const checkboxes = document.querySelectorAll('input[name="services"]:checked');
+                            if (checkboxes.length > 0) {
+                                let totalDur = 0;
+                                checkboxes.forEach(checkbox => {
+                                    const serviceId = checkbox.value;
+                                    const service = servicesData[serviceId];
+                                    if (service) {
+                                        totalDur += service.duration;
+                                    }
+                                });
+                                updateAppointmentTimes(totalDur);
+                            }
+                        };
+                        availableTimesDiv.appendChild(timeButton);
+                    });
+                } else {
+                    availableTimesDiv.innerHTML = '<span class="text-warning">Keine verfügbaren Zeiten an diesem Tag für diese Services</span>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                availableTimesDiv.innerHTML = '<span class="text-danger">Fehler beim Laden der Zeiten</span>';
+            });
+    }
+    
+    // Check if all required DOM elements exist
+    console.log('DOM Elements Check:');
+    console.log('dateInput:', dateInput ? 'found' : 'NOT FOUND');
+    console.log('timeInput:', timeInput ? 'found' : 'NOT FOUND');
+    console.log('selectedSummary:', selectedSummary ? 'found' : 'NOT FOUND');
+    console.log('selectedServicesList:', selectedServicesList ? 'found' : 'NOT FOUND');
+    console.log('totalDuration:', totalDuration ? 'found' : 'NOT FOUND');
+    console.log('totalPrice:', totalPrice ? 'found' : 'NOT FOUND');
+    console.log('appointmentTime:', appointmentTime ? 'found' : 'NOT FOUND');
+    
+    // Early exit if required elements are missing
+    if (!selectedSummary || !selectedServicesList || !totalDuration || !totalPrice) {
+        console.error('Required DOM elements are missing! Tính năng tổng hợp giờ will not work.');
+        return;
+    }
+
+    // Event listeners
+    document.querySelectorAll('input[name="services"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateServiceSelection);
+    });
+    
+    if (dateInput) {
+        dateInput.addEventListener('change', loadAvailableTimes);
+        
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+        
+        // Set maximum date to 3 months from now
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 3);
+        dateInput.setAttribute('max', maxDate.toISOString().split('T')[0]);
+    }
+    
+    // Update appointment times when time is selected
+    if (timeInput) {
+        timeInput.addEventListener('change', function() {
+            console.log('Time input changed:', timeInput.value);
+            const checkboxes = document.querySelectorAll('input[name="services"]:checked');
+            if (checkboxes.length > 0) {
+                let totalDur = 0;
+                checkboxes.forEach(checkbox => {
+                    const serviceId = checkbox.value;
+                    const service = servicesData[serviceId];
+                    if (service) {
+                        totalDur += service.duration;
+                    }
+                });
+                console.log('Calling updateAppointmentTimes from time input change with totalDur:', totalDur);
+                updateAppointmentTimes(totalDur);
+            } else {
+                console.log('No services selected, hiding appointment time');
+                if (appointmentTime) {
+                    appointmentTime.style.display = 'none';
+                }
+            }
+        });
+    }
+    
+    // Initialize selection state
+    updateServiceSelection();
+});
+</script>
+
+<!-- Flatpickr JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize beautiful date picker
+    const datePicker = flatpickr("#id_date", {
+        locale: "de",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        maxDate: new Date().fp_incr(90), // 90 days from now
+        inline: false,
+        theme: "material_pink",
+        disableMobile: true,
+        position: "auto",
+        allowInput: true,
+        clickOpens: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            // Trigger the existing change event for loadAvailableTimes
+            const changeEvent = new Event('change', { bubbles: true });
+            document.getElementById('id_date').dispatchEvent(changeEvent);
+        },
+        onReady: function(selectedDates, dateStr, instance) {
+            // Custom styling after initialization
+            const calendarContainer = instance.calendarContainer;
+            calendarContainer.style.boxShadow = '0 10px 40px rgba(255, 105, 180, 0.2)';
+            calendarContainer.style.borderRadius = '15px';
+            calendarContainer.style.border = '2px solid rgba(255, 182, 193, 0.3)';
+        }
+    });
+    
+    // Initialize beautiful time picker
+    const timePicker = flatpickr("#id_time", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 15,
+        disableMobile: true,
+        theme: "material_pink",
+        onChange: function(selectedDates, dateStr, instance) {
+            // Trigger the existing change event
+            const changeEvent = new Event('change', { bubbles: true });
+            document.getElementById('id_time').dispatchEvent(changeEvent);
+        },
+        onReady: function(selectedDates, dateStr, instance) {
+            // Custom styling for time picker
+            const calendarContainer = instance.calendarContainer;
+            calendarContainer.style.boxShadow = '0 10px 40px rgba(255, 105, 180, 0.2)';
+            calendarContainer.style.borderRadius = '15px';
+            calendarContainer.style.border = '2px solid rgba(255, 182, 193, 0.3)';
+        }
+    });
+});
+</script>
+
+<style>
+/* Custom Flatpickr Styling */
+.flatpickr-calendar {
+    font-family: 'Inter', sans-serif !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 40px rgba(255, 105, 180, 0.2) !important;
+    border: 2px solid rgba(255, 182, 193, 0.3) !important;
+}
+
+.flatpickr-calendar.material_pink .flatpickr-day.selected,
+.flatpickr-calendar.material_pink .flatpickr-day.startRange,
+.flatpickr-calendar.material_pink .flatpickr-day.endRange {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color)) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.flatpickr-calendar.material_pink .flatpickr-day:hover {
+    background: rgba(255, 105, 180, 0.1) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.flatpickr-calendar.material_pink .flatpickr-months .flatpickr-month {
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.1), rgba(255, 228, 225, 0.1)) !important;
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+}
+
+.flatpickr-calendar.material_pink .flatpickr-weekday {
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+}
+
+/* Time picker styling */
+.flatpickr-time {
+    border-top: 1px solid rgba(255, 182, 193, 0.3) !important;
+}
+
+.flatpickr-time input {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    color: var(--primary-color) !important;
+}
+
+.flatpickr-time .numInputWrapper:hover {
+    background: rgba(255, 105, 180, 0.1) !important;
+}
+
+/* Enhanced input styling when flatpickr is active */
+input.flatpickr-input {
+    cursor: pointer !important;
+}
+
+input.flatpickr-input:focus {
+    outline: none !important;
+}
+</style>
+{% endblock %}

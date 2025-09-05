@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Abmelden - LK Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card shadow-lg border-0" style="border-radius: 20px; background: linear-gradient(135deg, var(--soft-pink) 0%, var(--light-color) 100%);">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <img src="http://142.171.70.173/wordpress/wp-content/uploads/2024/09/zipwp-image-4128-scaled-300x300.jpg" alt="LK Nails & Lashes" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 20px;">
+                        <h2 class="font-playfair text-primary-custom mb-3">Auf Wiedersehen!</h2>
+                        <p class="text-muted font-quicksand">Möchten Sie sich wirklich abmelden?</p>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <div class="alert alert-info" style="border-radius: 15px; background: linear-gradient(135deg, var(--soft-pink) 0%, #fff 100%); border: 2px solid var(--secondary-color);">
+                            <i class="fas fa-info-circle text-primary-custom me-2"></i>
+                            <small class="font-quicksand">Sie werden von Ihrem Konto abgemeldet und zur Startseite weitergeleitet.</small>
+                        </div>
+                    </div>
+
+                    <!-- Logout Form -->
+                    <form method="post" id="logoutForm">
+                        {% csrf_token %}
+                        
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary-custom py-3" style="border-radius: 15px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); border: none; font-family: 'Quicksand', sans-serif; font-weight: 600; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);">
+                                <i class="fas fa-sign-out-alt me-2"></i>Ja, abmelden
+                            </button>
+                            
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary py-3" style="border-radius: 15px; font-family: 'Quicksand', sans-serif; font-weight: 500; border: 2px solid var(--secondary-color); color: var(--dark-color);">
+                                <i class="fas fa-arrow-left me-2"></i>Zurück zur Startseite
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Quick Links -->
+                    <div class="text-center mt-4">
+                        <p class="mb-2 font-quicksand">
+                            <small class="text-muted">Oder möchten Sie:</small>
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{% url 'my_appointments' %}" class="text-primary-custom text-decoration-none font-quicksand">
+                                <small><i class="fas fa-calendar me-1"></i>Termine ansehen</small>
+                            </a>
+                            <a href="{% url 'profile' %}" class="text-primary-custom text-decoration-none font-quicksand">
+                                <small><i class="fas fa-user me-1"></i>Profil bearbeiten</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--primary-color);
+    color: var(--dark-color);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.alert {
+    backdrop-filter: blur(10px);
+}
+
+h2 {
+    font-family: 'Dancing Script', cursive;
+    font-weight: 600;
+    font-size: 2.2rem;
+}
+
+.font-quicksand {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.text-primary-custom:hover {
+    color: var(--accent-color) !important;
+    transition: color 0.3s ease;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}E-Mail-Adressen verwalten - LK Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg border-0" style="border-radius: 20px; background: linear-gradient(135deg, var(--soft-pink) 0%, var(--light-color) 100%);">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <img src="http://142.171.70.173/wordpress/wp-content/uploads/2024/09/zipwp-image-4128-scaled-300x300.jpg" alt="LK Nails & Lashes" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 20px;">
+                        <h2 class="font-playfair text-primary-custom mb-2">E-Mail-Adressen verwalten</h2>
+                        <p class="text-muted font-quicksand">Verwalten Sie Ihre E-Mail-Adressen und Bestätigungen</p>
+                    </div>
+
+                    {% if user.emailaddress_set.all %}
+                        <div class="alert alert-success mb-4" style="border-radius: 15px; background: linear-gradient(135deg, #d4edda 0%, #f0f9f0 100%); border: 2px solid #b6d7a8;">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>Bestätigte E-Mail-Adressen:</strong>
+                            <div class="mt-2">
+                                {% for emailaddress in user.emailaddress_set.all %}
+                                    <div class="d-flex align-items-center justify-content-between py-2">
+                                        <div>
+                                            <span class="font-quicksand">{{ emailaddress.email }}</span>
+                                            {% if emailaddress.verified %}
+                                                <span class="badge bg-success ms-2">
+                                                    <i class="fas fa-check me-1"></i>Bestätigt
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning ms-2">
+                                                    <i class="fas fa-clock me-1"></i>Ausstehend
+                                                </span>
+                                            {% endif %}
+                                            {% if emailaddress.primary %}
+                                                <span class="badge bg-primary ms-1">Primär</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if not emailaddress.verified %}
+                                            <small class="text-muted">
+                                                <i class="fas fa-info-circle me-1"></i>Bestätigung ausstehend
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if not user.emailaddress_set.all %}
+                        <div class="alert alert-info mb-4" style="border-radius: 15px; background: linear-gradient(135deg, var(--soft-pink) 0%, #fff 100%); border: 2px solid var(--secondary-color);">
+                            <i class="fas fa-info-circle text-primary-custom me-2"></i>
+                            <strong>Keine E-Mail-Adressen gefunden</strong><br>
+                            <small class="font-quicksand">Bitte fügen Sie eine E-Mail-Adresse hinzu und bestätigen Sie diese.</small>
+                        </div>
+                    {% endif %}
+
+                    <div class="text-center">
+                        <a href="{% url 'home' %}" class="btn btn-primary-custom py-3 px-4" style="border-radius: 15px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); border: none; font-family: 'Quicksand', sans-serif; font-weight: 600; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);">
+                            <i class="fas fa-home me-2"></i>Zur Startseite
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+h2 {
+    font-family: 'Dancing Script', cursive;
+    font-weight: 600;
+    font-size: 2.2rem;
+}
+
+.font-quicksand {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.text-primary-custom:hover {
+    color: var(--accent-color) !important;
+    transition: color 0.3s ease;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+</style>
+{% endblock %}

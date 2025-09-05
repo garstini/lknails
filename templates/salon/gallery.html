@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+
+{% block title %}Galerie - Bella Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="font-playfair">Unsere Arbeiten</h1>
+        <p class="lead">Entdecken Sie unsere schönsten Nail Art Designs und Wimpernverlängerungen</p>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-paint-brush fa-2x text-primary-custom mb-2"></i>
+                    <h5>Kreative Designs</h5>
+                    <p class="text-muted">Von klassisch bis modern</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-gem fa-2x text-primary-custom mb-2"></i>
+                    <h5>Premium Qualität</h5>
+                    <p class="text-muted">Hochwertige Materialien</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-heart fa-2x text-primary-custom mb-2"></i>
+                    <h5>Mit Liebe gemacht</h5>
+                    <p class="text-muted">Jedes Design ist einzigartig</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Categories -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="text-center">
+                <div class="filter-pills-container d-inline-flex flex-wrap gap-2 p-3 rounded-pill" style="background: rgba(255, 105, 180, 0.1); border: 1px solid rgba(255, 105, 180, 0.2);">
+                    <a href="{% url 'gallery' %}" 
+                       class="filter-pill {% if not selected_category %}active{% endif %}">
+                        <i class="fas fa-th-large me-2"></i>Alle
+                    </a>
+                    {% for category in categories %}
+                        <a href="?category={{ category.id }}" 
+                           class="filter-pill {% if selected_category == category.id|slugify %}active{% endif %}">
+                            {% if category.name == 'Nägel' %}
+                                <i class="fas fa-hand-sparkles me-2"></i>
+                            {% elif 'Wimpern' in category.name %}
+                                <i class="fas fa-eye me-2"></i>
+                            {% else %}
+                                <i class="fas fa-spa me-2"></i>
+                            {% endif %}
+                            {{ category.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Gallery Grid -->
+    <div class="row">
+        {% for item in page_obj %}
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+                <div class="gallery-item position-relative">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" 
+                             alt="{{ item.title }}" 
+                             class="img-fluid w-100 rounded"
+                             style="height: 300px; object-fit: cover; cursor: pointer;"
+                             data-bs-toggle="modal" 
+                             data-bs-target="#galleryModal"
+                             data-src="{{ item.image.url }}"
+                             data-title="{{ item.title }}"
+                             data-description="{{ item.description }}">
+                    {% else %}
+                        <!-- Placeholder for demo -->
+                        <div class="placeholder-img d-flex align-items-center justify-content-center rounded text-white"
+                             style="height: 300px; cursor: pointer; background: linear-gradient(45deg, #ff69b4, #ff1493);"
+                             data-bs-toggle="modal" 
+                             data-bs-target="#galleryModal"
+                             data-src=""
+                             data-title="{{ item.title }}"
+                             data-description="{{ item.description }}">
+                            <div class="text-center">
+                                <i class="fas fa-nail-polish fa-3x mb-2"></i>
+                                <h6>{{ item.title }}</h6>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="position-absolute bottom-0 start-0 end-0 bg-gradient-dark text-white p-3 rounded-bottom">
+                        <h6 class="mb-1">{{ item.title }}</h6>
+                        {% if item.service %}
+                            <small class="text-light">{{ item.service.name }} - {{ item.service.category.name }}</small>
+                        {% endif %}
+                    </div>
+                    
+                    {% if item.is_featured %}
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-primary-custom">
+                                <i class="fas fa-star me-1"></i>Featured
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-images fa-3x text-muted mb-3"></i>
+                    <h3>Keine Bilder gefunden</h3>
+                    {% if selected_category %}
+                        <p class="text-muted">Keine Bilder in dieser Kategorie vorhanden.</p>
+                        <a href="{% url 'gallery' %}" class="btn btn-primary-custom">Alle Bilder anzeigen</a>
+                    {% else %}
+                        <p class="text-muted">Unsere Galerie wird bald mit schönen Bildern gefüllt!</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+        <nav aria-label="Gallery pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                            &laquo; Erste
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                            &lsaquo; Zurück
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                            Weiter &rsaquo;
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                            Letzte &raquo;
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+    
+    <!-- Gallery Statistics -->
+    {% if page_obj %}
+        <div class="mt-5 pt-5 border-top">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <i class="fas fa-images fa-2x text-primary-custom mb-2"></i>
+                        <h4>{{ page_obj.paginator.count }}</h4>
+                        <p class="text-muted">Kreative Werke</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                        <h4>{{ featured_count }}</h4>
+                        <p class="text-muted">Featured Designs</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <i class="fas fa-palette fa-2x text-info mb-2"></i>
+                        <h4>{{ categories.count }}</h4>
+                        <p class="text-muted">Service Kategorien</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <i class="fas fa-heart fa-2x text-danger mb-2"></i>
+                        <h4>100%</h4>
+                        <p class="text-muted">Mit Liebe gemacht</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h4 class="font-playfair mb-3">Lassen Sie sich inspirieren</h4>
+                    <p class="text-muted">Jedes Design in unserer Galerie ist ein Unikat. Lassen Sie sich von unseren kreativen Arbeiten inspirieren und buchen Sie Ihren individuellen Termin für ein persönliches Design.</p>
+                    <div class="mt-4">
+                        <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom btn-lg me-3">
+                            <i class="fas fa-calendar-plus me-2"></i>Termin buchen
+                        </a>
+                        <a href="{% url 'services' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-list me-2"></i>Alle Services
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Gallery Modal -->
+<div class="modal fade" id="galleryModal" tabindex="-1" aria-labelledby="galleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="galleryModalLabel">Gallery Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <img id="modalImage" src="" alt="" class="img-fluid w-100" style="display: none;">
+                <div id="modalPlaceholder" class="placeholder-img d-flex align-items-center justify-content-center text-white" 
+                     style="height: 400px; background: linear-gradient(45deg, #ff69b4, #ff1493); display: none;">
+                    <div class="text-center">
+                        <i class="fas fa-nail-polish fa-4x mb-3"></i>
+                        <h4 id="modalPlaceholderTitle"></h4>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h4 id="modalTitle" class="text-primary-custom"></h4>
+                    <p id="modalDescription" class="mb-3"></p>
+                    <div id="modalServiceInfo" class="d-none">
+                        <hr>
+                        <h6><i class="fas fa-spa me-2"></i>Zugehöriger Service</h6>
+                        <p class="text-muted mb-1" id="modalServiceName"></p>
+                        <p class="text-muted" id="modalServiceCategory"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light">
+                <div class="d-flex justify-content-between w-100">
+                    <div class="text-muted">
+                        <small><i class="fas fa-eye me-1"></i>Klicken Sie auf "Service buchen" für ähnliche Designs</small>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Schließen</button>
+                        <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom">
+                            <i class="fas fa-calendar-plus me-2"></i>Service buchen
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary-custom text-white">
+    <div class="container text-center">
+        <h2 class="font-playfair mb-4">Gefällt Ihnen, was Sie sehen?</h2>
+        <p class="lead mb-4">Lassen Sie sich von unserem talentierten Team verwöhnen und erhalten Sie den Look Ihrer Träume!</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'book_appointment' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-calendar-plus me-2"></i>Termin buchen
+            </a>
+            <a href="{% url 'services' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-list me-2"></i>Services ansehen
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+.bg-gradient-dark {
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.gallery-item {
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.gallery-item:hover {
+    transform: translateY(-3px);
+}
+
+.gallery-item img {
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+/* Filter Pills Styling */
+.filter-pills-container {
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.15);
+}
+
+.filter-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    background: white;
+    color: #666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filter-pill:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.25);
+    border-color: rgba(255, 105, 180, 0.3);
+    color: #ff69b4;
+}
+
+.filter-pill.active {
+    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+    color: white;
+    border-color: #ff69b4;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+    transform: translateY(-1px);
+}
+
+.filter-pill.active:hover {
+    color: white;
+    background: linear-gradient(135deg, #ff1493 0%, #dc143c 100%);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle modal image display
+    const galleryModal = document.getElementById('galleryModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    
+    // Add click event to all gallery images
+    document.querySelectorAll('[data-bs-toggle="modal"]').forEach(img => {
+        img.addEventListener('click', function() {
+            const src = this.getAttribute('data-src');
+            const title = this.getAttribute('data-title');
+            const description = this.getAttribute('data-description') || '';
+            
+            const modalPlaceholder = document.getElementById('modalPlaceholder');
+            const modalPlaceholderTitle = document.getElementById('modalPlaceholderTitle');
+            
+            modalTitle.textContent = title;
+            modalDescription.textContent = description;
+            
+            // Show real image or placeholder
+            if (src && src !== '') {
+                modalImage.src = src;
+                modalImage.alt = title;
+                modalImage.style.display = 'block';
+                modalPlaceholder.style.display = 'none';
+            } else {
+                modalImage.style.display = 'none';
+                modalPlaceholder.style.display = 'flex';
+                modalPlaceholderTitle.textContent = title;
+            }
+            
+            if (!description) {
+                modalDescription.style.display = 'none';
+            } else {
+                modalDescription.style.display = 'block';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

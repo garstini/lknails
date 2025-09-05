@@ -1,0 +1,25 @@
+LK Nails & Lashes - E-Mail-Bestätigung
+=========================================
+
+Hallo {{ user.get_full_name|default:user.username }}!
+
+Vielen Dank für Ihre Registrierung bei LK Nails & Lashes!
+
+Um Ihr Konto zu aktivieren und mit der Terminbuchung zu beginnen, 
+bestätigen Sie bitte Ihre E-Mail-Adresse, indem Sie den folgenden 
+Link in Ihren Browser kopieren:
+
+{{ activate_url }}
+
+Hinweis: Dieser Bestätigungslink ist 3 Tage gültig. Nach der 
+Bestätigung können Sie sich einloggen und Ihre Termine bequem online buchen.
+
+Mit freundlichen Grüßen,
+Ihr LK Nails & Lashes Team
+
+---
+LK Nails & Lashes
+Ihr Premium Beauty Salon für Nagel- und Wimpernbehandlungen
+
+Diese E-Mail wurde automatisch generiert. 
+Bitte antworten Sie nicht auf diese Nachricht.

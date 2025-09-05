@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+
+{% block title %}Kontakt - Bella Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="font-playfair">Kontakt</h1>
+        <p class="lead">Wir freuen uns auf Ihre Nachricht! Kontaktieren Sie uns für Fragen oder Terminwünsche.</p>
+    </div>
+    
+    <div class="row">
+        <!-- Contact Form -->
+        <div class="col-lg-8 mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="font-playfair mb-4">Nachricht senden</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Vorname & Nachname *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">E-Mail-Adresse *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Telefonnummer</label>
+                                <input type="tel" class="form-control" id="phone" name="phone">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="subject" class="form-label">Betreff</label>
+                                <select class="form-control" id="subject" name="subject">
+                                    <option value="">Betreff auswählen</option>
+                                    <option value="appointment">Terminanfrage</option>
+                                    <option value="services">Fragen zu Services</option>
+                                    <option value="pricing">Preisanfrage</option>
+                                    <option value="complaint">Beschwerde</option>
+                                    <option value="compliment">Lob</option>
+                                    <option value="other">Sonstiges</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Ihre Nachricht *</label>
+                            <textarea class="form-control" id="message" name="message" rows="6" required placeholder="Teilen Sie uns mit, wie wir Ihnen helfen können..."></textarea>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required>
+                            <label class="form-check-label" for="privacy">
+                                Ich stimme der <a href="#" class="text-primary-custom">Datenschutzerklärung</a> zu und erlaube die Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage. *
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary-custom btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Nachricht senden
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Information -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="font-playfair mb-4">Kontaktdaten</h5>
+                    
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-map-marker-alt fa-lg text-primary-custom"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Adresse</h6>
+                                <p class="text-muted mb-0">Hindenburgdamm 75<br>12203 Berlin, Germany</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-phone fa-lg text-primary-custom"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Telefon</h6>
+                                <p class="text-muted mb-0">
+                                    <a href="tel:+4930804997-18" class="text-muted text-decoration-none">+49 30 804997-18</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-envelope fa-lg text-primary-custom"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">E-Mail</h6>
+                                <p class="text-muted mb-0">
+                                    <a href="mailto:lk.nails.lashes@gmail.com" class="text-muted text-decoration-none">lk.nails.lashes@gmail.com</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fab fa-whatsapp fa-lg text-primary-custom"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">WhatsApp</h6>
+                                <p class="text-muted mb-0">
+                                    <a href="https://wa.me/4930804997-18" class="text-muted text-decoration-none">+49 30 804997-18</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Opening Hours -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="font-playfair mb-4">Öffnungszeiten</h5>
+                    
+                    <div class="opening-hours">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Montag - Freitag</span>
+                            <span class="text-primary-custom fw-bold">9:30 - 19:00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Samstag</span>
+                            <span class="text-primary-custom fw-bold">10:00 - 17:00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Sonntag</span>
+                            <span class="text-muted">Geschlossen</span>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <small>
+                            <i class="fas fa-info-circle me-2"></i>
+                            Termine auch außerhalb der Öffnungszeiten nach Absprache möglich.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="font-playfair mb-4">Schnelle Aktionen</h5>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom">
+                            <i class="fas fa-calendar-plus me-2"></i>Termin buchen
+                        </a>
+                        <a href="tel:+4930804997-18" class="btn btn-outline-primary">
+                            <i class="fas fa-phone me-2"></i>Anrufen
+                        </a>
+                        <a href="https://wa.me/4930804997-18" class="btn btn-outline-success" target="_blank">
+                            <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                        </a>
+                        <a href="mailto:lk.nails.lashes@gmail.com" class="btn btn-outline-info">
+                            <i class="fas fa-envelope me-2"></i>E-Mail
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Map Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="map-container" style="height: 450px; position: relative; overflow: hidden; border-radius: 15px;">
+                        <!-- Google Maps Embed -->
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.1234567890!2d13.3288!3d52.4389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a851f3e1234567%3A0x1234567890abcdef!2sHindenburgdamm%2075%2C%2012203%20Berlin%2C%20Germany!5e0!3m2!1sen!2sde!4v1693876543210!5m2!1sen!2sde&markers=color:pink%7C52.4389,13.3288"
+                            width="100%" 
+                            height="100%" 
+                            style="border:0; border-radius: 15px;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                        
+                        <!-- Map Overlay with Contact Info -->
+                        <div class="map-overlay" style="position: absolute; bottom: 20px; left: 20px; background: linear-gradient(135deg, var(--soft-pink) 0%, var(--light-color) 100%); padding: 15px 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(212,165,165,0.3); backdrop-filter: blur(10px);">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-map-marker-alt text-primary-custom me-3" style="font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6 class="mb-0 font-nunito">LK Nails & Lashes</h6>
+                                    <small class="text-muted">Hindenburgdamm 75, 12203 Berlin</small><br>
+                                    <small class="text-primary-custom">Mo-Fr: 9:30-19:00 | Sa: 10:00-17:00</small>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <a href="https://maps.google.com/?q=Hindenburgdamm+75,+12203+Berlin,+Germany" 
+                                   target="_blank" 
+                                   class="btn btn-primary-custom btn-sm me-2"
+                                   style="font-size: 0.8rem; padding: 5px 12px;">
+                                    <i class="fas fa-external-link-alt me-1"></i>Routenplaner
+                                </a>
+                                <a href="tel:+4930804997-18" 
+                                   class="btn btn-outline-primary btn-sm"
+                                   style="font-size: 0.8rem; padding: 5px 12px;">
+                                    <i class="fas fa-phone me-1"></i>Anrufen
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="font-playfair text-center mb-4">Häufig gestellte Fragen</h2>
+            
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq1">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                            Wie lange im Voraus sollte ich einen Termin buchen?
+                        </button>
+                    </h2>
+                    <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Wir empfehlen eine Terminbuchung 1-2 Wochen im Voraus, besonders für Wochenendtermine. 
+                            Kurzfristige Termine sind jedoch auch möglich, falls freie Kapazitäten vorhanden sind.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq2">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                            Kann ich meinen Termin stornieren oder verschieben?
+                        </button>
+                    </h2>
+                    <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Ja, Termine können bis zu 24 Stunden im Voraus kostenfrei storniert oder verschoben werden. 
+                            Bei späteren Stornierungen behalten wir uns vor, eine Ausfallgebühr zu berechnen.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq3">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                            Welche Zahlungsmethoden akzeptieren Sie?
+                        </button>
+                    </h2>
+                    <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Wir akzeptieren Barzahlung, EC-Karte, Kreditkarte und mobile Zahlungsmethoden wie Apple Pay und Google Pay.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq4">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                            Bieten Sie auch Gutscheine an?
+                        </button>
+                    </h2>
+                    <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Ja, wir bieten Gutscheine für alle unsere Services an. Diese können als Geschenk oder für den 
+                            eigenen Gebrauch erworben werden. Kontaktieren Sie uns für weitere Informationen.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.contact-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.contact-item:last-child {
+    border-bottom: none;
+}
+
+.opening-hours {
+    font-size: 0.95rem;
+}
+
+.map-container {
+    background: #f8f9fa;
+    border-radius: 0.375rem;
+}
+</style>
+{% endblock %}

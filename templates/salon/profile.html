@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Profil - Bella Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="font-playfair mb-4">Mein Profil</h1>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">Vorname</label>
+                                <input type="text" 
+                                       class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" 
+                                       id="{{ form.first_name.id_for_label }}" 
+                                       name="{{ form.first_name.name }}"
+                                       value="{{ form.first_name.value|default:'' }}">
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Nachname</label>
+                                <input type="text" 
+                                       class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" 
+                                       id="{{ form.last_name.id_for_label }}" 
+                                       name="{{ form.last_name.name }}"
+                                       value="{{ form.last_name.value|default:'' }}">
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">E-Mail-Adresse</label>
+                            <input type="email" 
+                                   class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.email.id_for_label }}" 
+                                   name="{{ form.email.name }}"
+                                   value="{{ form.email.value|default:'' }}">
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Telefonnummer</label>
+                            <input type="tel" 
+                                   class="form-control {% if form.phone.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.phone.id_for_label }}" 
+                                   name="{{ form.phone.name }}"
+                                   value="{{ form.phone.value|default:'' }}">
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.birth_date.id_for_label }}" class="form-label">Geburtsdatum</label>
+                            <input type="date" 
+                                   class="form-control {% if form.birth_date.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.birth_date.id_for_label }}" 
+                                   name="{{ form.birth_date.name }}"
+                                   value="{{ form.birth_date.value|default:'' }}">
+                            {% if form.birth_date.errors %}
+                                <div class="invalid-feedback">{{ form.birth_date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Adresse</label>
+                            <textarea class="form-control {% if form.address.errors %}is-invalid{% endif %}" 
+                                      id="{{ form.address.id_for_label }}" 
+                                      name="{{ form.address.name }}"
+                                      rows="3">{{ form.address.value|default:'' }}</textarea>
+                            {% if form.address.errors %}
+                                <div class="invalid-feedback">{{ form.address.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">Notizen</label>
+                            <textarea class="form-control {% if form.notes.errors %}is-invalid{% endif %}" 
+                                      id="{{ form.notes.id_for_label }}" 
+                                      name="{{ form.notes.name }}"
+                                      rows="3"
+                                      placeholder="Besondere Wünsche, Allergien, etc.">{{ form.notes.value|default:'' }}</textarea>
+                            <small class="text-muted">Diese Informationen helfen uns, Sie besser zu betreuen.</small>
+                            {% if form.notes.errors %}
+                                <div class="invalid-feedback">{{ form.notes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <button type="submit" class="btn btn-primary-custom btn-lg">
+                                <i class="fas fa-save me-2"></i>Profil speichern
+                            </button>
+                            <a href="{% url 'my_appointments' %}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-calendar me-2"></i>Meine Termine
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Account Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-user-circle me-2"></i>Konto-Informationen</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Benutzername:</strong> {{ user.username }}</p>
+                    <p><strong>Mitglied seit:</strong> {{ user.date_joined|date:"d.m.Y" }}</p>
+                    <p><strong>Letzter Login:</strong> {{ user.last_login|date:"d.m.Y H:i"|default:"Nie" }}</p>
+                    
+                    <hr>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="#" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-key me-2"></i>Passwort ändern
+                        </a>
+                        <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-sign-out-alt me-2"></i>Abmelden
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Appointments -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-calendar me-2"></i>Letzte Termine</h5>
+                </div>
+                <div class="card-body">
+                    {% if user.customer.appointments.all %}
+                        {% for appointment in user.customer.appointments.all|slice:":3" %}
+                            <div class="d-flex align-items-center mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-calendar-alt fa-2x text-primary-custom"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">{{ appointment.service.name }}</h6>
+                                    <p class="mb-1 small">{{ appointment.date|date:"d.m.Y" }} um {{ appointment.time|time:"H:i" }}</p>
+                                    <span class="status-badge status-{{ appointment.status }} small">
+                                        {% if appointment.status == 'pending' %}Ausstehend{% endif %}
+                                        {% if appointment.status == 'confirmed' %}Bestätigt{% endif %}
+                                        {% if appointment.status == 'completed' %}Abgeschlossen{% endif %}
+                                        {% if appointment.status == 'cancelled' %}Storniert{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="text-center mt-3">
+                            <a href="{% url 'my_appointments' %}" class="btn btn-outline-primary btn-sm">
+                                Alle Termine ansehen
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">Noch keine Termine gebucht</p>
+                        <div class="text-center">
+                            <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom btn-sm">
+                                <i class="fas fa-plus me-2"></i>Ersten Termin buchen
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

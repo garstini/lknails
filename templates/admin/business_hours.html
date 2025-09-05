@@ -1,0 +1,238 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block title %}Öffnungszeiten - LK Nails & Lashes Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+.hours-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hours-table th,
+.hours-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.hours-table th {
+    background-color: #d4af37;
+    color: white;
+    font-weight: bold;
+}
+
+.hours-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.time-input {
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    width: 100px;
+}
+
+.checkbox {
+    transform: scale(1.2);
+}
+
+.save-btn {
+    background-color: #d4af37;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.save-btn:hover {
+    background-color: #b8941f;
+}
+
+.closed-row {
+    background-color: #f8f9fa;
+    opacity: 0.7;
+}
+
+.info-box {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.break-input {
+    width: 80px;
+    margin: 0 5px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="business-hours-config">
+    <h1>Öffnungszeiten konfigurieren</h1>
+    
+    <div class="info-box">
+        <strong>Hinweis:</strong> Diese Einstellungen bestimmen, wann Kunden online Termine buchen können. 
+        Geschlossene Tage werden automatisch von der Terminbuchung ausgeschlossen.
+    </div>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <table class="hours-table">
+            <thead>
+                <tr>
+                    <th>Wochentag</th>
+                    <th>Geöffnet</th>
+                    <th>Öffnungszeit</th>
+                    <th>Schließzeit</th>
+                    <th>Mittagspause Start</th>
+                    <th>Mittagspause Ende</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hour in business_hours %}
+                <tr class="{% if not hour.is_open %}closed-row{% endif %}" id="row-{{ hour.day_of_week }}">
+                    <td><strong>{{ hour.get_day_of_week_display }}</strong></td>
+                    <td>
+                        <input type="checkbox" 
+                               name="is_open_{{ hour.day_of_week }}" 
+                               class="checkbox"
+                               {% if hour.is_open %}checked{% endif %}
+                               onchange="toggleRow({{ hour.day_of_week }})">
+                    </td>
+                    <td>
+                        <input type="time" 
+                               name="opening_time_{{ hour.day_of_week }}" 
+                               class="time-input"
+                               value="{{ hour.opening_time|time:'H:i' }}"
+                               {% if not hour.is_open %}disabled{% endif %}>
+                    </td>
+                    <td>
+                        <input type="time" 
+                               name="closing_time_{{ hour.day_of_week }}" 
+                               class="time-input"
+                               value="{{ hour.closing_time|time:'H:i' }}"
+                               {% if not hour.is_open %}disabled{% endif %}>
+                    </td>
+                    <td>
+                        <input type="time" 
+                               name="break_start_{{ hour.day_of_week }}" 
+                               class="time-input break-input"
+                               value="{% if hour.break_start %}{{ hour.break_start|time:'H:i' }}{% endif %}"
+                               {% if not hour.is_open %}disabled{% endif %}>
+                    </td>
+                    <td>
+                        <input type="time" 
+                               name="break_end_{{ hour.day_of_week }}" 
+                               class="time-input break-input"
+                               value="{% if hour.break_end %}{{ hour.break_end|time:'H:i' }}{% endif %}"
+                               {% if not hour.is_open %}disabled{% endif %}>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px;">
+            <button type="submit" class="save-btn">Öffnungszeiten speichern</button>
+            <a href="/admin/" style="margin-left: 20px; text-decoration: none; color: #666;">Zurück zum Admin</a>
+        </div>
+    </form>
+
+    <!-- Quick Templates -->
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">
+        <h3>Schnell-Vorlagen</h3>
+        <div style="display: flex; gap: 15px; margin-top: 15px;">
+            <button type="button" onclick="setTemplate('standard')" class="save-btn" style="background-color: #6c757d;">
+                Standard (Mo-Fr 9-18, Sa 9-16)
+            </button>
+            <button type="button" onclick="setTemplate('extended')" class="save-btn" style="background-color: #6c757d;">
+                Erweitert (Mo-Fr 9-19, Sa 9-17, So 10-15)
+            </button>
+            <button type="button" onclick="setTemplate('weekend')" class="save-btn" style="background-color: #6c757d;">
+                Nur Wochenende
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleRow(dayNum) {
+    const row = document.getElementById('row-' + dayNum);
+    const checkbox = document.querySelector(`input[name="is_open_${dayNum}"]`);
+    const inputs = row.querySelectorAll('input[type="time"]');
+    
+    if (checkbox.checked) {
+        row.classList.remove('closed-row');
+        inputs.forEach(input => input.disabled = false);
+    } else {
+        row.classList.add('closed-row');
+        inputs.forEach(input => input.disabled = true);
+    }
+}
+
+function setTemplate(template) {
+    const days = [0, 1, 2, 3, 4, 5, 6]; // Mon-Sun
+    
+    // Clear all first
+    days.forEach(day => {
+        document.querySelector(`input[name="is_open_${day}"]`).checked = false;
+        toggleRow(day);
+    });
+    
+    if (template === 'standard') {
+        // Mo-Fr 9-18, Sa 9-16
+        for (let day = 0; day <= 4; day++) {
+            document.querySelector(`input[name="is_open_${day}"]`).checked = true;
+            document.querySelector(`input[name="opening_time_${day}"]`).value = '09:00';
+            document.querySelector(`input[name="closing_time_${day}"]`).value = '18:00';
+            toggleRow(day);
+        }
+        document.querySelector(`input[name="is_open_5"]`).checked = true;
+        document.querySelector(`input[name="opening_time_5"]`).value = '09:00';
+        document.querySelector(`input[name="closing_time_5"]`).value = '16:00';
+        toggleRow(5);
+    } else if (template === 'extended') {
+        // Mo-Fr 9-19, Sa 9-17, So 10-15
+        for (let day = 0; day <= 4; day++) {
+            document.querySelector(`input[name="is_open_${day}"]`).checked = true;
+            document.querySelector(`input[name="opening_time_${day}"]`).value = '09:00';
+            document.querySelector(`input[name="closing_time_${day}"]`).value = '19:00';
+            toggleRow(day);
+        }
+        document.querySelector(`input[name="is_open_5"]`).checked = true;
+        document.querySelector(`input[name="opening_time_5"]`).value = '09:00';
+        document.querySelector(`input[name="closing_time_5"]`).value = '17:00';
+        toggleRow(5);
+        
+        document.querySelector(`input[name="is_open_6"]`).checked = true;
+        document.querySelector(`input[name="opening_time_6"]`).value = '10:00';
+        document.querySelector(`input[name="closing_time_6"]`).value = '15:00';
+        toggleRow(6);
+    } else if (template === 'weekend') {
+        // Sa-So only
+        document.querySelector(`input[name="is_open_5"]`).checked = true;
+        document.querySelector(`input[name="opening_time_5"]`).value = '09:00';
+        document.querySelector(`input[name="closing_time_5"]`).value = '17:00';
+        toggleRow(5);
+        
+        document.querySelector(`input[name="is_open_6"]`).checked = true;
+        document.querySelector(`input[name="opening_time_6"]`).value = '10:00';
+        document.querySelector(`input[name="closing_time_6"]`).value = '16:00';
+        toggleRow(6);
+    }
+}
+</script>
+{% endblock %}

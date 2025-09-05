@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Registrieren - Bella Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h2 class="font-playfair">Registrieren</h2>
+                        <p class="text-muted">Erstellen Sie Ihr Konto für eine einfache Terminbuchung</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">Vorname *</label>
+                                <input type="text" 
+                                       class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" 
+                                       id="{{ form.first_name.id_for_label }}" 
+                                       name="{{ form.first_name.name }}"
+                                       value="{{ form.first_name.value|default:'' }}"
+                                       required>
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.first_name.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Nachname *</label>
+                                <input type="text" 
+                                       class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" 
+                                       id="{{ form.last_name.id_for_label }}" 
+                                       name="{{ form.last_name.name }}"
+                                       value="{{ form.last_name.value|default:'' }}"
+                                       required>
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.last_name.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">E-Mail-Adresse *</label>
+                            <input type="email" 
+                                   class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.email.id_for_label }}" 
+                                   name="{{ form.email.name }}"
+                                   value="{{ form.email.value|default:'' }}"
+                                   required>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.email.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Benutzername *</label>
+                                <input type="text" 
+                                       class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                                       id="{{ form.username.id_for_label }}" 
+                                       name="{{ form.username.name }}"
+                                       value="{{ form.username.value|default:'' }}"
+                                       required>
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.username.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">Telefonnummer</label>
+                                <input type="tel" 
+                                       class="form-control {% if form.phone.errors %}is-invalid{% endif %}" 
+                                       id="{{ form.phone.id_for_label }}" 
+                                       name="{{ form.phone.name }}"
+                                       value="{{ form.phone.value|default:'' }}"
+                                       placeholder="+49...">
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.phone.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label">Passwort *</label>
+                                <input type="password" 
+                                       class="form-control {% if form.password1.errors %}is-invalid{% endif %}" 
+                                       id="{{ form.password1.id_for_label }}" 
+                                       name="{{ form.password1.name }}"
+                                       required>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.password1.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label">Passwort bestätigen *</label>
+                                <input type="password" 
+                                       class="form-control {% if form.password2.errors %}is-invalid{% endif %}" 
+                                       id="{{ form.password2.id_for_label }}" 
+                                       name="{{ form.password2.name }}"
+                                       required>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.password2.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Password Requirements -->
+                        <div class="alert alert-info mb-4">
+                            <h6><i class="fas fa-info-circle me-2"></i>Passwort-Anforderungen:</h6>
+                            <ul class="mb-0 small">
+                                <li>Mindestens 8 Zeichen</li>
+                                <li>Nicht zu ähnlich zu Ihren anderen persönlichen Informationen</li>
+                                <li>Nicht ein häufig verwendetes Passwort</li>
+                                <li>Nicht nur aus Zahlen bestehen</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                Ich stimme den <a href="#" class="text-primary-custom">Nutzungsbedingungen</a> und der <a href="#" class="text-primary-custom">Datenschutzerklärung</a> zu *
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary-custom btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Konto erstellen
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="mb-2">Bereits ein Konto?</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Jetzt anmelden
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Benefits of Registration -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h3 class="text-center mb-4">Vorteile Ihrer Registrierung</h3>
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3">
+                            <i class="fas fa-calendar-check fa-3x text-primary-custom mb-3"></i>
+                            <h5>Einfache Terminbuchung</h5>
+                            <p>Buchen Sie Ihre Termine schnell und bequem online</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <i class="fas fa-history fa-3x text-primary-custom mb-3"></i>
+                            <h5>Terminübersicht</h5>
+                            <p>Verwalten Sie alle Ihre Termine an einem Ort</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <i class="fas fa-bell fa-3x text-primary-custom mb-3"></i>
+                            <h5>Erinnerungen</h5>
+                            <p>Erhalten Sie Erinnerungen für Ihre bevorstehenden Termine</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

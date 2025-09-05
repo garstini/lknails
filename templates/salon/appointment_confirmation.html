@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}Terminbestätigung - Bella Nails & Lashes{% endblock %}
+
+{% block extra_css %}
+<style>
+.service-item {
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+}
+
+.service-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.summary-box {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.1) 0%, rgba(255, 182, 193, 0.1) 100%) !important;
+    border: 2px solid #ff69b4 !important;
+}
+
+.bg-primary-light {
+    background: rgba(255, 182, 193, 0.1) !important;
+}
+
+.status-confirmed {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.status-cancelled {
+    background-color: #dc3545;
+    color: white;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-4">
+                <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                <h1 class="font-playfair text-success">Termin erfolgreich gebucht!</h1>
+                <p class="lead">Vielen Dank für Ihre Buchung. Wir freuen uns auf Ihren Besuch!</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-primary-custom text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Ihre Termindetails</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6><i class="fas fa-user me-2"></i>Kunde</h6>
+                            <p>{{ appointment.customer.user.get_full_name|default:appointment.customer.user.username }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6><i class="fas fa-envelope me-2"></i>E-Mail</h6>
+                            <p>{{ appointment.customer.user.email }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <h6><i class="fas fa-spa me-2"></i>Gebuchte Services</h6>
+                            {% for service in appointment.services.all %}
+                                <div class="service-item p-3 mb-2 border rounded bg-light">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <strong>{{ service.name }}</strong>
+                                            <small class="text-muted d-block">{{ service.category.name }}</small>
+                                            {% if service.description %}
+                                                <small class="text-muted">{{ service.description|truncatewords:15 }}</small>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-3 text-end">
+                                            <strong class="text-primary">€{{ service.price }}</strong>
+                                        </div>
+                                        <div class="col-md-3 text-end">
+                                            <small class="text-muted">{{ service.get_duration_display }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            
+                            <!-- Total Summary -->
+                            <div class="summary-box p-3 mt-3 bg-primary-light border border-primary rounded">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Gesamtdauer:</strong> 
+                                        <span class="text-primary">{{ appointment.total_duration }} Minuten</span>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <strong>Gesamtpreis:</strong> 
+                                        <span class="text-primary fs-5">€{{ appointment.total_price }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6><i class="fas fa-calendar me-2"></i>Datum</h6>
+                            <p><strong>{{ appointment.date|date:"l, d. F Y" }}</strong></p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6><i class="fas fa-clock me-2"></i>Uhrzeit</h6>
+                            <p><strong>{{ appointment.time|time:"H:i" }} Uhr</strong></p>
+                            <small class="text-muted">Bis ca. {{ appointment.end_time|time:"H:i" }} Uhr</small>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6><i class="fas fa-user-tie me-2"></i>Mitarbeiterin</h6>
+                            <p>{{ appointment.staff.user.get_full_name|default:appointment.staff.user.username }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6><i class="fas fa-info-circle me-2"></i>Status</h6>
+                            <span class="badge status-{{ appointment.status }}">
+                                {% if appointment.status == 'pending' %}Bestätigung ausstehend{% endif %}
+                                {% if appointment.status == 'confirmed' %}Bestätigt{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    {% if appointment.notes %}
+                        <hr>
+                        <div class="mb-3">
+                            <h6><i class="fas fa-sticky-note me-2"></i>Ihre Anmerkungen</h6>
+                            <p>{{ appointment.notes }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Important Information -->
+            <div class="alert alert-info mt-4">
+                <h6><i class="fas fa-info-circle me-2"></i>Wichtige Informationen:</h6>
+                <ul class="mb-0">
+                    <li>Sie erhalten in Kürze eine Bestätigungs-E-Mail</li>
+                    <li>Bitte kommen Sie 5 Minuten vor Ihrem Termin</li>
+                    <li>Bei Verspätung von mehr als 15 Minuten kann der Termin nicht stattfinden</li>
+                    <li><strong>Stornierungen sind bis 1 Stunde vorher kostenlos möglich</strong></li>
+                </ul>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="text-center mt-4">
+                <a href="{% url 'my_appointments' %}" class="btn btn-primary-custom btn-lg me-3">
+                    <i class="fas fa-list me-2"></i>Meine Termine ansehen
+                </a>
+                
+                {% if appointment.status != 'cancelled' %}
+                    {% now "U" as current_timestamp %}
+                    {% with appointment_datetime=appointment.date|date:"Y-m-d" appointment_time=appointment.time|time:"H:i" %}
+                        {% if appointment.date|date:"Y-m-d" > "now"|date:"Y-m-d" or appointment.date|date:"Y-m-d" == "now"|date:"Y-m-d" %}
+                            <a href="{% url 'cancel_appointment' appointment.id %}" 
+                               class="btn btn-outline-danger btn-lg me-3" 
+                               onclick="return confirm('Möchten Sie diesen Termin wirklich stornieren?')">
+                                <i class="fas fa-times me-2"></i>Termin stornieren
+                            </a>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+                
+                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-home me-2"></i>Zur Startseite
+                </a>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="card mt-4">
+                <div class="card-body text-center">
+                    <h6>Fragen zu Ihrem Termin?</h6>
+                    <p class="mb-2">Kontaktieren Sie uns gerne:</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="tel:+493012345678" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-phone me-2"></i>+49 30 12345678
+                        </a>
+                        <a href="mailto:info@bellanails.de" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-envelope me-2"></i>info@bellanails.de
+                        </a>
+                        <a href="https://wa.me/493012345678" class="btn btn-outline-success btn-sm" target="_blank">
+                            <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

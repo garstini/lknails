@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminabsage - {{ salon_name }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #dc3545;
+        }
+        .logo {
+            color: #d4af37;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .cancellation-notice {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+            text-align: center;
+        }
+        .appointment-details {
+            background-color: #f8f5f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            opacity: 0.8;
+        }
+        .service-list {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            opacity: 0.8;
+        }
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            text-decoration: line-through;
+            color: #666;
+        }
+        .service-item:last-child {
+            border-bottom: none;
+        }
+        .rebook-section {
+            background-color: #d1ecf1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #d4af37;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">✨ {{ salon_name }}</div>
+            <h2 style="color: #dc3545; margin: 0;">Terminabsage bestätigt</h2>
+        </div>
+
+        <div class="cancellation-notice">
+            <h3 style="margin-top: 0;">❌ Termin erfolgreich storniert</h3>
+            <p style="margin-bottom: 0;">Ihr Termin wurde wie gewünscht storniert. Es entstehen keine Kosten.</p>
+        </div>
+
+        <p>Liebe/r {{ customer.user.get_full_name }},</p>
+
+        <p>wir bestätigen hiermit die Stornierung Ihres Termins. Schade, dass Sie uns nicht besuchen können!</p>
+
+        <div class="appointment-details">
+            <h3 style="color: #666; margin-top: 0;">Stornierter Termin:</h3>
+            <p><strong>📅 Datum:</strong> {{ appointment.date|date:"l, d.m.Y" }}</p>
+            <p><strong>⏰ Uhrzeit:</strong> {{ appointment.time|time:"H:i" }} Uhr</p>
+            <p><strong>👩‍💼 Mitarbeiterin:</strong> {{ appointment.staff.user.get_full_name }}</p>
+        </div>
+
+        <div class="service-list">
+            <h4 style="color: #666; margin-top: 0;">Stornierte Services:</h4>
+            {% for service in services %}
+            <div class="service-item">
+                <div>
+                    <strong>{{ service.name }}</strong><br>
+                    <small style="color: #666;">{{ service.duration_minutes }} Min</small>
+                </div>
+                <div style="text-align: right;">
+                    <strong>€{{ service.price }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div style="border-top: 1px solid #ddd; margin-top: 15px; padding-top: 10px; text-decoration: line-through; color: #666;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Gesamtpreis:</span>
+                    <span>€{{ total_price }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="rebook-section">
+            <h4 style="margin-top: 0; color: #17a2b8;">💫 Neuen Termin vereinbaren</h4>
+            <p>Wir würden uns freuen, Sie zu einem anderen Zeitpunkt bei uns begrüßen zu dürfen!</p>
+            <div style="text-align: center;">
+                <a href="http://localhost:8000/book/" class="btn">Neuen Termin buchen</a>
+            </div>
+        </div>
+
+        <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <h4 style="margin-top: 0; color: #856404;">ℹ️ Stornierungsbedingungen:</h4>
+            <ul style="margin-bottom: 0;">
+                <li>Kostenlose Stornierung bis 24h vor dem Termin</li>
+                <li>Bei kurzfristigeren Absagen behalten wir uns Stornokosten vor</li>
+                <li>Termine können jederzeit online umgebucht werden</li>
+            </ul>
+        </div>
+
+        <p>Bei Fragen stehen wir Ihnen gerne zur Verfügung:</p>
+        <p>
+            📞 <strong>{{ salon_phone }}</strong><br>
+            📍 <strong>{{ salon_address }}</strong>
+        </p>
+
+        <p>Wir hoffen auf ein baldiges Wiedersehen!</p>
+        <p>Ihr Team von {{ salon_name }}</p>
+
+        <div class="footer">
+            <p>Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht direkt auf diese E-Mail.</p>
+            <p>© {{ salon_name }} - Ihr Beauty-Studio für Nägel und Wimpern</p>
+        </div>
+    </div>
+</body>
+</html>

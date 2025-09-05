@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+
+{% block title %}Über uns - Bella Nails & Lashes{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-secondary-custom">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="font-playfair display-4 mb-4">Über Bella Nails & Lashes</h1>
+                <p class="lead mb-4">
+                    Wir sind Ihr professionelles Beauty-Studio in Deutschland, spezialisiert auf erstklassige 
+                    Nagel- und Wimpernbehandlungen. Mit Leidenschaft für Schönheit und jahrelanger Erfahrung 
+                    verwöhnen wir Sie in unserem modernen Studio.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom btn-lg">
+                        <i class="fas fa-calendar-plus me-2"></i>Termin buchen
+                    </a>
+                    <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-phone me-2"></i>Kontakt
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                             alt="Nail salon interior" class="img-fluid rounded shadow">
+                    </div>
+                    <div class="col-6 mb-3">
+                        <img src="https://images.unsplash.com/photo-1589710751513-58e5a267d4f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                             alt="Professional nail art" class="img-fluid rounded shadow">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Story -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="font-playfair section-title">Unsere Geschichte</h2>
+                <p class="lead mb-4">
+                    Bella Nails & Lashes wurde 2020 mit der Vision gegründet, jedem Kunden ein luxuriöses 
+                    Beauty-Erlebnis zu bieten. Was als kleines Studio begann, hat sich zu einem der 
+                    führenden Nail- und Lash-Salons in der Region entwickelt.
+                </p>
+                <p>
+                    Unser Team aus erfahrenen Nageldesignerinnen und Wimpernstylisten bringt Kreativität, 
+                    Präzision und Leidenschaft in jede Behandlung ein. Wir verwenden nur hochwertige Produkte 
+                    und modernste Techniken, um sicherzustellen, dass Sie mit strahlend schönen Nägeln und 
+                    perfekt gestylten Wimpern unser Studio verlassen.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Values -->
+<section class="py-5 bg-secondary-custom">
+    <div class="container">
+        <h2 class="font-playfair section-title">Unsere Werte</h2>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-heart fa-3x text-primary-custom"></i>
+                    </div>
+                    <h5>Leidenschaft</h5>
+                    <p>Wir lieben, was wir tun, und diese Leidenschaft zeigt sich in jedem Detail unserer Arbeit.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-award fa-3x text-primary-custom"></i>
+                    </div>
+                    <h5>Qualität</h5>
+                    <p>Höchste Standards bei Produkten, Techniken und Service für beste Ergebnisse.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-shield-alt fa-3x text-primary-custom"></i>
+                    </div>
+                    <h5>Hygiene</h5>
+                    <p>Strenge Hygiene- und Sicherheitsstandards für Ihr Wohlbefinden und Ihre Gesundheit.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-smile fa-3x text-primary-custom"></i>
+                    </div>
+                    <h5>Kundenzufriedenheit</h5>
+                    <p>Ihre Zufriedenheit ist unser oberstes Ziel und der Maßstab für unseren Erfolg.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Team -->
+{% if staff_members %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="font-playfair section-title">Unser Team</h2>
+        <div class="row">
+            {% for staff in staff_members %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card text-center h-100">
+                        {% if staff.photo %}
+                            <img src="{{ staff.photo.url }}" 
+                                 class="card-img-top mx-auto mt-3 rounded-circle" 
+                                 alt="{{ staff.user.get_full_name }}"
+                                 style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top mx-auto mt-3 rounded-circle bg-light d-flex align-items-center justify-content-center" 
+                                 style="width: 150px; height: 150px;">
+                                <i class="fas fa-user fa-3x text-primary-custom"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ staff.user.get_full_name }}</h5>
+                            {% if staff.bio %}
+                                <p class="card-text">{{ staff.bio|truncatewords:20 }}</p>
+                            {% endif %}
+                            
+                            {% if staff.specialties.exists %}
+                                <div class="mb-3">
+                                    <small class="text-muted">Spezialisiert auf:</small><br>
+                                    {% for specialty in staff.specialties.all %}
+                                        <span class="badge bg-primary-custom me-1">{{ specialty.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            
+                            {% if staff.phone %}
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <i class="fas fa-phone me-1"></i>{{ staff.phone }}
+                                    </small>
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Statistics -->
+<section class="py-5 bg-primary-custom text-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-item">
+                    <h2 class="display-4 font-weight-bold">1000+</h2>
+                    <p class="lead">Zufriedene Kunden</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-item">
+                    <h2 class="display-4 font-weight-bold">40+</h2>
+                    <p class="lead">Verschiedene Services</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-item">
+                    <h2 class="display-4 font-weight-bold">4+</h2>
+                    <p class="lead">Jahre Erfahrung</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-item">
+                    <h2 class="display-4 font-weight-bold">99%</h2>
+                    <p class="lead">Kundenzufriedenheit</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <h2 class="font-playfair">Warum Bella Nails & Lashes?</h2>
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-primary-custom fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6>Professionelle Expertise</h6>
+                                <p class="small text-muted">Zertifizierte Nageldesignerinnen mit jahrelanger Erfahrung</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-primary-custom fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6>Hochwertige Produkte</h6>
+                                <p class="small text-muted">Nur die besten Marken und Materialien für optimale Ergebnisse</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-primary-custom fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6>Individuelle Beratung</h6>
+                                <p class="small text-muted">Persönliche Betreuung und maßgeschneiderte Lösungen</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-primary-custom fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6>Entspannte Atmosphäre</h6>
+                                <p class="small text-muted">Modernes Studio mit Wohlfühl-Ambiente</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                         alt="Salon interior" class="img-fluid rounded shadow">
+                    <div class="position-absolute top-50 start-50 translate-middle">
+                        <button class="btn btn-light btn-lg rounded-circle" style="width: 80px; height: 80px;">
+                            <i class="fas fa-play text-primary-custom fa-2x"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-secondary-custom">
+    <div class="container text-center">
+        <h2 class="font-playfair mb-4">Bereit für Ihren Besuch bei uns?</h2>
+        <p class="lead mb-4">Lassen Sie sich von unserem professionellen Team verwöhnen und erleben Sie den Unterschied!</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom btn-lg">
+                <i class="fas fa-calendar-plus me-2"></i>Termin buchen
+            </a>
+            <a href="{% url 'services' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-list me-2"></i>Services ansehen
+            </a>
+            <a href="{% url 'gallery' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-images me-2"></i>Galerie besuchen
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

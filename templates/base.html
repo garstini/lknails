@@ -1,0 +1,780 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LK Nails & Lashes - Ihr Beauty-Studio in Deutschland{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAICAAACAgIAAgAAAAICAgADAwMAA">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Flag Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+    <!-- Google Fonts - Ultra Soft & Gentle Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Crimson+Text:wght@400;600&family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@200;300;400;500;600;700&family=Source+Serif+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #e91e63;
+            --secondary-color: #fce4ec;
+            --accent-color: #ad1457;
+            --dark-color: #424242;
+            --light-color: #ffffff;
+            --light-pink: #f8bbd9;
+            --soft-pink: #fde7f3;
+            --muted-rose: #f48fb1;
+            --warm-beige: #fff8e1;
+            --gentle-gray: #757575;
+            --vibrant-pink: #ff4081;
+            --deep-rose: #c2185b;
+            --coral-pink: #ff7a9a;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--dark-color);
+            letter-spacing: 0.2px;
+            background-color: var(--light-color);
+        }
+        
+        .font-crimson {
+            font-family: 'Crimson Text', serif;
+            font-weight: 400;
+        }
+        
+        .font-comfortaa {
+            font-family: 'Comfortaa', cursive;
+        }
+        
+        .font-nunito {
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Source Serif Pro', serif;
+            font-weight: 400;
+            line-height: 1.4;
+            letter-spacing: -0.3px;
+            color: var(--dark-color);
+        }
+        
+        .btn {
+            font-family: 'Comfortaa', cursive;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-family: 'Comfortaa', cursive !important;
+            font-weight: 500;
+            font-size: 1.7rem;
+            color: var(--primary-color) !important;
+        }
+        
+        .bg-primary-custom {
+            background-color: var(--primary-color);
+        }
+        
+        .bg-secondary-custom {
+            background-color: var(--secondary-color);
+        }
+        
+        .text-primary-custom {
+            color: var(--primary-color) !important;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            font-weight: 400;
+            box-shadow: 0 4px 15px rgba(212, 165, 165, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(196, 153, 158, 0.4);
+        }
+        
+        .btn-outline-light {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .navbar {
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 25px rgba(233, 30, 99, 0.08);
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 182, 193, 0.15);
+            transition: all 0.3s ease;
+            min-height: 70px;
+        }
+        
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 4px 30px rgba(233, 30, 99, 0.12);
+        }
+        
+        .navbar-brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+        
+        .navbar-brand:hover {
+            transform: translateY(-1px);
+        }
+        
+        .navbar-brand img {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            margin-right: 8px;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 2px 10px rgba(233, 30, 99, 0.2);
+            transition: all 0.3s ease;
+            object-fit: cover;
+        }
+        
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3);
+        }
+        
+        .nav-link {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            color: var(--dark-color) !important;
+            border-radius: 8px;
+            padding: 0.8rem 1.2rem !important;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+            background: rgba(233, 30, 99, 0.08);
+            transform: translateY(-1px);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-color) !important;
+            background: rgba(233, 30, 99, 0.12);
+            font-weight: 600;
+        }
+        
+        /* Enhanced button styling */
+        .navbar .btn-primary-custom {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 25px;
+            box-shadow: 0 3px 12px rgba(233, 30, 99, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .navbar .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+        }
+        
+        /* User dropdown styling */
+        .navbar .dropdown-menu {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            margin-top: 8px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .navbar .dropdown-item {
+            padding: 0.7rem 1.2rem;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .navbar .dropdown-item:hover {
+            background: rgba(233, 30, 99, 0.1);
+            color: var(--primary-color);
+        }
+        
+        /* Responsive navbar improvements */
+        @media (max-width: 991.98px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .navbar-brand img {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .navbar-collapse {
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(233, 30, 99, 0.1);
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 0.75rem 1rem !important;
+                border-radius: 6px;
+                margin: 2px 0;
+            }
+            
+            .navbar .btn-primary-custom {
+                margin-top: 1rem;
+                width: 100%;
+                justify-self: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .navbar-brand img {
+                width: 28px;
+                height: 28px;
+                margin-right: 6px;
+            }
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, rgba(212,165,165,0.9) 0%, rgba(196,153,158,0.8) 50%, rgba(240,230,230,0.9) 100%), url('https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3') center/cover;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            color: var(--dark-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section .container,
+        .hero-section .row,
+        .hero-section .col-lg-8 {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, rgba(212,165,165,0.2) 0%, transparent 70%),
+                        radial-gradient(circle at 70% 30%, rgba(196,153,158,0.15) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+            z-index: 1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+        }
+        
+        .card {
+            border: none;
+            border-radius: 25px;
+            box-shadow: 0 6px 25px rgba(212,165,165,0.12);
+            transition: all 0.4s ease;
+            background: linear-gradient(145deg, var(--light-color) 0%, var(--soft-pink) 100%);
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 12px 35px rgba(212,165,165,0.2);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            opacity: 0.6;
+        }
+        
+        .service-card .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .price-badge {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 0.7rem 1.3rem;
+            border-radius: 25px;
+            font-weight: 500;
+            font-family: 'Comfortaa', cursive;
+            box-shadow: 0 3px 12px rgba(212,165,165,0.3);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        .price-badge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .price-badge:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 50%, #2c2c2c 100%);
+            color: white;
+            padding: 4rem 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 50%, var(--primary-color) 100%);
+        }
+        
+        .footer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(255,105,180,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255,20,147,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        /* Enhanced Alert Styling */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+        
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .alert-success::before {
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .alert-danger::before {
+            background: linear-gradient(90deg, #dc3545 0%, #e74c3c 100%);
+        }
+        
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .alert-warning::before {
+            background: linear-gradient(90deg, #ffc107 0%, #f39c12 100%);
+        }
+        
+        .alert-info {
+            background: rgba(23, 162, 184, 0.1);
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .alert-info::before {
+            background: linear-gradient(90deg, #17a2b8 0%, #3498db 100%);
+        }
+        
+        .alert .btn-close {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            transition: all 0.2s ease;
+        }
+        
+        .alert .btn-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        /* Messages container styling */
+        .messages-container {
+            position: fixed;
+            top: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            width: 90%;
+            max-width: 600px;
+            pointer-events: none;
+        }
+        
+        .messages-container .alert {
+            pointer-events: auto;
+            animation: slideInDown 0.5s ease-out;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .gallery-item img {
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .btn-floating {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            border: none;
+            font-size: 1.6rem;
+            box-shadow: 0 6px 20px rgba(212,165,165,0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: gentlePulse 3s ease-in-out infinite;
+        }
+        
+        .btn-floating:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(196,153,158,0.4);
+        }
+        
+        @keyframes gentlePulse {
+            0% { box-shadow: 0 6px 20px rgba(212,165,165,0.3); }
+            50% { box-shadow: 0 6px 20px rgba(212,165,165,0.5); }
+            100% { box-shadow: 0 6px 20px rgba(212,165,165,0.3); }
+        }
+        
+        .appointments-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.875rem;
+        }
+        
+        .status-pending { background-color: #ffeaa7; color: #2d3436; }
+        .status-confirmed { background-color: #55efc4; color: #2d3436; }
+        .status-completed { background-color: #74b9ff; color: white; }
+        .status-cancelled { background-color: #fd79a8; color: white; }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand text-primary-custom font-playfair" href="{% url 'home' %}">
+                <img src="http://142.171.70.173/wordpress/wp-content/uploads/2024/09/zipwp-image-4128-scaled-300x300.jpg" alt="LK Nails & Lashes Logo">
+                LK Nails & Lashes
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">{% trans "Home" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'services' %}">{% trans "Services" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'gallery' %}">{% trans "Gallery" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog' %}">{% trans "Blog" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">{% trans "About Us" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reviews_list' %}">{% trans "Reviews" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">{% trans "Contact" %}</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i>{{ user.first_name|default:user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>{% trans "Profile" %}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'my_appointments' %}"><i class="fas fa-calendar me-2"></i>{% trans "My Appointments" %}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'email_history' %}"><i class="fas fa-envelope me-2"></i>{% trans "Email History" %}</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt me-2"></i>{% trans "Logout" %}</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="authDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user me-1"></i>{% trans "Account" %}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="authDropdown">
+                                <li><a class="dropdown-item" href="{% url 'account_login' %}"><i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'account_signup' %}"><i class="fas fa-user-plus me-2"></i>{% trans "Register" %}</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    <!-- Language Switcher -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe me-1"></i>
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {% if LANGUAGE_CODE == 'de' %}Deutsch
+                            {% elif LANGUAGE_CODE == 'en' %}English
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                            {% get_available_languages as LANGUAGES %}
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {% for lang_code, lang_name in LANGUAGES %}
+                                {% if lang_code != LANGUAGE_CODE %}
+                                    <li>
+                                        <form action="{% url 'set_language' %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <input name="next" type="hidden" value="{{ redirect_to }}" />
+                                            <input name="language" type="hidden" value="{{ lang_code }}" />
+                                            <button type="submit" class="dropdown-item">
+                                                {% if lang_code == 'de' %}<i class="flag-icon flag-icon-de me-2"></i>Deutsch
+                                                {% elif lang_code == 'en' %}<i class="flag-icon flag-icon-gb me-2"></i>English
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary-custom ms-2" href="{% url 'book_appointment' %}">
+                            <i class="fas fa-calendar-plus me-1"></i>{% trans "Book Appointment" %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messages - Fixed position for better UX -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'danger' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main style="margin-top: 80px;">        
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-primary-custom font-playfair">LK Nails & Lashes</h5>
+                    <p>Ihr Partner für professionelle Nagelpflege in München. Qualität und Entspannung seit 2015.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-primary-custom me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-primary-custom me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-primary-custom me-3"><i class="fab fa-whatsapp fa-lg"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6>{% trans "Services" %}</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'services' %}" class="text-light text-decoration-none">{% trans "Nail Care" %}</a></li>
+                        <li><a href="{% url 'services' %}" class="text-light text-decoration-none">{% trans "Lash Extensions" %}</a></li>
+                        <li><a href="{% url 'services' %}" class="text-light text-decoration-none">{% trans "Nail Design" %}</a></li>
+                        <li><a href="{% url 'services' %}" class="text-light text-decoration-none">{% trans "Eyebrows" %}</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6>{% trans "Links" %}</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'about' %}" class="text-light text-decoration-none">{% trans "About Us" %}</a></li>
+                        <li><a href="{% url 'gallery' %}" class="text-light text-decoration-none">{% trans "Gallery" %}</a></li>
+                        <li><a href="{% url 'blog' %}" class="text-light text-decoration-none">{% trans "Blog" %}</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-light text-decoration-none">{% trans "Contact" %}</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <h6>{% trans "Contact Info" %}</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Hindenburgdamm 75, 12203 Berlin, Germany</li>
+                        <li><i class="fas fa-phone me-2"></i>+49 30 80499718</li>
+                        <li><i class="fas fa-envelope me-2"></i>lk.nails.lashes@gmail.com</li>
+                    </ul>
+                    
+                    <h6 class="mt-3">{% trans "Opening Hours" %}</h6>
+                    <ul class="list-unstyled">
+                        <li>{% trans "Mon-Fri: 09:30 - 19:00" %}</li>
+                        <li>{% trans "Sat: 10:00 - 17:00" %}</li>
+                        <li>{% trans "Sun: Closed" %}</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2025 LK Nails & Lashes. {% trans "All rights reserved." %}</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Floating Book Button -->
+    <a href="{% url 'book_appointment' %}" class="btn btn-floating" title="{% trans 'Book Appointment' %}">
+        <i class="fas fa-calendar-plus"></i>
+    </a>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Enhanced navbar scroll effect and alert management -->
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Auto-dismiss alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

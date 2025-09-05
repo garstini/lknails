@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+
+{% block title %}Registrieren - LK Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg border-0" style="border-radius: 20px; background: linear-gradient(135deg, var(--soft-pink) 0%, var(--light-color) 100%);">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <img src="http://142.171.70.173/wordpress/wp-content/uploads/2024/09/zipwp-image-4128-scaled-300x300.jpg" alt="LK Nails & Lashes" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 20px;">
+                        <h2 class="font-playfair text-primary-custom mb-2">Konto erstellen</h2>
+                        <p class="text-muted font-quicksand">Registrieren Sie sich für einfache Terminbuchung</p>
+                    </div>
+
+                    <!-- Social Signup Buttons -->
+                    {% get_providers as socialaccount_providers %}
+                    {% if socialaccount_providers %}
+                    <div class="mb-4">
+                        <div class="text-center mb-3">
+                            <small class="text-muted font-quicksand">Schnell registrieren mit:</small>
+                        </div>
+                        
+                        <div class="row g-2">
+                            {% for provider in socialaccount_providers %}
+                                {% if provider.id == "google" %}
+                                <div class="col-6">
+                                    <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center py-2" style="border-radius: 15px; font-family: 'Quicksand', sans-serif; font-weight: 500;">
+                                        <i class="fab fa-google me-2"></i>
+                                        Google
+                                    </a>
+                                </div>
+                                {% endif %}
+                                {% if provider.id == "facebook" %}
+                                <div class="col-6">
+                                    <a href="{% provider_login_url 'facebook' %}" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center py-2" style="border-radius: 15px; font-family: 'Quicksand', sans-serif; font-weight: 500;">
+                                        <i class="fab fa-facebook-f me-2"></i>
+                                        Facebook
+                                    </a>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Divider -->
+                    <div class="text-center my-4">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1" style="height: 1px; background: linear-gradient(to right, transparent, var(--primary-color), transparent);"></div>
+                            <span class="px-3 text-muted small font-quicksand">oder mit E-Mail</span>
+                            <div class="flex-grow-1" style="height: 1px; background: linear-gradient(to right, transparent, var(--primary-color), transparent);"></div>
+                        </div>
+                    </div>
+
+                    <!-- Signup Form -->
+                    <form method="post" id="signupForm" action="{% url 'account_signup' %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label font-quicksand fw-500">E-Mail-Adresse</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0" style="border-radius: 15px 0 0 15px; border-color: var(--secondary-color);">
+                                    <i class="fas fa-envelope text-primary-custom"></i>
+                                </span>
+                                <input type="email" class="form-control border-start-0" id="{{ form.email.id_for_label }}" name="{{ form.email.name }}" 
+                                       style="border-radius: 0 15px 15px 0; border-color: var(--secondary-color); font-family: 'Poppins', sans-serif;"
+                                       placeholder="ihre@email.de" value="{{ form.email.value|default:'' }}" required>
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="text-danger mt-1 small">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label font-quicksand fw-500">Passwort</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0" style="border-radius: 15px 0 0 15px; border-color: var(--secondary-color);">
+                                    <i class="fas fa-lock text-primary-custom"></i>
+                                </span>
+                                <input type="password" class="form-control border-start-0" id="{{ form.password1.id_for_label }}" name="{{ form.password1.name }}" 
+                                       style="border-radius: 0 15px 15px 0; border-color: var(--secondary-color); font-family: 'Poppins', sans-serif;"
+                                       placeholder="••••••••" required>
+                            </div>
+                            {% if form.password1.errors %}
+                                <div class="text-danger mt-1 small">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label font-quicksand fw-500">Passwort bestätigen</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0" style="border-radius: 15px 0 0 15px; border-color: var(--secondary-color);">
+                                    <i class="fas fa-lock text-primary-custom"></i>
+                                </span>
+                                <input type="password" class="form-control border-start-0" id="{{ form.password2.id_for_label }}" name="{{ form.password2.name }}" 
+                                       style="border-radius: 0 15px 15px 0; border-color: var(--secondary-color); font-family: 'Poppins', sans-serif;"
+                                       placeholder="••••••••" required>
+                            </div>
+                            {% if form.password2.errors %}
+                                <div class="text-danger mt-1 small">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius: 15px; background: linear-gradient(135deg, #f8d7da 0%, #fff5f5 100%);">
+                                <i class="fas fa-exclamation-circle me-2"></i>{{ form.non_field_errors.0 }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                <label class="form-check-label font-quicksand small" for="agreeTerms">
+                                    Ich stimme den <a href="#" class="text-primary-custom">Allgemeinen Geschäftsbedingungen</a> zu
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-custom w-100 py-3 mb-3" style="border-radius: 15px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); border: none; font-family: 'Quicksand', sans-serif; font-weight: 600; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);">
+                            <i class="fas fa-user-plus me-2"></i>Konto erstellen
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <p class="mb-0 font-quicksand">
+                            <small class="text-muted">Bereits registriert?</small>
+                            <a href="{% url 'account_login' %}" class="text-primary-custom text-decoration-none fw-500 ms-1">Hier anmelden</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+}
+
+.input-group-text {
+    background: linear-gradient(135deg, var(--light-pink) 0%, var(--soft-pink) 100%);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+</style>
+
+{% endblock %}

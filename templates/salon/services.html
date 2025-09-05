@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load salon_extras %}
+
+{% block title %}Services - LK Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="font-playfair">Unsere Services</h1>
+        <p class="lead">Entdecken Sie unser umfangreiches Angebot an professionellen Beauty-Dienstleistungen</p>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get" class="row align-items-end">
+                        <div class="col-md-3 mb-3">
+                            {{ form.category.label_tag }}
+                            {{ form.category }}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.price_min.id_for_label }}" class="form-label">Preis von</label>
+                            {{ form.price_min }}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.price_max.id_for_label }}" class="form-label">Preis bis</label>
+                            {{ form.price_max }}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="fas fa-filter me-2"></i>Filter anwenden
+                            </button>
+                        </div>
+                        
+                        <!-- Search Bar -->
+                        <div class="col-12 mt-3">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" placeholder="Service suchen..." value="{{ search_query|default_if_none:'' }}">
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Services Grid -->
+    <div class="row">
+        {% for service in page_obj %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card service-card h-100">
+                    {% if service.image %}
+                        <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <img src="{{ service|service_demo_image }}" class="card-img-top" alt="{{ service.name }}" style="height: 200px; object-fit: cover; border-radius: 0.375rem 0.375rem 0 0;">
+                    {% endif %}
+                    
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ service.name }}</h5>
+                            <span class="badge bg-secondary">{{ service.category.name }}</span>
+                        </div>
+                        
+                        <p class="card-text flex-grow-1">{{ service.description|truncatewords:15 }}</p>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted">Dauer:</small>
+                                <div><strong>{{ service.get_duration_display }}</strong></div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Preis:</small>
+                                <div class="h5 text-primary-custom mb-0">€{{ service.price }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-auto">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="{% url 'service_detail' service.id %}" class="btn btn-outline-primary w-100">
+                                        Details
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="{% url 'book_service' service.id %}" class="btn btn-primary-custom w-100">
+                                        <i class="fas fa-calendar-plus me-1"></i>Buchen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h3>Keine Services gefunden</h3>
+                    <p class="text-muted">Versuchen Sie andere Suchbegriffe oder entfernen Sie die Filter.</p>
+                    <a href="{% url 'services' %}" class="btn btn-primary-custom">Alle Services anzeigen</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+        <nav aria-label="Services pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.price_min %}&price_min={{ request.GET.price_min }}{% endif %}{% if request.GET.price_max %}&price_max={{ request.GET.price_max }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                            &laquo; Erste
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.price_min %}&price_min={{ request.GET.price_min }}{% endif %}{% if request.GET.price_max %}&price_max={{ request.GET.price_max }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                            &lsaquo; Zurück
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.price_min %}&price_min={{ request.GET.price_min }}{% endif %}{% if request.GET.price_max %}&price_max={{ request.GET.price_max }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                            Weiter &rsaquo;
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.price_min %}&price_min={{ request.GET.price_min }}{% endif %}{% if request.GET.price_max %}&price_max={{ request.GET.price_max }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                            Letzte &raquo;
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+    
+    <!-- Categories Overview -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4">Kategorien durchsuchen</h3>
+            <div class="row justify-content-center">
+                {% for category in categories %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                        <a href="?category={{ category.id }}" class="text-decoration-none">
+                            <div class="card text-center h-100 category-card">
+                                {% if category.image %}
+                                    <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" style="height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                        <i class="fas fa-spa fa-3x text-primary-custom"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ category.name }}</h5>
+                                    <p class="card-text text-muted">{{ category.services.count }} Service{{ category.services.count|pluralize }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.category-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.category-card a {
+    color: inherit;
+}
+</style>
+{% endblock %}

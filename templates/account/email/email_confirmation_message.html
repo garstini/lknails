@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Mail-Bestätigung - LK Nails & Lashes</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .message {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin: 35px 0;
+        }
+        
+        .confirm-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .confirm-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .alternative-link {
+            background: #f8f9fa;
+            border: 1px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            word-break: break-all;
+        }
+        
+        .alternative-link p {
+            margin: 0 0 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .alternative-link a {
+            color: #667eea;
+            font-size: 14px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .footer .brand {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .header, .content, .footer {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .confirm-button {
+                padding: 14px 28px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LK Nails & Lashes</h1>
+            <p>Willkommen bei unserem Premium Beauty Salon</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Hallo {{ user.get_full_name|default:user.username }}!
+            </div>
+            
+            <div class="message">
+                Vielen Dank für Ihre Registrierung bei <strong>LK Nails & Lashes</strong>! 
+                Um Ihr Konto zu aktivieren und mit der Terminbuchung zu beginnen, 
+                bestätigen Sie bitte Ihre E-Mail-Adresse, indem Sie auf den Button unten klicken.
+            </div>
+            
+            <div class="button-container">
+                <a href="{{ activate_url }}" class="confirm-button">
+                    E-Mail-Adresse bestätigen
+                </a>
+            </div>
+            
+            <div class="alternative-link">
+                <p>Falls der Button nicht funktioniert, kopieren Sie bitte diesen Link in Ihren Browser:</p>
+                <a href="{{ activate_url }}">{{ activate_url }}</a>
+            </div>
+            
+            <div class="message">
+                <strong>Hinweis:</strong> Dieser Bestätigungslink ist 3 Tage gültig. 
+                Nach der Bestätigung können Sie sich einloggen und Ihre Termine bequem online buchen.
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p class="brand">LK Nails & Lashes</p>
+            <p>Ihr Premium Beauty Salon für Nagel- und Wimpernbehandlungen</p>
+            <p style="margin-top: 15px; font-size: 12px; color: #999;">
+                Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese Nachricht.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

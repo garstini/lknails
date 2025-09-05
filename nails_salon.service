@@ -1,0 +1,21 @@
+[Unit]
+Description=LK Nails & Lashes Django Application
+After=network.target
+
+[Service]
+Type=exec
+User=www-data
+Group=www-data
+RuntimeDirectory=nails_salon
+WorkingDirectory=/var/www/nails_salon
+Environment=DJANGO_SETTINGS_MODULE=production_settings
+ExecStart=/var/www/nails_salon/venv/bin/gunicorn --workers 3 --bind unix:/run/nails_salon/nails_salon.sock nails_salon_project.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

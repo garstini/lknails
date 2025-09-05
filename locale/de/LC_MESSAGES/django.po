@@ -1,0 +1,178 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LK Nails & Lashes 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-04 23:28+0200\n"
+"PO-Revision-Date: 2025-09-04 22:59+0200\n"
+"Last-Translator: Auto Translation\n"
+"Language-Team: Deutsch\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/account/email_confirmed.html:4
+msgid "E-Mail bestätigt"
+msgstr "E-Mail bestätigt"
+
+#: templates/account/email_confirmed.html:19
+msgid "E-Mail erfolgreich bestätigt!"
+msgstr "E-Mail erfolgreich bestätigt!"
+
+#: templates/account/email_confirmed.html:20
+msgid ""
+"Ihr Konto wurde erfolgreich aktiviert. Sie können sich jetzt anmelden und "
+"Termine buchen."
+msgstr ""
+"Ihr Konto wurde erfolgreich aktiviert. Sie können sich jetzt anmelden und "
+"Termine buchen."
+
+#: templates/account/email_confirmed.html:25
+msgid "Konto aktiviert!"
+msgstr "Konto aktiviert!"
+
+#: templates/account/email_confirmed.html:26
+msgid "Sie können jetzt alle Funktionen unserer Website nutzen."
+msgstr "Sie können jetzt alle Funktionen unserer Website nutzen."
+
+#: templates/account/email_confirmed.html:31
+msgid "Jetzt anmelden"
+msgstr "Jetzt anmelden"
+
+#: templates/account/email_confirmed.html:35
+msgid "Termin buchen"
+msgstr "Termin buchen"
+
+#: templates/account/email_confirmed.html:40
+msgid "Was Sie jetzt tun können:"
+msgstr "Was Sie jetzt tun können:"
+
+#: templates/account/email_confirmed.html:44
+msgid "Online Termine buchen"
+msgstr "Online Termine buchen"
+
+#: templates/account/email_confirmed.html:48
+msgid "Ihr Profil verwalten"
+msgstr "Ihr Profil verwalten"
+
+#: templates/account/email_confirmed.html:52
+msgid "Terminhistorie einsehen"
+msgstr "Terminhistorie einsehen"
+
+#: templates/account/email_confirmed.html:56
+msgid "E-Mail-Benachrichtigungen erhalten"
+msgstr "E-Mail-Benachrichtigungen erhalten"
+
+#: templates/admin/base_site.html:3
+msgid "Django site admin"
+msgstr "Django Site-Administration"
+
+#: templates/base.html:584
+msgid "Home"
+msgstr "Startseite"
+
+#: templates/base.html:587 templates/base.html:704
+msgid "Services"
+msgstr "Services"
+
+#: templates/base.html:590 templates/base.html:717
+msgid "Gallery"
+msgstr "Galerie"
+
+#: templates/base.html:593 templates/base.html:718
+msgid "Blog"
+msgstr "Blog"
+
+#: templates/base.html:596 templates/base.html:716
+msgid "About Us"
+msgstr "Über uns"
+
+#: templates/base.html:599
+msgid "Reviews"
+msgstr "Bewertungen"
+
+#: templates/base.html:602 templates/base.html:719
+msgid "Contact"
+msgstr "Kontakt"
+
+#: templates/base.html:613
+msgid "Profile"
+msgstr "Profil"
+
+#: templates/base.html:614
+msgid "My Appointments"
+msgstr "Meine Termine"
+
+#: templates/base.html:615
+msgid "Email History"
+msgstr "E-Mail Verlauf"
+
+#: templates/base.html:617
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: templates/base.html:623
+msgid "Account"
+msgstr "Konto"
+
+#: templates/base.html:626
+msgid "Login"
+msgstr "Anmelden"
+
+#: templates/base.html:627
+msgid "Register"
+msgstr "Registrieren"
+
+#: templates/base.html:663 templates/base.html:748
+msgid "Book Appointment"
+msgstr "Termin buchen"
+
+#: templates/base.html:706
+msgid "Nail Care"
+msgstr "Nagelpflege"
+
+#: templates/base.html:707
+msgid "Lash Extensions"
+msgstr "Wimpernverlängerung"
+
+#: templates/base.html:708
+msgid "Nail Design"
+msgstr "Nageldesign"
+
+#: templates/base.html:709
+msgid "Eyebrows"
+msgstr "Augenbrauen"
+
+#: templates/base.html:714
+msgid "Links"
+msgstr "Links"
+
+#: templates/base.html:724
+msgid "Contact Info"
+msgstr "Kontakt Info"
+
+#: templates/base.html:731
+msgid "Opening Hours"
+msgstr "Öffnungszeiten"
+
+#: templates/base.html:733
+msgid "Mon-Fri: 09:30 - 19:00"
+msgstr "Mo-Fr: 09:30 - 19:00"
+
+#: templates/base.html:734
+msgid "Sat: 10:00 - 17:00"
+msgstr "Sa: 10:00 - 17:00"
+
+#: templates/base.html:735
+msgid "Sun: Closed"
+msgstr "So: Geschlossen"
+
+#: templates/base.html:742
+msgid "All rights reserved."
+msgstr "Alle Rechte vorbehalten."

@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}Meine Termine - Bella Nails & Lashes{% endblock %}
+
+{% block extra_css %}
+<style>
+.service-item-modal {
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+}
+
+.service-item-modal:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.total-summary {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.1) 0%, rgba(255, 182, 193, 0.1) 100%) !important;
+    border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+.bg-primary-light {
+    background: rgba(255, 182, 193, 0.1) !important;
+}
+
+.modal-header {
+    border-bottom: 2px solid rgba(255, 105, 180, 0.2);
+}
+
+.modal-header .modal-title {
+    color: #ff69b4;
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-confirmed {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.status-cancelled {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status-completed {
+    background-color: #17a2b8;
+    color: white;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="font-playfair">Meine Termine</h1>
+        <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom">
+            <i class="fas fa-plus me-2"></i>Neuer Termin
+        </a>
+    </div>
+    
+    {% if page_obj %}
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table appointments-table">
+                        <thead>
+                            <tr>
+                                <th>Datum & Zeit</th>
+                                <th>Service</th>
+                                <th>Mitarbeiterin</th>
+                                <th>Preis</th>
+                                <th>Status</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in page_obj %}
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <strong>{{ appointment.date|date:"d.m.Y" }}</strong><br>
+                                            <small class="text-muted">{{ appointment.time|time:"H:i" }} - {{ appointment.end_time|time:"H:i" }} Uhr</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {% for service in appointment.services.all %}
+                                                <strong>{{ service.name }}</strong>
+                                                {% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                            <br>
+                                            <small class="text-muted">{{ appointment.services.count }} Service{{ appointment.services.count|pluralize:"s" }}</small>
+                                        </div>
+                                    </td>
+                                    <td>{{ appointment.staff.user.get_full_name|default:appointment.staff.user.username }}</td>
+                                    <td>
+                                        <strong>€{{ appointment.total_price }}</strong><br>
+                                        <small class="text-muted">{{ appointment.total_duration }} Min</small>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-{{ appointment.status }}">
+                                            {% if appointment.status == 'pending' %}Ausstehend{% endif %}
+                                            {% if appointment.status == 'confirmed' %}Bestätigt{% endif %}
+                                            {% if appointment.status == 'completed' %}Abgeschlossen{% endif %}
+                                            {% if appointment.status == 'cancelled' %}Storniert{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group-vertical btn-group-sm" role="group">
+                                            {% if appointment.status == 'pending' or appointment.status == 'confirmed' %}
+                                                {% if appointment.date|date:"Y-m-d" > today|date:"Y-m-d" or appointment.date|date:"Y-m-d" == today|date:"Y-m-d" and appointment.time > now|time %}
+                                                    <a href="{% url 'cancel_appointment' appointment.id %}" 
+                                                       class="btn btn-outline-danger btn-sm"
+                                                       onclick="return confirm('Sind Sie sicher, dass Sie diesen Termin stornieren möchten?')">
+                                                        <i class="fas fa-times me-1"></i>Stornieren
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                            
+                                            <!-- Review Button for Completed Appointments -->
+                                            {% if appointment.status == 'completed' %}
+                                                {% if appointment.review %}
+                                                    <button type="button" class="btn btn-success btn-sm" disabled>
+                                                        <i class="fas fa-star me-1"></i>Bewertet ({{ appointment.review.rating }}/5)
+                                                    </button>
+                                                {% else %}
+                                                    <a href="{% url 'leave_review' appointment.id %}" class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-star me-1"></i>Bewerten
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                            
+                                            {% if appointment.notes %}
+                                                <button type="button" 
+                                                        class="btn btn-outline-info btn-sm" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#notesModal{{ appointment.id }}">
+                                                    <i class="fas fa-sticky-note me-1"></i>Notizen
+                                                </button>
+                                                
+                                                <!-- Notes Modal -->
+                                                <div class="modal fade" id="notesModal{{ appointment.id }}" tabindex="-1">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Notizen zum Termin</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p><strong>Termin:</strong> {{ appointment.date|date:"d.m.Y" }} um {{ appointment.time|time:"H:i" }} Uhr</p>
+                                                                
+                                                                <div class="mb-3">
+                                                                    <strong>Service{{ appointment.services.count|pluralize:"s" }}:</strong>
+                                                                    <div class="mt-2">
+                                                                        {% for service in appointment.services.all %}
+                                                                            <div class="service-item-modal p-2 mb-2 border rounded bg-light">
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div>
+                                                                                        <strong>{{ service.name }}</strong>
+                                                                                        <small class="text-muted d-block">{{ service.category.name }}</small>
+                                                                                    </div>
+                                                                                    <div class="text-end">
+                                                                                        <span class="text-primary">€{{ service.price }}</span>
+                                                                                        <small class="text-muted d-block">{{ service.get_duration_display }}</small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                    
+                                                                    <div class="total-summary p-2 mt-2 bg-primary-light rounded">
+                                                                        <div class="d-flex justify-content-between">
+                                                                            <strong>Gesamt:</strong>
+                                                                            <div class="text-end">
+                                                                                <strong class="text-primary">€{{ appointment.total_price }}</strong>
+                                                                                <small class="text-muted d-block">{{ appointment.total_duration }} Min</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <hr>
+                                                                <h6>Ihre Anmerkungen:</h6>
+                                                                <p>{{ appointment.notes|default:"Keine Anmerkungen" }}</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Appointments pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; Erste</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&lsaquo; Zurück</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Weiter &rsaquo;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Letzte &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+        
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-calendar fa-4x text-muted mb-4"></i>
+            <h3>Noch keine Termine gebucht</h3>
+            <p class="text-muted mb-4">Sie haben noch keine Termine bei uns gebucht. Schauen Sie sich unsere Services an und buchen Sie Ihren ersten Termin!</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom btn-lg">
+                    <i class="fas fa-calendar-plus me-2"></i>Ersten Termin buchen
+                </a>
+                <a href="{% url 'services' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-list me-2"></i>Services ansehen
+                </a>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Appointment Statistics -->
+    {% if page_obj %}
+        <div class="row mt-5">
+            <div class="col-md-3 text-center">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <i class="fas fa-calendar-check fa-2x text-primary-custom mb-2"></i>
+                        <h5>{{ page_obj.paginator.count }}</h5>
+                        <small class="text-muted">Gesamt Termine</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                        <h5>{% for apt in page_obj %}{% if apt.status == 'pending' %}{{ forloop.counter }}{% endif %}{% endfor %}</h5>
+                        <small class="text-muted">Ausstehend</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <h5>{% for apt in page_obj %}{% if apt.status == 'confirmed' %}{{ forloop.counter }}{% endif %}{% endfor %}</h5>
+                        <small class="text-muted">Bestätigt</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <i class="fas fa-star fa-2x text-primary-custom mb-2"></i>
+                        <h5>{% for apt in page_obj %}{% if apt.status == 'completed' %}{{ forloop.counter }}{% endif %}{% endfor %}</h5>
+                        <small class="text-muted">Abgeschlossen</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

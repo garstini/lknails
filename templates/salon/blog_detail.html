@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - Blog - Bella Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <article class="card">
+                {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 400px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
+                        <i class="fas fa-newspaper fa-4x text-primary-custom"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar me-2"></i>{{ post.created_at|date:"l, d. F Y" }}
+                            <i class="fas fa-user ms-4 me-2"></i>{{ post.author.get_full_name|default:post.author.username }}
+                        </small>
+                    </div>
+                    
+                    <h1 class="card-title font-playfair">{{ post.title }}</h1>
+                    
+                    {% if post.excerpt %}
+                        <p class="lead">{{ post.excerpt }}</p>
+                        <hr>
+                    {% endif %}
+                    
+                    <div class="card-text">
+                        {% if post.content_format == 'html' %}
+                            {{ post.content|safe }}
+                        {% else %}
+                            {{ post.content|linebreaks }}
+                        {% endif %}
+                    </div>
+                    
+                    {% if post.tags %}
+                        <hr>
+                        <div class="mb-3">
+                            <h6>Tags:</h6>
+                            {% for tag in post.tags|slice:":10" %}
+                                <span class="badge bg-light text-dark me-2 mb-2">#{{ tag|cut:" " }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted">
+                                Veröffentlicht am {{ post.created_at|date:"d.m.Y" }}
+                                {% if post.updated_at != post.created_at %}
+                                    • Aktualisiert am {{ post.updated_at|date:"d.m.Y" }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div>
+                            <a href="{% url 'blog' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Zurück zum Blog
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Social Share Buttons -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-share-alt me-2"></i>Artikel teilen:</h6>
+                    <div class="d-flex gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                           target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-facebook me-2"></i>Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" 
+                           target="_blank" class="btn btn-outline-info btn-sm">
+                            <i class="fab fa-twitter me-2"></i>Twitter
+                        </a>
+                        <a href="https://wa.me/?text={{ post.title }} {{ request.build_absolute_uri }}" 
+                           target="_blank" class="btn btn-outline-success btn-sm">
+                            <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                        </a>
+                        <button onclick="navigator.share({title: '{{ post.title }}', url: '{{ request.build_absolute_uri }}'})" 
+                                class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-share me-2"></i>Teilen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Related Posts -->
+            {% if related_posts %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-newspaper me-2"></i>Ähnliche Beiträge</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for related in related_posts %}
+                            <div class="d-flex align-items-start mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                {% if related.featured_image %}
+                                    <img src="{{ related.featured_image.url }}" alt="{{ related.title }}" 
+                                         class="me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                {% else %}
+                                    <div class="me-3 bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-newspaper text-primary-custom"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <a href="{% url 'blog_detail' related.slug %}" class="text-decoration-none text-dark">
+                                            {{ related.title|truncatechars:50 }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">{{ related.created_at|date:"d.m.Y" }}</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Newsletter Signup -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-envelope me-2"></i>Newsletter</h5>
+                </div>
+                <div class="card-body">
+                    <p>Bleiben Sie auf dem Laufenden mit unseren neuesten Beauty-Tipps und Angeboten!</p>
+                    <form>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="Ihre E-Mail-Adresse" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="fas fa-paper-plane me-2"></i>Abonnieren
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Services Promotion -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-spa me-2"></i>Unsere Services</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p>Lassen Sie sich von unserem professionellen Team verwöhnen!</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'services' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i>Alle Services
+                        </a>
+                        <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom">
+                            <i class="fas fa-calendar-plus me-2"></i>Termin buchen
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-phone me-2"></i>Kontakt</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-map-marker-alt text-primary-custom me-3"></i>
+                        <small>Musterstraße 123, 12345 Berlin</small>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-phone text-primary-custom me-3"></i>
+                        <small>
+                            <a href="tel:+493012345678" class="text-decoration-none">+49 30 12345678</a>
+                        </small>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-envelope text-primary-custom me-3"></i>
+                        <small>
+                            <a href="mailto:info@bellanails.de" class="text-decoration-none">info@bellanails.de</a>
+                        </small>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-paper-plane me-2"></i>Nachricht senden
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

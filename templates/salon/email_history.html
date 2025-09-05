@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+
+{% block title %}E-Mail Verlauf - LK Nails & Lashes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="font-playfair">E-Mail Verlauf</h1>
+        <a href="{% url 'my_appointments' %}" class="btn btn-outline-primary">
+            <i class="fas fa-calendar me-2"></i>Meine Termine
+        </a>
+    </div>
+    
+    {% if page_obj %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Betreff</th>
+                                        <th>E-Mail Typ</th>
+                                        <th>Status</th>
+                                        <th>Gesendet am</th>
+                                        <th>Termin</th>
+                                        <th>Aktionen</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for email in page_obj %}
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <strong>{{ email.subject }}</strong>
+                                                    {% if email.message_preview %}
+                                                        <br><small class="text-muted">{{ email.message_preview|truncatechars:80 }}</small>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">{{ email.get_email_type_display }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge {% if email.status == 'sent' %}bg-success{% elif email.status == 'failed' %}bg-danger{% else %}bg-warning{% endif %}">
+                                                    {% if email.status == 'sent' %}
+                                                        <i class="fas fa-check me-1"></i>Gesendet
+                                                    {% elif email.status == 'failed' %}
+                                                        <i class="fas fa-times me-1"></i>Fehlgeschlagen
+                                                    {% else %}
+                                                        <i class="fas fa-clock me-1"></i>Ausstehend
+                                                    {% endif %}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if email.sent_at %}
+                                                    {{ email.sent_at|date:"d.m.Y H:i" }} Uhr
+                                                {% else %}
+                                                    <span class="text-muted">Noch nicht gesendet</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if email.appointment %}
+                                                    <a href="{% url 'appointment_confirmation' email.appointment.id %}" class="text-decoration-none">
+                                                        {{ email.appointment.date|date:"d.m.Y" }} um {{ email.appointment.time|time:"H:i" }} Uhr
+                                                    </a>
+                                                {% else %}
+                                                    <span class="text-muted">Kein Termin</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    {% if email.full_message %}
+                                                        <button type="button" 
+                                                                class="btn btn-outline-primary btn-sm" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#emailModal{{ email.id }}">
+                                                            <i class="fas fa-eye me-1"></i>Anzeigen
+                                                        </button>
+                                                    {% endif %}
+                                                    
+                                                    {% if email.status == 'failed' and email.error_message %}
+                                                        <button type="button" 
+                                                                class="btn btn-outline-danger btn-sm" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#errorModal{{ email.id }}">
+                                                            <i class="fas fa-exclamation-triangle me-1"></i>Fehler
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Email Content Modal -->
+                                        {% if email.full_message %}
+                                        <div class="modal fade" id="emailModal{{ email.id }}" tabindex="-1">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">{{ email.subject }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <strong>Von:</strong> {{ email.sender_email }}<br>
+                                                            <strong>An:</strong> {{ email.recipient_email }}<br>
+                                                            <strong>Gesendet:</strong> 
+                                                            {% if email.sent_at %}
+                                                                {{ email.sent_at|date:"d.m.Y H:i" }} Uhr
+                                                            {% else %}
+                                                                Noch nicht gesendet
+                                                            {% endif %}
+                                                        </div>
+                                                        <hr>
+                                                        <div class="email-content">
+                                                            {{ email.full_message|safe }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- Error Modal -->
+                                        {% if email.status == 'failed' and email.error_message %}
+                                        <div class="modal fade" id="errorModal{{ email.id }}" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">E-Mail Fehler</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Betreff:</strong> {{ email.subject }}</p>
+                                                        <p><strong>Fehlerzeit:</strong> {{ email.updated_at|date:"d.m.Y H:i" }} Uhr</p>
+                                                        <hr>
+                                                        <p><strong>Fehlermeldung:</strong></p>
+                                                        <div class="alert alert-danger">
+                                                            {{ email.error_message }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Email history pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; Erste</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&lsaquo; Zurück</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Weiter &rsaquo;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Letzte &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+        
+        <!-- Statistics -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card bg-light text-center">
+                    <div class="card-body">
+                        <i class="fas fa-envelope fa-2x text-primary-custom mb-2"></i>
+                        <h5>{{ page_obj.paginator.count }}</h5>
+                        <small class="text-muted">Gesamt E-Mails</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light text-center">
+                    <div class="card-body">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <h5>{{ page_obj|length }}</h5>
+                        <small class="text-muted">Auf dieser Seite</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light text-center">
+                    <div class="card-body">
+                        <i class="fas fa-calendar fa-2x text-info mb-2"></i>
+                        <h5>{% for email in page_obj %}{% if email.appointment %}{{ forloop.counter }}{% endif %}{% endfor %}</h5>
+                        <small class="text-muted">Mit Termin</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light text-center">
+                    <div class="card-body">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                        <h5>{% for email in page_obj %}{% if email.status == 'failed' %}{{ forloop.counter }}{% endif %}{% endfor %}</h5>
+                        <small class="text-muted">Fehlgeschlagen</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-envelope-open fa-4x text-muted mb-4"></i>
+            <h3>Keine E-Mails gefunden</h3>
+            <p class="text-muted mb-4">Es wurden noch keine E-Mails an Sie gesendet.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'book_appointment' %}" class="btn btn-primary-custom btn-lg">
+                    <i class="fas fa-calendar-plus me-2"></i>Ersten Termin buchen
+                </a>
+                <a href="{% url 'my_appointments' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-calendar me-2"></i>Meine Termine
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.email-content {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 105, 180, 0.1);
+}
+
+.modal-lg {
+    max-width: 80%;
+}
+
+@media (max-width: 768px) {
+    .modal-lg {
+        max-width: 95%;
+    }
+}
+</style>
+{% endblock %}

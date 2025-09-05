@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">LK Nails & Lashes Admin</a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}
+<div style="float: right; margin-right: 20px; margin-top: 5px;">
+    <a href="/salon-admin/dashboard/" style="color: #ffc; text-decoration: none; margin-right: 15px;">
+        📊 Salon Dashboard
+    </a>
+    <a href="/salon-admin/business-hours/" style="color: #ffc; text-decoration: none; margin-right: 15px;">
+        ⏰ Öffnungszeiten
+    </a>
+    <a href="/salon-admin/email-config/" style="color: #ffc; text-decoration: none; margin-right: 15px;">
+        📧 E-Mail Config
+    </a>
+    <a href="/" style="color: #ffc; text-decoration: none;">
+        🏠 Website
+    </a>
+</div>
+{% endblock %}
