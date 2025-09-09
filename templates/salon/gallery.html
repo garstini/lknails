@@ -125,39 +125,37 @@
     <!-- Pagination -->
     {% if page_obj.has_other_pages %}
         <nav aria-label="Gallery pagination" class="mt-5">
-            <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}">
-                            &laquo; Erste
+            <div class="pagination-container d-flex justify-content-center">
+                <div class="pagination-wrapper d-inline-flex align-items-center gap-2 p-3 rounded-pill" style="background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(255, 105, 180, 0.15); box-shadow: 0 4px 20px rgba(255, 105, 180, 0.1); backdrop-filter: blur(10px);">
+                    {% if page_obj.has_previous %}
+                        <a class="pagination-btn pagination-nav" href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}" title="Erste Seite">
+                            <i class="fas fa-angle-double-left"></i>
+                            <span class="btn-text">Erste</span>
                         </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
-                            &lsaquo; Zurück
+                        <a class="pagination-btn pagination-nav" href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" title="Vorherige Seite">
+                            <i class="fas fa-angle-left"></i>
+                            <span class="btn-text">Zurück</span>
                         </a>
-                    </li>
-                {% endif %}
-                
-                <li class="page-item active">
-                    <span class="page-link">
-                        Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
-                    </span>
-                </li>
-                
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
-                            Weiter &rsaquo;
+                    {% endif %}
+                    
+                    <div class="pagination-current">
+                        <span class="current-page">{{ page_obj.number }}</span>
+                        <span class="page-separator">von</span>
+                        <span class="total-pages">{{ page_obj.paginator.num_pages }}</span>
+                    </div>
+                    
+                    {% if page_obj.has_next %}
+                        <a class="pagination-btn pagination-nav" href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" title="Nächste Seite">
+                            <span class="btn-text">Weiter</span>
+                            <i class="fas fa-angle-right"></i>
                         </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
-                            Letzte &raquo;
+                        <a class="pagination-btn pagination-nav" href="?page={{ page_obj.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}" title="Letzte Seite">
+                            <span class="btn-text">Letzte</span>
+                            <i class="fas fa-angle-double-right"></i>
                         </a>
-                    </li>
-                {% endif %}
-            </ul>
+                    {% endif %}
+                </div>
+            </div>
         </nav>
     {% endif %}
     
@@ -335,6 +333,162 @@
 .filter-pill.active:hover {
     color: white;
     background: linear-gradient(135deg, #ff1493 0%, #dc143c 100%);
+}
+
+/* Enhanced Pagination Styling */
+.pagination-container {
+    margin: 2rem 0;
+}
+
+.pagination-wrapper {
+    animation: fadeInUp 0.6s ease-out;
+    transition: all 0.3s ease;
+}
+
+.pagination-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255, 105, 180, 0.15) !important;
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    background: rgba(255, 255, 255, 0.8);
+    color: #666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(5px);
+    font-family: 'Comfortaa', cursive;
+}
+
+.pagination-btn:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+    color: white;
+    border-color: rgba(255, 105, 180, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+}
+
+.pagination-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(255, 105, 180, 0.2);
+}
+
+.pagination-btn i {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.pagination-btn:hover i {
+    transform: scale(1.1);
+}
+
+.pagination-current {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    margin: 0 8px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+    color: white;
+    font-weight: 600;
+    font-family: 'Comfortaa', cursive;
+    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.current-page {
+    font-size: 16px;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: center;
+}
+
+.page-separator {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+.total-pages {
+    font-size: 14px;
+    opacity: 0.95;
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    .pagination-wrapper {
+        flex-wrap: wrap;
+        gap: 1px !important;
+        padding: 8px 12px !important;
+    }
+    
+    .pagination-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .pagination-btn .btn-text {
+        display: none;
+    }
+    
+    .pagination-btn i {
+        font-size: 14px;
+    }
+    
+    .pagination-current {
+        padding: 8px 16px;
+        margin: 0 4px;
+    }
+    
+    .current-page {
+        font-size: 14px;
+    }
+    
+    .page-separator {
+        font-size: 10px;
+    }
+    
+    .total-pages {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .pagination-wrapper {
+        padding: 6px 8px !important;
+    }
+    
+    .pagination-btn {
+        padding: 6px 10px;
+        border-radius: 15px;
+    }
+    
+    .pagination-current {
+        padding: 6px 12px;
+        border-radius: 15px;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>
 {% endblock %}

@@ -5,7 +5,6 @@ Django settings for nails_salon_project project.
 from pathlib import Path
 import os
 
-import optional
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -148,8 +147,7 @@ else:
 ACCOUNT_LOGIN_METHODS = ['email']
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 # Email verification - mandatory for production, optional for development
-ACCOUNT_EMAIL_VERIFICATION= optional
-ACCOUNT_EMAIL_REQUIRED=True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_RATE_LIMITS = {
