@@ -1,7 +1,11 @@
-{% load i18n site_tags %}
+{% load i18n site_tags static %}
 <article class="service-card">
   {% if service.primary_image and service.primary_image.image %}
     <img class="service-card-image" src="{{ service.primary_image.image.url }}" alt="{{ service.primary_image.alt_text|default:service.name }}">
+  {% elif service.category == "Wimpern" %}
+    <img class="service-card-image" src="{% static 'images/lashes-fallback.svg' %}" alt="{{ service.name }}">
+  {% elif service.category == "Nägel" %}
+    <img class="service-card-image" src="{% static 'images/nails-fallback.svg' %}" alt="{{ service.name }}">
   {% else %}
     <div class="service-card-image service-card-image-placeholder {{ service.gallery_tone }}">
       <span>{{ service.category }}</span>

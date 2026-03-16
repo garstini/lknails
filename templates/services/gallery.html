@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n site_tags %}
+{% load i18n site_tags static %}
 
 {% block title %}{% trans "Gallery" %} | LK Nails & Lashes{% endblock %}
 {% block meta_description %}{% trans "Browse nails and lashes inspiration, featured treatments, and salon portfolio highlights." %}{% endblock %}
@@ -26,6 +26,10 @@
         <article class="gallery-card">
           {% if service.primary_image and service.primary_image.image %}
             <img class="gallery-image" src="{{ service.primary_image.image.url }}" alt="{{ service.primary_image.alt_text|default:service.name }}">
+          {% elif service.category == "Wimpern" %}
+            <img class="gallery-image" src="{% static 'images/lashes-fallback.svg' %}" alt="{{ service.name }}">
+          {% elif service.category == "Nägel" %}
+            <img class="gallery-image" src="{% static 'images/nails-fallback.svg' %}" alt="{{ service.name }}">
           {% else %}
             <div class="gallery-image gallery-placeholder {{ service.gallery_tone }}">
               <span>{{ service.category }}</span>

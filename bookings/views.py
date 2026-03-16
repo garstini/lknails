@@ -161,10 +161,13 @@ class BookingCreateView(FormView):
             selected_service_ids = {int(service_id) for service_id in self.request.POST.getlist("services") if service_id.isdigit()}
         for service in services:
             grouped[service.category][service.subcategory].append(service)
-        context["grouped_services"] = dict(grouped)
+        context["grouped_services"] = {
+            category: dict(subcategories)
+            for category, subcategories in grouped.items()
+        }
         context["site_settings"] = get_site_settings()
         context["selected_service_ids"] = selected_service_ids
-        context["service_categories"] = list(grouped.keys())
+        context["service_categories"] = list(context["grouped_services"].keys())
         return context
 
     def form_valid(self, form):

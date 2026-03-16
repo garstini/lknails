@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n site_tags %}
+{% load i18n site_tags static %}
 
 {% block title %}{% trans "Services" %} | LK Nails & Lashes{% endblock %}
 
@@ -36,6 +36,10 @@
                   <div class="menu-service-visual">
                     {% if service.primary_image and service.primary_image.image %}
                       <img class="menu-service-image" src="{{ service.primary_image.image.url }}" alt="{{ service.primary_image.alt_text|default:service.name }}">
+                    {% elif service.category == "Wimpern" %}
+                      <img class="menu-service-image" src="{% static 'images/lashes-fallback.svg' %}" alt="{{ service.name }}">
+                    {% elif service.category == "Nägel" %}
+                      <img class="menu-service-image" src="{% static 'images/nails-fallback.svg' %}" alt="{{ service.name }}">
                     {% else %}
                       <div class="menu-service-image menu-service-image-placeholder {{ service.gallery_tone }}">
                         <span>{{ category }}</span>
