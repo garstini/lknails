@@ -525,6 +525,13 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 .selected-slot-display.is-empty span {
   color: var(--muted);
 }
+.booking-time-slots {
+  gap: 0.75rem;
+}
+.selected-time-summary {
+  font: 700 1rem/1.3 "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--accent-deep);
+}
 .slot-list {
   display: flex;
   flex-wrap: wrap;

@@ -108,6 +108,12 @@
                 <span>{% trans "Choose your services first, then pick one of the free times below." %}</span>
               {% endif %}
             </div>
+            <div class="summary-row summary-row-stack booking-time-slots">
+              <span>{% trans "Suggested free slots" %}</span>
+              <div id="available-slots" class="slot-list">
+                <p class="summary-note">{% trans "Choose a date and services to load available times." %}</p>
+              </div>
+            </div>
             <small id="time-help" class="summary-note">{% trans "Choose at least one service to unlock available times." %}</small>
           </label>
         </div>
@@ -148,10 +154,8 @@
           <strong id="total-price">0,00 €</strong>
         </div>
         <div class="summary-row summary-row-stack">
-          <span>{% trans "Suggested free slots" %}</span>
-          <div id="available-slots" class="slot-list">
-            <p class="summary-note">{% trans "Choose a date and services to load available times." %}</p>
-          </div>
+          <span>{% trans "Selected time" %}</span>
+          <strong id="selected-time-summary" class="selected-time-summary">{% trans "Not selected yet" %}</strong>
         </div>
         <p class="summary-note">{% blocktrans with slot=site_settings.booking_slot_minutes capacity=site_settings.concurrent_capacity %}Slots are organised in {{ slot }} minute steps with a maximum of {{ capacity }} concurrent bookings.{% endblocktrans %}</p>
       </aside>
@@ -164,6 +168,7 @@
     const priceOutput = document.getElementById('total-price');
     const cartCount = document.getElementById('cart-count');
     const cartContainer = document.getElementById('selected-services-cart');
+    const selectedTimeSummary = document.getElementById('selected-time-summary');
     const dateInput = document.getElementById('id_appointment_date');
     const timeInput = document.getElementById('id_appointment_time');
     const selectedSlotDisplay = document.getElementById('selected-slot-display');
@@ -182,6 +187,7 @@
     function renderSelectedSlot(label) {
       if (!label) {
         selectedSlotDisplay.classList.add('is-empty');
+        selectedTimeSummary.textContent = "{% trans 'Not selected yet' %}";
         selectedSlotDisplay.innerHTML = `
           <strong>{% trans "No time selected yet" %}</strong>
           <span>{% trans "Choose your services first, then pick one of the free times below." %}</span>
@@ -190,6 +196,7 @@
       }
 
       selectedSlotDisplay.classList.remove('is-empty');
+      selectedTimeSummary.textContent = label;
       selectedSlotDisplay.innerHTML = `
         <strong>{% trans "Selected time" %}</strong>
         <span>${label}</span>
