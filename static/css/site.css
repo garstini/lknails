@@ -1,63 +1,145 @@
 :root {
-  --bg: #fffaf8;
-  --bg-soft: #f6ebe9;
-  --card: rgba(255, 255, 255, 0.82);
-  --text: #402f3a;
-  --muted: #8d7482;
-  --line: #e8d7dc;
-  --accent: #d48aa1;
-  --accent-deep: #ba657f;
-  --shadow: 0 20px 50px rgba(122, 81, 96, 0.12);
+  --bg: #fff7f3;
+  --bg-soft: #f4e7e1;
+  --card: rgba(255, 255, 255, 0.88);
+  --card-strong: #fffdfb;
+  --text: #33232e;
+  --muted: #806774;
+  --line: #e6d3d8;
+  --accent: #cf7f97;
+  --accent-deep: #9e536f;
+  --accent-soft: #f4d8df;
+  --shadow: 0 24px 60px rgba(113, 75, 93, 0.12);
 }
 
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-family: Georgia, "Times New Roman", serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(255, 209, 220, 0.45), transparent 30%),
-    linear-gradient(180deg, #fffdfc 0%, var(--bg) 100%);
+    radial-gradient(circle at top left, rgba(255, 213, 223, 0.55), transparent 26%),
+    radial-gradient(circle at right 20%, rgba(247, 225, 231, 0.9), transparent 24%),
+    linear-gradient(180deg, #fffdfb 0%, var(--bg) 100%);
+  line-height: 1.55;
 }
 a { color: inherit; text-decoration: none; }
 iframe { width: 100%; min-height: 180px; border: 0; border-radius: 20px; }
 input, textarea, select {
   width: 100%;
-  padding: 0.9rem 1rem;
+  padding: 0.95rem 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: white;
-  font: inherit;
+  background: rgba(255,255,255,0.95);
+  font: 500 0.95rem/1.4 "Avenir Next", "Segoe UI", sans-serif;
 }
 .shell { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
 .site-header {
   position: sticky; top: 0; z-index: 10;
   backdrop-filter: blur(14px);
-  background: rgba(255, 250, 248, 0.78);
+  background: rgba(255, 249, 246, 0.74);
   border-bottom: 1px solid rgba(232, 215, 220, 0.8);
 }
 .header-inner, .nav, .hero-actions, .footer-grid, .summary-row { display: flex; gap: 1rem; }
 .header-inner { align-items: center; justify-content: space-between; padding: 1rem 0; }
-.nav a { color: var(--muted); }
-.brand { font-weight: 700; letter-spacing: 0.04em; }
-.section { padding: 4rem 0; }
+.nav a {
+  color: var(--muted);
+  font: 600 0.92rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: 0.02em;
+}
+.brand {
+  font: 700 1.15rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.section { padding: 4.5rem 0; }
 .section-alt { background: rgba(246, 235, 233, 0.55); }
-.hero { padding: 4rem 0 2rem; }
+.hero { padding: 4.5rem 0 2.5rem; }
 .hero-grid, .booking-layout, .footer-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
   gap: 2rem;
 }
 .hero-card, .service-card, .success-card, .booking-summary, .booking-form, .subcategory-block, .table-like {
   background: var(--card);
   border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 28px;
+  border-radius: 30px;
   box-shadow: var(--shadow);
 }
-.hero-card, .booking-summary, .booking-form, .success-card, .subcategory-block { padding: 1.5rem; }
-.eyebrow { text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent-deep); font-size: 0.78rem; }
-h1, h2, h3, h4 { margin-top: 0; }
-.lead { color: var(--muted); max-width: 52ch; font-size: 1.05rem; }
+.hero-card, .booking-summary, .booking-form, .success-card, .subcategory-block { padding: 1.6rem; }
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent-deep);
+  font: 700 0.72rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+}
+h1, h2, h3, h4 {
+  margin-top: 0;
+  line-height: 1.08;
+  font-weight: 500;
+}
+h1 { font-size: clamp(2.7rem, 6vw, 4.8rem); max-width: 10ch; margin-bottom: 1rem; }
+h2 { font-size: clamp(1.65rem, 3vw, 2.5rem); margin-bottom: 0.8rem; }
+h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
+.lead { color: var(--muted); max-width: 52ch; font-size: 1.1rem; }
+.hero-copy { padding-top: 1rem; }
+.hero-showcase {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-content: start;
+}
+.hero-card-large {
+  min-height: 280px;
+  grid-column: 1 / -1;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,228,233,0.95)),
+    var(--card);
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+.hero-card-small {
+  min-height: 160px;
+  display: grid;
+  place-items: end start;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.08)),
+    linear-gradient(135deg, #c37991, #efc9d3);
+  color: white;
+}
+.hero-card-accent {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.08)),
+    linear-gradient(135deg, #a95f7f, #d693a9);
+}
+.hero-card-small span {
+  font: 700 1.2rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.hero-metrics div {
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.hero-metrics strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font: 700 1.2rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--accent-deep);
+}
+.hero-metrics span,
+.service-chip,
+.service-link,
+.booking-pill {
+  font: 600 0.82rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+}
 .split-feature {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -70,14 +152,28 @@ h1, h2, h3, h4 { margin-top: 0; }
   box-shadow: var(--shadow);
 }
 .feature-panel { padding: 2rem; }
+.feature-panel-editorial {
+  background:
+    linear-gradient(140deg, rgba(255,255,255,0.98), rgba(247,232,236,0.92));
+}
 .feature-list { display: grid; gap: 1rem; }
 .mini-feature { padding: 1.25rem; }
 .button {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 0.95rem 1.4rem; border-radius: 999px;
+  font: 700 0.9rem/1.1 "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
-.button.primary { background: var(--accent); color: white; }
-.button.ghost { border: 1px solid var(--line); }
+.button.primary {
+  background: linear-gradient(135deg, var(--accent-deep), var(--accent));
+  color: white;
+  box-shadow: 0 14px 30px rgba(158, 83, 111, 0.22);
+}
+.button.ghost {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.55);
+}
 .card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -89,9 +185,39 @@ h1, h2, h3, h4 { margin-top: 0; }
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
-.service-card { padding: 1.25rem; }
+.service-card {
+  padding: 1.35rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,239,235,0.92));
+}
 .metric { font-size: 2rem; font-weight: 700; color: var(--accent-deep); margin: 0; }
 .service-meta, .service-stats, .summary-note, .site-footer, .field-error { color: var(--muted); }
+.service-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+.service-chip {
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.42rem 0.7rem;
+}
+.service-link {
+  color: var(--accent-deep);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 1.75rem;
+}
+.section-heading h2,
+.section-heading h1 { max-width: 16ch; }
 .confirmation-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -100,16 +226,22 @@ h1, h2, h3, h4 { margin-top: 0; }
 }
 .price-row { display: flex; gap: 0.75rem; align-items: center; }
 .price-old { text-decoration: line-through; color: #b49aa6; }
-.price-new { color: var(--accent-deep); font-weight: 700; }
+.price-new {
+  color: var(--accent-deep);
+  font: 700 1rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+}
 .service-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 1rem 0; border-bottom: 1px solid var(--line);
 }
 .service-row:last-child { border-bottom: 0; }
-.table-like { padding: 0 1rem; }
+.table-like {
+  padding: 0 1.15rem;
+  background: rgba(255,255,255,0.5);
+}
 .gallery-card,
 .calendar-day {
-  background: var(--card);
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(250,239,235,0.92));
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 28px;
   box-shadow: var(--shadow);
@@ -132,12 +264,47 @@ h1, h2, h3, h4 { margin-top: 0; }
 .tone-nails { background: linear-gradient(135deg, #d68ba3, #f3c8d3); }
 .tone-neutral { background: linear-gradient(135deg, #b59ea7, #dccfd4); }
 .gallery-copy { padding: 1rem 1.1rem 1.25rem; }
+.gallery-intro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.gallery-intro > div {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255,255,255,0.5);
+}
 .service-toolbar {
   display: grid;
   grid-template-columns: 240px 1fr;
   gap: 1rem;
   margin-bottom: 1.25rem;
 }
+.booking-form-intro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-bottom: 1.25rem;
+}
+.booking-pill {
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--line);
+  color: var(--accent-deep);
+}
+.booking-summary-sticky {
+  position: sticky;
+  top: 6rem;
+  align-self: start;
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,231,225,0.95));
+}
+.booking-submit { margin-top: 1rem; width: 100%; }
+.info-layout { align-items: stretch; }
+.info-card { min-height: 100%; }
+.booking-activity-card { min-height: 170px; }
 .calendar-day { padding: 1.2rem; }
 .calendar-entry {
   padding: 0.9rem 0;
@@ -162,6 +329,74 @@ h1, h2, h3, h4 { margin-top: 0; }
   border-bottom: 1px solid var(--line);
 }
 .check-card input { width: auto; margin-top: 0.2rem; }
+.service-pick-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 0;
+  cursor: pointer;
+}
+.service-checkbox {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: white;
+  margin-top: 0;
+}
+.service-pick-card.is-selected .service-checkbox {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+  box-shadow: 0 0 0 4px rgba(158, 83, 111, 0.12);
+}
+.service-pick-copy {
+  display: grid;
+  gap: 0.18rem;
+}
+.service-pick-action {
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid var(--line);
+  color: var(--accent-deep);
+  white-space: nowrap;
+}
+.service-pick-card.is-selected .service-pick-action {
+  background: linear-gradient(135deg, var(--accent-deep), var(--accent));
+  color: white;
+  border-color: transparent;
+}
+.cart-panel {
+  margin: 1rem 0 1.2rem;
+  padding: 1rem 0 1.1rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.selected-services-cart {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+.cart-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(230, 211, 216, 0.9);
+}
+.cart-row small {
+  display: block;
+  color: var(--muted);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
+.cart-row-price {
+  font: 700 0.95rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--accent-deep);
+}
 .slot-list {
   display: flex;
   flex-wrap: wrap;
@@ -189,10 +424,38 @@ h1, h2, h3, h4 { margin-top: 0; }
 .site-footer { padding: 3rem 0 4rem; }
 .narrow { max-width: 720px; }
 .dashboard-strip { margin-top: 2rem; }
+.site-footer h3,
+.site-footer p,
+.site-footer a,
+.site-header select,
+label,
+input,
+textarea,
+select,
+.summary-note,
+.service-stats,
+.service-meta,
+.calendar-entry p,
+.gallery-copy p,
+.lead,
+.mini-feature p,
+.feature-panel p,
+.booking-form p,
+.booking-summary p {
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
 @media (max-width: 860px) {
-  .hero-grid, .booking-layout, .footer-grid, .card-grid, .field-grid, .split-feature, .service-toolbar, .confirmation-grid, .gallery-grid, .calendar-grid {
+  .hero-grid, .booking-layout, .footer-grid, .card-grid, .field-grid, .split-feature, .service-toolbar, .confirmation-grid, .gallery-grid, .calendar-grid, .hero-showcase, .gallery-intro, .hero-metrics {
     grid-template-columns: 1fr;
   }
   .header-inner { flex-wrap: wrap; }
   .slot-list { justify-content: flex-start; }
+  h1 { max-width: none; }
+  .booking-summary-sticky { position: static; }
+  .service-pick-card {
+    grid-template-columns: 1fr;
+  }
+  .cart-row {
+    flex-direction: column;
+  }
 }

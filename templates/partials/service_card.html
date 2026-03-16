@@ -11,4 +11,8 @@
   {% else %}
     <p class="price-row"><span class="price-new">{{ service.price|euro }}</span></p>
   {% endif %}
+  <div class="service-card-footer">
+    <span class="service-chip">{{ service.category }}</span>
+    <a class="service-link" href="{% url 'booking_create' %}">{% trans "Select" %}</a>
+  </div>
 </article>

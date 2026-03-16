@@ -18,6 +18,12 @@
           <div class="form-errors">{{ form.non_field_errors }}</div>
         {% endif %}
 
+        <div class="booking-form-intro">
+          <div class="booking-pill">{% trans "1. Enter contact" %}</div>
+          <div class="booking-pill">{% trans "2. Select services" %}</div>
+          <div class="booking-pill">{% trans "3. Choose free time" %}</div>
+        </div>
+
         <div class="field-grid">
           <label>{{ form.customer_name.label }}{{ form.customer_name }}</label>
           <label>{{ form.phone.label }}{{ form.phone }}</label>
@@ -56,19 +62,23 @@
                 <div class="subcategory-block">
                   <h3>{{ subcategory }}</h3>
                   {% for service in items %}
-                    <label class="check-card" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
+                    <label class="check-card service-pick-card" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
                       <input
+                        class="service-checkbox"
                         type="checkbox"
                         name="services"
                         value="{{ service.id }}"
                         data-duration="{{ service.duration_minutes }}"
                         data-price="{{ service.current_price }}"
+                        data-name="{{ service.name }}"
+                        data-category-label="{{ category }}"
                         {% if service.id in selected_service_ids %}checked{% endif %}
                       >
-                      <span>
+                      <span class="service-pick-copy">
                         <strong>{{ service.name }}</strong>
                         <small>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</small>
                       </span>
+                      <span class="service-pick-action">{% trans "Add to cart" %}</span>
                     </label>
                   {% endfor %}
                 </div>
@@ -80,12 +90,21 @@
           {% endif %}
         </div>
 
-        <button class="button primary" type="submit">{% trans "Confirm booking" %}</button>
+        <button class="button primary booking-submit" type="submit">{% trans "Confirm booking" %}</button>
       </form>
 
-      <aside class="booking-summary">
+      <aside class="booking-summary booking-summary-sticky">
         <h2>{% trans "Booking summary" %}</h2>
         <p>{% trans "Timezone" %}: {{ site_settings.timezone }}</p>
+        <div class="cart-panel">
+          <div class="summary-row">
+            <span>{% trans "Selected services" %}</span>
+            <strong id="cart-count">0</strong>
+          </div>
+          <div id="selected-services-cart" class="selected-services-cart">
+            <p class="summary-note">{% trans "Your selected services will appear here." %}</p>
+          </div>
+        </div>
         <div class="summary-row">
           <span>{% trans "Total duration" %}</span>
           <strong id="total-duration">0 {% trans "minutes" %}</strong>
@@ -109,6 +128,8 @@
     const boxes = Array.from(document.querySelectorAll('input[name="services"]'));
     const durationOutput = document.getElementById('total-duration');
     const priceOutput = document.getElementById('total-price');
+    const cartCount = document.getElementById('cart-count');
+    const cartContainer = document.getElementById('selected-services-cart');
     const dateInput = document.getElementById('id_appointment_date');
     const timeInput = document.getElementById('id_appointment_time');
     const slotContainer = document.getElementById('available-slots');
@@ -122,16 +143,51 @@
       let duration = 0;
       let price = 0;
       const selectedIds = [];
+      const selectedItems = [];
       boxes.forEach((box) => {
         if (box.checked) {
           duration += Number(box.dataset.duration || 0);
           price += Number(box.dataset.price || 0);
           selectedIds.push(box.value);
+          selectedItems.push({
+            id: box.value,
+            name: box.dataset.name,
+            category: box.dataset.categoryLabel,
+            duration: box.dataset.duration,
+            price: box.dataset.price,
+          });
         }
+        const card = box.closest('.service-pick-card');
+        const action = card.querySelector('.service-pick-action');
+        card.classList.toggle('is-selected', box.checked);
+        action.textContent = box.checked ? "{% trans 'Added' %}" : "{% trans 'Add to cart' %}";
       });
       durationOutput.textContent = `${duration} {% trans "minutes" %}`;
       priceOutput.textContent = `${price.toFixed(2).replace('.', ',')} €`;
+      renderCart(selectedItems);
       loadAvailableSlots(selectedIds);
+    }
+
+    function renderCart(selectedItems) {
+      cartCount.textContent = selectedItems.length;
+      if (!selectedItems.length) {
+        cartContainer.innerHTML = '<p class="summary-note">{% trans "Your selected services will appear here." %}</p>';
+        return;
+      }
+
+      cartContainer.innerHTML = '';
+      selectedItems.forEach((item) => {
+        const row = document.createElement('div');
+        row.className = 'cart-row';
+        row.innerHTML = `
+          <div>
+            <strong>${item.name}</strong>
+            <small>${item.category} • ${item.duration} {% trans "minutes" %}</small>
+          </div>
+          <div class="cart-row-price">${Number(item.price).toFixed(2).replace('.', ',')} €</div>
+        `;
+        cartContainer.appendChild(row);
+      });
     }
 
     function applyServiceFilters() {

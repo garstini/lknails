@@ -11,6 +11,16 @@
       <h1>{% trans "Nails and lashes gallery" %}</h1>
       <p class="lead">{% trans "Use this page to showcase your best sets, textures, colours, and before/after work. Uploaded service images will appear here automatically." %}</p>
     </div>
+    <div class="gallery-intro">
+      <div>
+        <strong>{% trans "Designed for inspiration" %}</strong>
+        <p>{% trans "A cleaner gallery layout helps customers understand your style before they book." %}</p>
+      </div>
+      <div>
+        <strong>{% trans "Ready for real salon photos" %}</strong>
+        <p>{% trans "As soon as you upload service images in admin, this page becomes your portfolio wall." %}</p>
+      </div>
+    </div>
     <div class="gallery-grid">
       {% for service in services %}
         <article class="gallery-card">
