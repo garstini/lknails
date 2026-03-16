@@ -37,9 +37,12 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"Site settings ready: {site_settings.site_name}"))
 
         for weekday in range(7):
-            defaults = {"is_open": weekday != 6, "open_time": time(9, 0), "close_time": time(19, 0)}
-            if weekday == 5:
-                defaults["close_time"] = time(17, 0)
+            if weekday == 6:
+                defaults = {"is_open": False, "open_time": time(0, 0), "close_time": time(0, 0)}
+            elif weekday == 5:
+                defaults = {"is_open": True, "open_time": time(10, 0), "close_time": time(19, 0)}
+            else:
+                defaults = {"is_open": True, "open_time": time(9, 0), "close_time": time(16, 0)}
             WorkingHour.objects.update_or_create(weekday=weekday, defaults=defaults)
 
         EmailTemplate.objects.get_or_create(

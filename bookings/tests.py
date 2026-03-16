@@ -16,7 +16,12 @@ class BookingAvailabilityTests(TestCase):
     def setUp(self):
         SiteSettings.objects.create(site_name="LK", concurrent_capacity=1, booking_slot_minutes=15)
         for weekday in range(7):
-            WorkingHour.objects.create(weekday=weekday, is_open=True, open_time=time(9, 0), close_time=time(18, 0))
+            if weekday == 6:
+                WorkingHour.objects.create(weekday=weekday, is_open=False, open_time=time(0, 0), close_time=time(0, 0))
+            elif weekday == 5:
+                WorkingHour.objects.create(weekday=weekday, is_open=True, open_time=time(10, 0), close_time=time(19, 0))
+            else:
+                WorkingHour.objects.create(weekday=weekday, is_open=True, open_time=time(9, 0), close_time=time(16, 0))
         self.service = Service.objects.create(
             name="Test Service",
             category="Nails",
@@ -60,6 +65,35 @@ class BookingAvailabilityTests(TestCase):
         payload = response.json()
         self.assertIn("slots", payload)
         self.assertEqual(payload["total_duration"], 60)
+        self.assertFalse(payload["is_closed"])
+
+    def test_available_slots_endpoint_marks_sunday_as_closed(self):
+        today = timezone.localdate()
+        days_until_sunday = (6 - today.weekday()) % 7
+        sunday = today + timedelta(days=days_until_sunday or 7)
+        response = self.client.get(
+            reverse("available_slots"),
+            {"date": sunday.isoformat(), "services": [self.service.pk]},
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload["is_closed"])
+        self.assertEqual(payload["slots"], [])
+
+    def test_available_slots_endpoint_respects_weekday_working_hours(self):
+        today = timezone.localdate()
+        days_until_monday = (0 - today.weekday()) % 7
+        monday = today + timedelta(days=days_until_monday or 7)
+        response = self.client.get(
+            reverse("available_slots"),
+            {"date": monday.isoformat(), "services": [self.service.pk]},
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["working_hours"], {"open": "09:00", "close": "16:00"})
+        labels = [slot["label"] for slot in payload["slots"]]
+        self.assertIn("09:00", labels)
+        self.assertNotIn("15:15", labels)
 
     def test_booking_success_page_shows_latest_booking_details(self):
         starts_at = timezone.now() + timedelta(days=1)

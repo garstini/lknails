@@ -76,8 +76,7 @@ def calculate_totals(services):
 
 def get_available_slots(target_date):
     site_settings = get_site_settings()
-    weekday = target_date.weekday()
-    working_hour = WorkingHour.objects.filter(weekday=weekday, is_open=True).first()
+    working_hour = get_working_hour(target_date)
     if not working_hour:
         return []
 
@@ -98,9 +97,7 @@ def get_available_start_slots(target_date, duration_minutes):
     if duration_minutes <= 0:
         return []
 
-    site_settings = get_site_settings()
-    weekday = target_date.weekday()
-    working_hour = WorkingHour.objects.filter(weekday=weekday, is_open=True).first()
+    working_hour = get_working_hour(target_date)
     if not working_hour:
         return []
 
@@ -113,6 +110,10 @@ def get_available_start_slots(target_date, duration_minutes):
         if is_booking_available(slot, duration_minutes):
             valid_slots.append(slot)
     return valid_slots
+
+
+def get_working_hour(target_date):
+    return WorkingHour.objects.filter(weekday=target_date.weekday(), is_open=True).first()
 
 
 def is_booking_available(starts_at, duration_minutes):
@@ -186,7 +187,7 @@ class BookingCreateView(FormView):
             form.add_error("appointment_date", _("Please select a future appointment time."))
             return self.form_invalid(form)
 
-        working_hour = WorkingHour.objects.filter(weekday=starts_at.weekday(), is_open=True).first()
+        working_hour = get_working_hour(starts_at.date())
         if not working_hour:
             form.add_error("appointment_date", _("The salon is closed on this day."))
             return self.form_invalid(form)
@@ -278,7 +279,28 @@ def available_slots_view(request):
     total_duration, total_price = calculate_totals(services)
 
     if not appointment_date:
-        return JsonResponse({"slots": [], "total_duration": total_duration, "total_price": f"{total_price:.2f}"})
+        return JsonResponse(
+            {
+                "slots": [],
+                "total_duration": total_duration,
+                "total_price": f"{total_price:.2f}",
+                "is_closed": False,
+                "message": "",
+            }
+        )
+
+    working_hour = get_working_hour(appointment_date)
+    if not working_hour:
+        return JsonResponse(
+            {
+                "slots": [],
+                "total_duration": total_duration,
+                "total_price": f"{total_price:.2f}",
+                "slot_minutes": get_site_settings().booking_slot_minutes,
+                "is_closed": True,
+                "message": str(_("The salon is closed on the selected day.")),
+            }
+        )
 
     slots = [
         {
@@ -293,6 +315,12 @@ def available_slots_view(request):
             "total_duration": total_duration,
             "total_price": f"{total_price:.2f}",
             "slot_minutes": get_site_settings().booking_slot_minutes,
+            "is_closed": False,
+            "message": str(_("No free appointment times are available for the selected services on this date.")) if not slots else "",
+            "working_hours": {
+                "open": working_hour.open_time.strftime("%H:%M"),
+                "close": working_hour.close_time.strftime("%H:%M"),
+            },
         }
     )
 

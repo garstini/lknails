@@ -280,9 +280,11 @@
       const data = await response.json();
       currentSlots = data.slots || [];
       if (!data.slots.length) {
-        slotContainer.innerHTML = '<p class="summary-note">{% trans "No free slots for this service combination on the selected date." %}</p>';
+        slotContainer.innerHTML = `<p class="summary-note">${data.message || "{% trans "No free slots for this service combination on the selected date." %}"}</p>`;
         clearSelectedSlot();
-        timeHelp.textContent = "{% trans 'No free appointment times were found for the selected services on this date.' %}";
+        timeHelp.textContent = data.is_closed
+          ? "{% trans 'The salon is closed on this date. Please choose another day.' %}"
+          : "{% trans 'No free appointment times were found for the selected services on this date.' %}";
         return;
       }
 
@@ -290,7 +292,9 @@
       if (!currentSlots.some((slot) => slot.value === previousValue)) {
         timeInput.value = '';
       }
-      timeHelp.textContent = "{% trans 'Select one of the available appointment times.' %}";
+      timeHelp.textContent = data.working_hours
+        ? `${"{% trans 'Select one of the available appointment times.' %}"} ${data.working_hours.open}-${data.working_hours.close}`
+        : "{% trans 'Select one of the available appointment times.' %}";
       data.slots.slice(0, 12).forEach((slot) => {
         const button = document.createElement('button');
         button.type = 'button';
