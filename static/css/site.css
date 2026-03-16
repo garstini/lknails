@@ -618,12 +618,13 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 .check-card input { width: auto; margin-top: 0.2rem; }
 .service-pick-card {
   position: relative;
+  overflow: hidden;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    "check content"
-    "check action";
-  column-gap: 0.95rem;
+    "content"
+    "action";
+  column-gap: 0;
   row-gap: 0.75rem;
   align-items: start;
   padding: 0.95rem 1rem;
@@ -635,28 +636,12 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
 .service-checkbox {
-  appearance: none;
-  width: 1.3rem;
-  height: 1.3rem;
-  border-radius: 0.4rem;
-  border: 1.5px solid rgba(196, 148, 165, 0.75);
-  background: rgba(255, 255, 255, 0.95);
-  grid-area: check;
-  align-self: start;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
-}
-.service-checkbox::after {
-  content: "";
-  width: 0.38rem;
-  height: 0.7rem;
-  border-right: 2px solid white;
-  border-bottom: 2px solid white;
-  transform: rotate(45deg) scale(0.7);
+  position: absolute;
   opacity: 0;
-  transition: opacity 0.16s ease, transform 0.16s ease;
+  pointer-events: none;
+  inset: 0;
+  width: 0;
+  height: 0;
 }
 .service-pick-main {
   grid-area: content;
@@ -678,15 +663,6 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 .hero-card-link:hover {
   transform: translateY(-2px);
   box-shadow: 0 18px 36px rgba(177, 108, 130, 0.14);
-}
-.service-pick-card.is-selected .service-checkbox {
-  background: linear-gradient(180deg, #e8bfd0, #d794af);
-  border-color: #d794af;
-  box-shadow: 0 0 0 4px rgba(215, 148, 175, 0.1);
-}
-.service-pick-card.is-selected .service-checkbox::after {
-  opacity: 1;
-  transform: rotate(45deg) scale(1);
 }
 .service-pick-copy {
   display: grid;
@@ -1078,7 +1054,6 @@ select,
   .service-pick-card {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "check"
       "content"
       "action";
     row-gap: 0.8rem;
