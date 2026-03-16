@@ -80,10 +80,10 @@
         </div>
 
         <div class="field-grid booking-date-grid">
-          <label class="full">
-            {{ form.appointment_date.label }}
+          <div class="full booking-date-picker">
+            <span class="booking-time-label">{{ form.appointment_date.label }}</span>
             <input
-              type="date"
+              type="hidden"
               name="appointment_date"
               id="id_appointment_date"
               value="{{ form.appointment_date.value|default:'' }}"
@@ -91,8 +91,34 @@
               data-closed-weekdays="{{ closed_weekdays|join:',' }}"
               required
             >
-            <small class="summary-note">{% trans "Only current or future days are available, based on Germany time." %}</small>
-          </label>
+            <div id="selected-date-display" class="selected-slot-display is-empty">
+              {% if form.appointment_date.value %}
+                <strong>{% trans "Selected date" %}</strong>
+                <span>{{ form.appointment_date.value }}</span>
+              {% else %}
+                <strong>{% trans "No date selected yet" %}</strong>
+                <span>{% trans "Choose a working day from the calendar below." %}</span>
+              {% endif %}
+            </div>
+            <div class="date-picker-shell">
+              <div class="date-picker-header">
+                <button type="button" class="date-nav-button" id="date-prev-month" aria-label="{% trans 'Previous month' %}">&larr;</button>
+                <strong id="date-current-month"></strong>
+                <button type="button" class="date-nav-button" id="date-next-month" aria-label="{% trans 'Next month' %}">&rarr;</button>
+              </div>
+              <div class="date-weekdays">
+                <span>{% trans "Mon" %}</span>
+                <span>{% trans "Tue" %}</span>
+                <span>{% trans "Wed" %}</span>
+                <span>{% trans "Thu" %}</span>
+                <span>{% trans "Fri" %}</span>
+                <span>{% trans "Sat" %}</span>
+                <span>{% trans "Sun" %}</span>
+              </div>
+              <div id="date-grid" class="date-grid"></div>
+            </div>
+            <small class="summary-note">{% trans "Only current or future working days are available, based on Germany time." %}</small>
+          </div>
         </div>
 
         <div class="field-grid booking-time-grid">
@@ -199,6 +225,11 @@
     const summaryCustomerEmail = document.getElementById('summary-customer-email');
     const summaryCustomerNote = document.getElementById('summary-customer-note');
     const dateInput = document.getElementById('id_appointment_date');
+    const selectedDateDisplay = document.getElementById('selected-date-display');
+    const dateGrid = document.getElementById('date-grid');
+    const currentMonthLabel = document.getElementById('date-current-month');
+    const prevMonthButton = document.getElementById('date-prev-month');
+    const nextMonthButton = document.getElementById('date-next-month');
     const timeInput = document.getElementById('id_appointment_time');
     const selectedSlotDisplay = document.getElementById('selected-slot-display');
     const timeHelp = document.getElementById('time-help');
@@ -211,7 +242,91 @@
       .split(',')
       .filter(Boolean)
       .map((value) => Number(value));
+    const minimumDate = new Date(`${dateInput.min}T00:00:00`);
     let currentSlots = [];
+    let visibleMonth = dateInput.value ? new Date(`${dateInput.value}T12:00:00`) : new Date(`${dateInput.min}T12:00:00`);
+
+    function formatDateValue(date) {
+      const year = date.getFullYear();
+      const month = `${date.getMonth() + 1}`.padStart(2, '0');
+      const day = `${date.getDate()}`.padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function renderSelectedDate() {
+      if (!dateInput.value) {
+        selectedDateDisplay.classList.add('is-empty');
+        selectedDateDisplay.innerHTML = `
+          <strong>{% trans "No date selected yet" %}</strong>
+          <span>{% trans "Choose a working day from the calendar below." %}</span>
+        `;
+        return;
+      }
+
+      const date = new Date(`${dateInput.value}T12:00:00`);
+      selectedDateDisplay.classList.remove('is-empty');
+      selectedDateDisplay.innerHTML = `
+        <strong>{% trans "Selected date" %}</strong>
+        <span>${date.toLocaleDateString(undefined, { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</span>
+      `;
+    }
+
+    function isSelectableDate(date) {
+      const comparable = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const minComparable = new Date(minimumDate.getFullYear(), minimumDate.getMonth(), minimumDate.getDate());
+      if (comparable < minComparable) {
+        return false;
+      }
+      const weekday = (date.getDay() + 6) % 7;
+      return !closedWeekdays.includes(weekday);
+    }
+
+    function renderDateGrid() {
+      const year = visibleMonth.getFullYear();
+      const month = visibleMonth.getMonth();
+      currentMonthLabel.textContent = visibleMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+      const firstOfMonth = new Date(year, month, 1);
+      const startOffset = (firstOfMonth.getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      dateGrid.innerHTML = '';
+
+      for (let index = 0; index < startOffset; index += 1) {
+        const blank = document.createElement('span');
+        blank.className = 'date-cell date-cell-empty';
+        dateGrid.appendChild(blank);
+      }
+
+      for (let day = 1; day <= daysInMonth; day += 1) {
+        const date = new Date(year, month, day, 12, 0, 0);
+        const button = document.createElement('button');
+        const value = formatDateValue(date);
+        const selectable = isSelectableDate(date);
+        button.type = 'button';
+        button.className = 'date-cell';
+        button.textContent = day;
+        button.dataset.value = value;
+        if (!selectable) {
+          button.classList.add('is-disabled');
+          button.disabled = true;
+        }
+        if (dateInput.value === value) {
+          button.classList.add('is-active');
+        }
+        button.addEventListener('click', () => {
+          dateInput.value = value;
+          renderSelectedDate();
+          renderDateGrid();
+          updateTotals();
+        });
+        dateGrid.appendChild(button);
+      }
+
+      const firstVisibleMonth = new Date(year, month, 1);
+      const minMonth = new Date(minimumDate.getFullYear(), minimumDate.getMonth(), 1);
+      prevMonthButton.disabled = firstVisibleMonth <= minMonth;
+    }
 
     function renderSelectedSlot(label) {
       if (!label) {
@@ -252,6 +367,8 @@
       const minDate = dateInput.min;
       if (minDate && dateInput.value < minDate) {
         dateInput.value = '';
+        renderSelectedDate();
+        renderDateGrid();
         currentSlots = [];
         clearSelectedSlot();
         slotContainer.innerHTML = '<p class="summary-note">{% trans "Please choose today or a future date in Germany time." %}</p>';
@@ -263,6 +380,8 @@
       const weekday = (chosenDate.getDay() + 6) % 7;
       if (closedWeekdays.includes(weekday)) {
         dateInput.value = '';
+        renderSelectedDate();
+        renderDateGrid();
         currentSlots = [];
         clearSelectedSlot();
         slotContainer.innerHTML = '<p class="summary-note">{% trans "The salon is closed on the selected day." %}</p>';
@@ -394,7 +513,7 @@
       timeHelp.textContent = data.working_hours
         ? `${"{% trans 'Select one of the available appointment times.' %}"} ${data.working_hours.open}-${data.working_hours.close}`
         : "{% trans 'Select one of the available appointment times.' %}";
-      data.slots.slice(0, 12).forEach((slot) => {
+      data.slots.forEach((slot) => {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'slot-chip';
@@ -428,13 +547,22 @@
         updateTotals();
       });
     });
-    dateInput.addEventListener('change', updateTotals);
     [customerNameInput, phoneInput, emailInput, noteInput].forEach((input) => {
       input.addEventListener('input', renderCustomerSummary);
+    });
+    prevMonthButton.addEventListener('click', () => {
+      visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1);
+      renderDateGrid();
+    });
+    nextMonthButton.addEventListener('click', () => {
+      visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1);
+      renderDateGrid();
     });
     serviceFilter.addEventListener('change', applyServiceFilters);
     applyServiceFilters();
     renderCustomerSummary();
+    renderSelectedDate();
+    renderDateGrid();
     updateTotals();
   </script>
 {% endblock %}
