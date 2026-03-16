@@ -1,0 +1,88 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}LK Nails & Lashes{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Elegant nails and lashes booking website for LK Nails & Lashes.{% endblock %}">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <meta property="og:title" content="{% block og_title %}{% block title_og %}LK Nails & Lashes{% endblock %}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{% block meta_description_og %}Elegant nails and lashes booking website for LK Nails & Lashes.{% endblock %}{% endblock %}">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BeautySalon",
+      "name": "{{ global_site_settings.site_name|default:'LK Nails & Lashes' }}",
+      "url": "{{ site_url }}",
+      "telephone": "{{ global_site_settings.contact_phone|default:'' }}",
+      "email": "{{ global_site_settings.contact_email|default:'' }}",
+      "address": "{{ global_site_settings.address|default:'' }}"
+    }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="{% url 'home' %}">LK Nails & Lashes</a>
+      <nav class="nav">
+        <a href="{% url 'service_list' %}">{% trans "Services" %}</a>
+        <a href="{% url 'gallery' %}">{% trans "Gallery" %}</a>
+        <a href="{% url 'booking_create' %}">{% trans "Booking" %}</a>
+        <a href="{% url 'admin_dashboard' %}">{% trans "Dashboard" %}</a>
+        <a href="/admin/">{% trans "Admin" %}</a>
+      </nav>
+      <form class="language-switcher" action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+        <select name="language" onchange="this.form.submit()">
+          {% get_current_language as LANGUAGE_CODE %}
+          {% get_available_languages as LANGUAGES %}
+          {% for code, name in LANGUAGES %}
+            <option value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{{ name }}</option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="shell flash-stack">
+      {% for message in messages %}
+        <div class="flash flash-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div>
+        <h3>LK Nails & Lashes</h3>
+        <p>{{ global_site_settings.address|default:"Your salon address in Germany" }}</p>
+        <p>{{ global_site_settings.contact_phone|default:"+49 ..." }}</p>
+        <p>{{ global_site_settings.contact_email|default:"hello@lknailslashes.de" }}</p>
+      </div>
+      <div>
+        <h3>{% trans "Social" %}</h3>
+        <p><a href="{{ global_site_settings.instagram_url|default:'#' }}">Instagram</a></p>
+        <p><a href="{{ global_site_settings.facebook_url|default:'#' }}">Facebook</a></p>
+      </div>
+      <div>
+        <h3>{% trans "Visit us" %}</h3>
+        {% if global_site_settings.map_embed_url %}
+          <iframe src="{{ global_site_settings.map_embed_url }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        {% else %}
+          <p>{% trans "Add your Google Maps embed URL in site settings." %}</p>
+        {% endif %}
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load i18n site_tags %}
+
+{% block title %}{% trans "Booking" %} | LK Nails & Lashes{% endblock %}
+
+{% block content %}
+  <section class="section shell">
+    <div class="section-heading">
+      <p class="eyebrow">{% trans "Online booking" %}</p>
+      <h1>{% trans "Choose multiple services in one appointment" %}</h1>
+      <p>{% trans "Totals update instantly so the guest sees the full duration and estimated cost before confirming." %}</p>
+    </div>
+
+    <div class="booking-layout">
+      <form method="post" class="booking-form" id="booking-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="field-grid">
+          <label>{{ form.customer_name.label }}{{ form.customer_name }}</label>
+          <label>{{ form.phone.label }}{{ form.phone }}</label>
+          <label>{{ form.email.label }}{{ form.email }}</label>
+          <label>{{ form.appointment_date.label }}{{ form.appointment_date }}</label>
+          <label>{{ form.appointment_time.label }}{{ form.appointment_time }}</label>
+          <label class="full">{{ form.note.label }}{{ form.note }}</label>
+        </div>
+        {% for field in form %}
+          {% if field.errors and field.name != "services" %}
+            <div class="field-error">{{ field.errors }}</div>
+          {% endif %}
+        {% endfor %}
+
+        <div class="service-toolbar">
+          <label>
+            {% trans "Filter by category" %}
+            <select id="service-category-filter">
+              <option value="">{% trans "All categories" %}</option>
+              {% for category in service_categories %}
+                <option value="{{ category }}">{{ category }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>
+            {% trans "Search service" %}
+            <input type="search" id="service-search" placeholder="{% trans 'Type to filter services' %}">
+          </label>
+        </div>
+
+        <div class="service-selector">
+          {% for category, subcategories in grouped_services.items %}
+            <section class="service-group" data-category="{{ category|lower }}">
+              <h2>{{ category }}</h2>
+              {% for subcategory, items in subcategories.items %}
+                <div class="subcategory-block">
+                  <h3>{{ subcategory }}</h3>
+                  {% for service in items %}
+                    <label class="check-card" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
+                      <input
+                        type="checkbox"
+                        name="services"
+                        value="{{ service.id }}"
+                        data-duration="{{ service.duration_minutes }}"
+                        data-price="{{ service.current_price }}"
+                        {% if service.id in selected_service_ids %}checked{% endif %}
+                      >
+                      <span>
+                        <strong>{{ service.name }}</strong>
+                        <small>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</small>
+                      </span>
+                    </label>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+            </section>
+          {% endfor %}
+          {% if form.services.errors %}
+            <div class="field-error">{{ form.services.errors }}</div>
+          {% endif %}
+        </div>
+
+        <button class="button primary" type="submit">{% trans "Confirm booking" %}</button>
+      </form>
+
+      <aside class="booking-summary">
+        <h2>{% trans "Booking summary" %}</h2>
+        <p>{% trans "Timezone" %}: {{ site_settings.timezone }}</p>
+        <div class="summary-row">
+          <span>{% trans "Total duration" %}</span>
+          <strong id="total-duration">0 {% trans "minutes" %}</strong>
+        </div>
+        <div class="summary-row">
+          <span>{% trans "Estimated total" %}</span>
+          <strong id="total-price">0,00 €</strong>
+        </div>
+        <div class="summary-row summary-row-stack">
+          <span>{% trans "Suggested free slots" %}</span>
+          <div id="available-slots" class="slot-list">
+            <p class="summary-note">{% trans "Choose a date and services to load available times." %}</p>
+          </div>
+        </div>
+        <p class="summary-note">{% blocktrans with slot=site_settings.booking_slot_minutes capacity=site_settings.concurrent_capacity %}Slots are organised in {{ slot }} minute steps with a maximum of {{ capacity }} concurrent bookings.{% endblocktrans %}</p>
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    const boxes = Array.from(document.querySelectorAll('input[name="services"]'));
+    const durationOutput = document.getElementById('total-duration');
+    const priceOutput = document.getElementById('total-price');
+    const dateInput = document.getElementById('id_appointment_date');
+    const timeInput = document.getElementById('id_appointment_time');
+    const slotContainer = document.getElementById('available-slots');
+    const slotsUrl = "{% url 'available_slots' %}";
+    const serviceFilter = document.getElementById('service-category-filter');
+    const serviceSearch = document.getElementById('service-search');
+    const serviceCards = Array.from(document.querySelectorAll('.check-card'));
+    const serviceGroups = Array.from(document.querySelectorAll('.service-group'));
+
+    function updateTotals() {
+      let duration = 0;
+      let price = 0;
+      const selectedIds = [];
+      boxes.forEach((box) => {
+        if (box.checked) {
+          duration += Number(box.dataset.duration || 0);
+          price += Number(box.dataset.price || 0);
+          selectedIds.push(box.value);
+        }
+      });
+      durationOutput.textContent = `${duration} {% trans "minutes" %}`;
+      priceOutput.textContent = `${price.toFixed(2).replace('.', ',')} €`;
+      loadAvailableSlots(selectedIds);
+    }
+
+    function applyServiceFilters() {
+      const categoryValue = serviceFilter.value.trim().toLowerCase();
+      const searchValue = serviceSearch.value.trim().toLowerCase();
+
+      serviceCards.forEach((card) => {
+        const matchesCategory = !categoryValue || card.dataset.categoryName === categoryValue;
+        const haystack = `${card.dataset.serviceName} ${card.dataset.subcategoryName} ${card.dataset.categoryName}`;
+        const matchesSearch = !searchValue || haystack.includes(searchValue);
+        card.style.display = matchesCategory && matchesSearch ? '' : 'none';
+      });
+
+      serviceGroups.forEach((group) => {
+        const visibleCards = group.querySelectorAll('.check-card:not([style*="display: none"])').length;
+        group.style.display = visibleCards ? '' : 'none';
+      });
+    }
+
+    async function loadAvailableSlots(selectedIds) {
+      const dateValue = dateInput.value;
+      if (!dateValue || !selectedIds.length) {
+        slotContainer.innerHTML = '<p class="summary-note">{% trans "Choose a date and services to load available times." %}</p>';
+        return;
+      }
+
+      const params = new URLSearchParams({ date: dateValue });
+      selectedIds.forEach((id) => params.append('services', id));
+
+      slotContainer.innerHTML = '<p class="summary-note">{% trans "Checking availability..." %}</p>';
+      const response = await fetch(`${slotsUrl}?${params.toString()}`);
+      const data = await response.json();
+      if (!data.slots.length) {
+        slotContainer.innerHTML = '<p class="summary-note">{% trans "No free slots for this service combination on the selected date." %}</p>';
+        return;
+      }
+
+      slotContainer.innerHTML = '';
+      data.slots.slice(0, 12).forEach((slot) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'slot-chip';
+        button.textContent = slot.label;
+        button.addEventListener('click', () => {
+          timeInput.value = slot.value;
+        });
+        slotContainer.appendChild(button);
+      });
+    }
+
+    boxes.forEach((box) => box.addEventListener('change', updateTotals));
+    dateInput.addEventListener('change', updateTotals);
+    serviceFilter.addEventListener('change', applyServiceFilters);
+    serviceSearch.addEventListener('input', applyServiceFilters);
+    applyServiceFilters();
+    updateTotals();
+  </script>
+{% endblock %}

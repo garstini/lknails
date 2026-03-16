@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load i18n site_tags %}
+
+{% block title %}LK Nails & Lashes{% endblock %}
+{% block meta_description %}{% trans "Soft, modern nails and lashes salon website with online booking in Germany." %}{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <p class="eyebrow">{% trans "Lknailslashes.de rewrite" %}</p>
+        <h1>{% trans "Feminine nails and lashes booking experience, rebuilt for speed and SEO." %}</h1>
+        <p class="lead">{% trans "Browse services, discover promotions, and book multiple services in one appointment with transparent duration and price totals." %}</p>
+        <div class="hero-actions">
+          <a class="button primary" href="{% url 'booking_create' %}">{% trans "Book now" %}</a>
+          <a class="button ghost" href="{% url 'service_list' %}">{% trans "View services" %}</a>
+          <a class="button ghost" href="{% url 'gallery' %}">{% trans "Browse gallery" %}</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h2>{% trans "Salon highlights" %}</h2>
+        <ul>
+          <li>{% trans "English and Deutsch UI" %}</li>
+          <li>{% trans "15-minute slot scheduling" %}</li>
+          <li>{% trans "Parallel booking control by staff capacity" %}</li>
+          <li>{% trans "Promotion-ready pricing display" %}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section shell">
+    <div class="section-heading">
+      <p class="eyebrow">{% trans "Top booked" %}</p>
+      <h2>{% trans "Popular services" %}</h2>
+    </div>
+    <div class="card-grid">
+      {% for service in top_services %}
+        {% include "partials/service_card.html" with service=service %}
+      {% empty %}
+        <p>{% trans "Seed services to populate this section." %}</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="section shell">
+    <div class="section-heading">
+      <p class="eyebrow">{% trans "Fresh activity" %}</p>
+      <h2>{% trans "Recent booking flow snapshot" %}</h2>
+    </div>
+    <div class="card-grid">
+      {% for booking in latest_bookings %}
+        <article class="service-card">
+          <p class="service-meta">{{ booking.reference }}</p>
+          <h3>{{ booking.customer_name }}</h3>
+          <p>{{ booking.starts_at|date:"d.m.Y H:i" }}</p>
+          <p class="price-new">{{ booking.total_price|default:"0"|euro }}</p>
+        </article>
+      {% empty %}
+        <p>{% trans "Bookings will appear here after customers begin using the form." %}</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="section shell">
+    <div class="split-feature">
+      <div class="feature-panel">
+        <p class="eyebrow">{% trans "Booking flow" %}</p>
+        <h2>{% trans "One appointment, multiple services, clear timing." %}</h2>
+        <p>{% trans "Guests can combine lashes and nails in a single booking. The interface calculates the total duration, total price, and suggests free appointment slots based on staff capacity." %}</p>
+      </div>
+      <div class="feature-list">
+        <article class="mini-feature">
+          <strong>{% trans "Transparent totals" %}</strong>
+          <p>{% trans "Duration and price update as services are selected." %}</p>
+        </article>
+        <article class="mini-feature">
+          <strong>{% trans "Germany timezone" %}</strong>
+          <p>{% trans "Appointments and availability are evaluated in Europe/Berlin." %}</p>
+        </article>
+        <article class="mini-feature">
+          <strong>{% trans "Parallel capacity control" %}</strong>
+          <p>{% trans "The system respects staff count and 15-minute scheduling blocks." %}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="shell">
+      <div class="section-heading">
+        <p class="eyebrow">{% trans "Featured" %}</p>
+        <h2>{% trans "Selected salon favorites" %}</h2>
+      </div>
+      <div class="card-grid">
+        {% for service in featured_services %}
+          {% include "partials/service_card.html" with service=service %}
+        {% empty %}
+          <p>{% trans "Mark services as featured in admin to show them here." %}</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="section shell">
+    <div class="section-heading">
+      <p class="eyebrow">{% trans "Visit the salon" %}</p>
+      <h2>{% trans "Store information ready for local SEO and quick contact." %}</h2>
+    </div>
+    <div class="booking-layout">
+      <article class="booking-form">
+        <h3>{% trans "Contact details" %}</h3>
+        <p>{{ global_site_settings.address|default:"Germany" }}</p>
+        <p>{{ global_site_settings.contact_phone|default:"+49 ..." }}</p>
+        <p>{{ global_site_settings.contact_email|default:"hello@lknailslashes.de" }}</p>
+      </article>
+      <article class="booking-summary">
+        <h3>{% trans "Social and discovery" %}</h3>
+        <p><a href="{{ global_site_settings.instagram_url|default:'#' }}">Instagram</a></p>
+        <p><a href="{{ global_site_settings.facebook_url|default:'#' }}">Facebook</a></p>
+        <p>{% trans "Keep this section connected to your real business details in admin." %}</p>
+      </article>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load i18n site_tags %}
+
+{% block title %}{% trans "Dashboard" %} | LK Nails & Lashes{% endblock %}
+
+{% block content %}
+  <section class="section shell">
+    <div class="section-heading">
+      <p class="eyebrow">{% trans "Admin overview" %}</p>
+      <h1>{% trans "Booking and service dashboard" %}</h1>
+    </div>
+
+    <div class="card-grid metrics-grid">
+      <article class="service-card">
+        <h3>{% trans "Confirmed" %}</h3>
+        <p class="metric">{{ booking_status_counts.confirmed }}</p>
+      </article>
+      <article class="service-card">
+        <h3>{% trans "Pending" %}</h3>
+        <p class="metric">{{ booking_status_counts.pending }}</p>
+      </article>
+      <article class="service-card">
+        <h3>{% trans "Cancelled" %}</h3>
+        <p class="metric">{{ booking_status_counts.cancelled }}</p>
+      </article>
+      <article class="service-card">
+        <h3>{% trans "This week" %}</h3>
+        <p class="metric">{{ period_totals.week }}</p>
+      </article>
+      <article class="service-card">
+        <h3>{% trans "This month" %}</h3>
+        <p class="metric">{{ period_totals.month }}</p>
+      </article>
+      <article class="service-card">
+        <h3>{% trans "This year" %}</h3>
+        <p class="metric">{{ period_totals.year }}</p>
+      </article>
+      <article class="service-card">
+        <h3>{% trans "Today revenue" %}</h3>
+        <p class="metric">{{ revenue_totals.today|euro }}</p>
+      </article>
+      <article class="service-card">
+        <h3>{% trans "Month revenue" %}</h3>
+        <p class="metric">{{ revenue_totals.month|euro }}</p>
+      </article>
+      <article class="service-card">
+        <h3>{% trans "Live capacity" %}</h3>
+        <p class="metric">{{ live_capacity.active_now }}/{{ live_capacity.capacity }}</p>
+      </article>
+    </div>
+
+    <div class="booking-layout">
+      <article class="booking-form">
+        <h2>{% trans "Today's appointments" %}</h2>
+        {% for booking in today_bookings %}
+          <div class="service-row">
+            <div>
+              <strong>{{ booking.customer_name }}</strong>
+              <p>{{ booking.starts_at|date:"H:i" }} • {{ booking.total_duration_minutes }} {% trans "minutes" %}</p>
+            </div>
+            <div>{{ booking.total_price|euro }}</div>
+          </div>
+        {% empty %}
+          <p>{% trans "No appointments today." %}</p>
+        {% endfor %}
+      </article>
+
+      <article class="booking-summary">
+        <h2>{% trans "Top booked services" %}</h2>
+        {% for service in top_services %}
+          <div class="service-row">
+            <div>
+              <strong>{{ service.name }}</strong>
+              <p>{{ service.category }} / {{ service.subcategory }}</p>
+            </div>
+            <div>{{ service.booking_count }}</div>
+          </div>
+        {% empty %}
+          <p>{% trans "No data yet." %}</p>
+        {% endfor %}
+      </article>
+    </div>
+
+    <div class="split-feature dashboard-strip">
+      <article class="feature-panel">
+        <p class="eyebrow">{% trans "Utilization" %}</p>
+        <h2>{{ live_capacity.utilization_percent }}%</h2>
+        <p>{% trans "Current utilization based on active bookings versus configured parallel staff capacity." %}</p>
+      </article>
+      <article class="feature-panel">
+        <p class="eyebrow">{% trans "Weekly revenue" %}</p>
+        <h2>{{ revenue_totals.week|euro }}</h2>
+        <p>{% trans "Gross booked amount for appointments in the current week." %}</p>
+      </article>
+    </div>
+
+    <div class="booking-layout dashboard-strip">
+      <article class="booking-form">
+        <h2>{% trans "SMTP status" %}</h2>
+        <p>
+          {% if smtp_ready %}
+            {% trans "SMTP is configured in Site Settings." %}
+          {% else %}
+            {% trans "SMTP is not configured yet. Add Google SMTP settings in Site Settings." %}
+          {% endif %}
+        </p>
+        <p class="hero-actions">
+          <a class="button ghost" href="/admin/core/sitesettings/1/change/">{% trans "Open Site Settings" %}</a>
+          <a class="button ghost" href="{% url 'admin_calendar' %}">{% trans "Open calendar" %}</a>
+        </p>
+      </article>
+      <article class="booking-summary">
+        <h2>{% trans "Send test email" %}</h2>
+        <form method="post" class="stack-form">
+          {% csrf_token %}
+          <label>
+            {{ test_email_form.recipient.label }}
+            {{ test_email_form.recipient }}
+          </label>
+          <button class="button primary" type="submit">{% trans "Send SMTP test" %}</button>
+        </form>
+      </article>
+    </div>
+  </section>
+{% endblock %}

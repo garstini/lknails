@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load i18n site_tags %}
+
+{% block title %}{% trans "Services" %} | LK Nails & Lashes{% endblock %}
+
+{% block content %}
+  <section class="section shell">
+    <div class="section-heading">
+      <p class="eyebrow">{% trans "Service menu" %}</p>
+      <h1>{% trans "Treatments for nails and lashes" %}</h1>
+    </div>
+    <div class="service-toolbar">
+      <label>
+        {% trans "Filter by category" %}
+        <select id="service-menu-category">
+          <option value="">{% trans "All categories" %}</option>
+          {% for category, subcategories in grouped_services.items %}
+            <option value="{{ category|lower }}">{{ category }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        {% trans "Search service" %}
+        <input type="search" id="service-menu-search" placeholder="{% trans 'Type to filter services' %}">
+      </label>
+    </div>
+    {% for category, subcategories in grouped_services.items %}
+      <section class="service-group" data-category="{{ category|lower }}">
+        <h2>{{ category }}</h2>
+        {% for subcategory, items in subcategories.items %}
+          <div class="subcategory-block">
+            <h3>{{ subcategory }}</h3>
+            <div class="table-like">
+              {% for service in items %}
+                <article class="service-row menu-service-row" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
+                  <div>
+                    <h4>{{ service.name }}</h4>
+                    <p>{{ service.duration_minutes }} {% trans "minutes" %}</p>
+                  </div>
+                  <div class="service-row-price">
+                    {% if service.active_promotion %}
+                      <span class="price-old">{{ service.price|euro }}</span>
+                      <span class="price-new">{{ service.current_price|euro }}</span>
+                    {% else %}
+                      <span class="price-new">{{ service.price|euro }}</span>
+                    {% endif %}
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </section>
+    {% endfor %}
+  </section>
+  <script>
+    const menuCategory = document.getElementById('service-menu-category');
+    const menuSearch = document.getElementById('service-menu-search');
+    const menuRows = Array.from(document.querySelectorAll('.menu-service-row'));
+    const menuGroups = Array.from(document.querySelectorAll('.service-group'));
+
+    function filterMenu() {
+      const categoryValue = menuCategory.value.trim().toLowerCase();
+      const searchValue = menuSearch.value.trim().toLowerCase();
+      menuRows.forEach((row) => {
+        const matchesCategory = !categoryValue || row.dataset.categoryName === categoryValue;
+        const haystack = `${row.dataset.serviceName} ${row.dataset.categoryName} ${row.dataset.subcategoryName}`;
+        const matchesSearch = !searchValue || haystack.includes(searchValue);
+        row.style.display = matchesCategory && matchesSearch ? '' : 'none';
+      });
+      menuGroups.forEach((group) => {
+        const visibleRows = group.querySelectorAll('.menu-service-row:not([style*="display: none"])').length;
+        group.style.display = visibleRows ? '' : 'none';
+      });
+    }
+
+    menuCategory.addEventListener('change', filterMenu);
+    menuSearch.addEventListener('input', filterMenu);
+    filterMenu();
+  </script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% load i18n site_tags %}
+<article class="service-card">
+  <p class="service-meta">{{ service.category }} / {{ service.subcategory }}</p>
+  <h3>{{ service.name }}</h3>
+  <p class="service-stats">{{ service.duration_minutes }} {% trans "minutes" %}</p>
+  {% if service.active_promotion %}
+    <p class="price-row">
+      <span class="price-old">{{ service.price|euro }}</span>
+      <span class="price-new">{{ service.current_price|euro }}</span>
+    </p>
+  {% else %}
+    <p class="price-row"><span class="price-new">{{ service.price|euro }}</span></p>
+  {% endif %}
+</article>

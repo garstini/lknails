@@ -1,0 +1,300 @@
+[
+  {
+    "name": "Ablösen Wimpernverlängerung",
+    "category": "Wimpern",
+    "subcategory": "Sonstiges",
+    "price": 10.0,
+    "duration_minutes": 30,
+    "is_active": true
+  },
+  {
+    "name": "Augenbrauen zupfen & färben",
+    "category": "Wimpern",
+    "subcategory": "Sonstiges",
+    "price": 17.0,
+    "duration_minutes": 20,
+    "is_active": true
+  },
+  {
+    "name": "Wimpern färben",
+    "category": "Wimpern",
+    "subcategory": "Sonstiges",
+    "price": 8.0,
+    "duration_minutes": 15,
+    "is_active": true
+  },
+  {
+    "name": "Wimpernlifting",
+    "category": "Wimpern",
+    "subcategory": "Sonstiges",
+    "price": 35.0,
+    "duration_minutes": 45,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 4 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Mega Volume ab 6D",
+    "price": 50.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 3 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Mega Volume ab 6D",
+    "price": 45.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 2 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Mega Volume ab 6D",
+    "price": 40.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Neuset",
+    "category": "Wimpern",
+    "subcategory": "Mega Volume ab 6D",
+    "price": 99.0,
+    "duration_minutes": 120,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 4 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Volume 4D-5D",
+    "price": 45.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 3 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Volume 4D-5D",
+    "price": 40.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 2 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Volume 4D-5D",
+    "price": 35.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Neuset",
+    "category": "Wimpern",
+    "subcategory": "Volume 4D-5D",
+    "price": 79.0,
+    "duration_minutes": 90,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 4 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Light Volume 2D-3D",
+    "price": 40.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 3 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Light Volume 2D-3D",
+    "price": 35.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Aufüllen nach 2 Wochen",
+    "category": "Wimpern",
+    "subcategory": "Light Volume 2D-3D",
+    "price": 30.0,
+    "duration_minutes": 60,
+    "is_active": true
+  },
+  {
+    "name": "Neuset",
+    "category": "Wimpern",
+    "subcategory": "Light Volume 2D-3D",
+    "price": 69.0,
+    "duration_minutes": 90,
+    "is_active": true
+  },
+  {
+    "name": "Neuset",
+    "category": "Wimpern",
+    "subcategory": "Classic 1:1",
+    "price": 55.0,
+    "duration_minutes": 60,
+    "is_active": true,
+    "bookings": 7,
+    "images": 1
+  },
+  {
+    "name": "Strass-Stein",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 0.5,
+    "duration_minutes": 10,
+    "is_active": true,
+    "bookings": 3,
+    "images": 1
+  },
+  {
+    "name": "Überlänge",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 3.0,
+    "duration_minutes": 10,
+    "is_active": true,
+    "bookings": 5,
+    "images": 1
+  },
+  {
+    "name": "AUFFÜLLEN: Trend mit Farbe Babyboomer / Ombre / French / Glitzer",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 40.0,
+    "duration_minutes": 60,
+    "is_active": true,
+    "bookings": 28,
+    "images": 1
+  },
+  {
+    "name": "AUFFÜLLEN: Weiß Babyboomer / Ombre / French / Glitzer",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 33.0,
+    "duration_minutes": 50,
+    "is_active": true,
+    "bookings": 33,
+    "images": 1
+  },
+  {
+    "name": "AUFFÜLLEN: mit Farbe",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 30.0,
+    "duration_minutes": 45,
+    "is_active": true,
+    "bookings": 20,
+    "images": 1
+  },
+  {
+    "name": "AUFFÜLLEN: Natur",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 25.0,
+    "duration_minutes": 40,
+    "is_active": true,
+    "bookings": 3,
+    "images": 1
+  },
+  {
+    "name": "NEUMODELLAGE: Zehenmodellage oder Neu",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 40.0,
+    "duration_minutes": 60,
+    "is_active": true,
+    "bookings": 2,
+    "images": 1
+  },
+  {
+    "name": "NEUMODELLAGE: Trend mit Farbe Babyboomer / Ombre / French / Glitzer",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 43.0,
+    "duration_minutes": 60,
+    "is_active": true,
+    "bookings": 19,
+    "images": 1
+  },
+  {
+    "name": "NEUMODELLAGE: Weiß / Babyboomer / Ombre / French / Glitzer",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 35.0,
+    "duration_minutes": 60,
+    "is_active": true,
+    "bookings": 28,
+    "images": 1
+  },
+  {
+    "name": "NEUMODELLAGE: mit Farbe",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 33.0,
+    "duration_minutes": 50,
+    "is_active": true,
+    "bookings": 11,
+    "images": 1
+  },
+  {
+    "name": "NEUMODELLAGE: Natur",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 28.0,
+    "duration_minutes": 40,
+    "is_active": true,
+    "bookings": 6,
+    "images": 1
+  },
+  {
+    "name": "Pediküre mit Acryl inkl. Massage",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 45.0,
+    "duration_minutes": 45,
+    "is_active": true,
+    "bookings": 0,
+    "images": 1
+  },
+  {
+    "name": "Pediküre mit Shellac inkl. Massage",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 35.0,
+    "duration_minutes": 35,
+    "is_active": true,
+    "bookings": 13,
+    "images": 1
+  },
+  {
+    "name": "Pediküre mit Massage",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 25.0,
+    "duration_minutes": 25,
+    "is_active": true,
+    "bookings": 8,
+    "images": 1
+  },
+  {
+    "name": "Mit Shellac",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 25.0,
+    "duration_minutes": 25,
+    "is_active": true,
+    "bookings": 11,
+    "images": 1
+  },
+  {
+    "name": "Maniküre ab",
+    "category": "Nägel",
+    "subcategory": "-",
+    "price": 15.0,
+    "duration_minutes": 15,
+    "is_active": true,
+    "bookings": 12,
+    "images": 1
+  }
+]

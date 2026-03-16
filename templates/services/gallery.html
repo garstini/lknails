@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n site_tags %}
+
+{% block title %}{% trans "Gallery" %} | LK Nails & Lashes{% endblock %}
+{% block meta_description %}{% trans "Browse nails and lashes inspiration, featured treatments, and salon portfolio highlights." %}{% endblock %}
+
+{% block content %}
+  <section class="section shell">
+    <div class="section-heading">
+      <p class="eyebrow">{% trans "Portfolio" %}</p>
+      <h1>{% trans "Nails and lashes gallery" %}</h1>
+      <p class="lead">{% trans "Use this page to showcase your best sets, textures, colours, and before/after work. Uploaded service images will appear here automatically." %}</p>
+    </div>
+    <div class="gallery-grid">
+      {% for service in services %}
+        <article class="gallery-card">
+          {% if service.primary_image and service.primary_image.image %}
+            <img class="gallery-image" src="{{ service.primary_image.image.url }}" alt="{{ service.primary_image.alt_text|default:service.name }}">
+          {% else %}
+            <div class="gallery-image gallery-placeholder {{ service.gallery_tone }}">
+              <span>{{ service.category }}</span>
+            </div>
+          {% endif %}
+          <div class="gallery-copy">
+            <p class="service-meta">{{ service.category }} / {{ service.subcategory }}</p>
+            <h3>{{ service.name }}</h3>
+            <p>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

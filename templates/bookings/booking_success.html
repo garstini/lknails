@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n site_tags %}
+
+{% block content %}
+  <section class="section shell narrow">
+    <div class="success-card">
+      <p class="eyebrow">{% trans "Booking received" %}</p>
+      <h1>{% trans "Thank you. Your appointment request was submitted." %}</h1>
+      {% if booking %}
+        <p>{% blocktrans with ref=booking.reference %}Your booking reference is {{ ref }}.{% endblocktrans %}</p>
+        <div class="confirmation-grid">
+          <div>
+            <h3>{% trans "Customer" %}</h3>
+            <p>{{ booking.customer_name }}</p>
+            <p>{{ booking.email }}</p>
+            <p>{{ booking.phone }}</p>
+          </div>
+          <div>
+            <h3>{% trans "Appointment" %}</h3>
+            <p>{{ booking.starts_at|date:"d.m.Y H:i" }}</p>
+            <p>{{ booking.total_duration_minutes }} {% trans "minutes" %}</p>
+            <p>{{ booking.total_price|euro }}</p>
+          </div>
+        </div>
+        <div class="booking-form booking-items-summary">
+          <h3>{% trans "Selected services" %}</h3>
+          {% for item in booking.items.all %}
+            <div class="service-row">
+              <div>
+                <strong>{{ item.service_name }}</strong>
+                <p>{{ item.category }} / {{ item.subcategory }}</p>
+              </div>
+              <div>{{ item.price|euro }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>{% trans "The salon team can review the booking in admin and contact the customer if needed." %}</p>
+      {% endif %}
+      <a class="button primary" href="{% url 'home' %}">{% trans "Back to homepage" %}</a>
+    </div>
+  </section>
+{% endblock %}

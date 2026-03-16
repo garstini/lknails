@@ -1,0 +1,198 @@
+:root {
+  --bg: #fffaf8;
+  --bg-soft: #f6ebe9;
+  --card: rgba(255, 255, 255, 0.82);
+  --text: #402f3a;
+  --muted: #8d7482;
+  --line: #e8d7dc;
+  --accent: #d48aa1;
+  --accent-deep: #ba657f;
+  --shadow: 0 20px 50px rgba(122, 81, 96, 0.12);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(255, 209, 220, 0.45), transparent 30%),
+    linear-gradient(180deg, #fffdfc 0%, var(--bg) 100%);
+}
+a { color: inherit; text-decoration: none; }
+iframe { width: 100%; min-height: 180px; border: 0; border-radius: 20px; }
+input, textarea, select {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: white;
+  font: inherit;
+}
+.shell { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  backdrop-filter: blur(14px);
+  background: rgba(255, 250, 248, 0.78);
+  border-bottom: 1px solid rgba(232, 215, 220, 0.8);
+}
+.header-inner, .nav, .hero-actions, .footer-grid, .summary-row { display: flex; gap: 1rem; }
+.header-inner { align-items: center; justify-content: space-between; padding: 1rem 0; }
+.nav a { color: var(--muted); }
+.brand { font-weight: 700; letter-spacing: 0.04em; }
+.section { padding: 4rem 0; }
+.section-alt { background: rgba(246, 235, 233, 0.55); }
+.hero { padding: 4rem 0 2rem; }
+.hero-grid, .booking-layout, .footer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+}
+.hero-card, .service-card, .success-card, .booking-summary, .booking-form, .subcategory-block, .table-like {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+.hero-card, .booking-summary, .booking-form, .success-card, .subcategory-block { padding: 1.5rem; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent-deep); font-size: 0.78rem; }
+h1, h2, h3, h4 { margin-top: 0; }
+.lead { color: var(--muted); max-width: 52ch; font-size: 1.05rem; }
+.split-feature {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1.5rem;
+}
+.feature-panel, .mini-feature {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+.feature-panel { padding: 2rem; }
+.feature-list { display: grid; gap: 1rem; }
+.mini-feature { padding: 1.25rem; }
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.95rem 1.4rem; border-radius: 999px;
+}
+.button.primary { background: var(--accent); color: white; }
+.button.ghost { border: 1px solid var(--line); }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.gallery-grid,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.service-card { padding: 1.25rem; }
+.metric { font-size: 2rem; font-weight: 700; color: var(--accent-deep); margin: 0; }
+.service-meta, .service-stats, .summary-note, .site-footer, .field-error { color: var(--muted); }
+.confirmation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.price-row { display: flex; gap: 0.75rem; align-items: center; }
+.price-old { text-decoration: line-through; color: #b49aa6; }
+.price-new { color: var(--accent-deep); font-weight: 700; }
+.service-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 0; border-bottom: 1px solid var(--line);
+}
+.service-row:last-child { border-bottom: 0; }
+.table-like { padding: 0 1rem; }
+.gallery-card,
+.calendar-day {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.gallery-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+.gallery-placeholder {
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+}
+.tone-lashes { background: linear-gradient(135deg, #aa6a86, #dba2b7); }
+.tone-nails { background: linear-gradient(135deg, #d68ba3, #f3c8d3); }
+.tone-neutral { background: linear-gradient(135deg, #b59ea7, #dccfd4); }
+.gallery-copy { padding: 1rem 1.1rem 1.25rem; }
+.service-toolbar {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.calendar-day { padding: 1.2rem; }
+.calendar-entry {
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line);
+}
+.calendar-entry:first-of-type { border-top: 0; }
+.calendar-nav { margin-bottom: 1.5rem; }
+.stack-form {
+  display: grid;
+  gap: 1rem;
+}
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.field-grid .full { grid-column: 1 / -1; }
+.check-card {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.check-card input { width: auto; margin-top: 0.2rem; }
+.slot-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+.slot-chip {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--text);
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+}
+.slot-chip:hover { border-color: var(--accent); color: var(--accent-deep); }
+.summary-row-stack { align-items: flex-start; flex-direction: column; }
+.flash-stack { padding-top: 1rem; }
+.flash {
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  background: #edf7ef;
+  border: 1px solid #cfe5d4;
+}
+.site-footer { padding: 3rem 0 4rem; }
+.narrow { max-width: 720px; }
+.dashboard-strip { margin-top: 2rem; }
+@media (max-width: 860px) {
+  .hero-grid, .booking-layout, .footer-grid, .card-grid, .field-grid, .split-feature, .service-toolbar, .confirmation-grid, .gallery-grid, .calendar-grid {
+    grid-template-columns: 1fr;
+  }
+  .header-inner { flex-wrap: wrap; }
+  .slot-list { justify-content: flex-start; }
+}

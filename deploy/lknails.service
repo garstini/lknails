@@ -1,0 +1,15 @@
+[Unit]
+Description=LK Nails & Lashes Django App
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/lknails
+EnvironmentFile=/var/www/lknails/.env
+ExecStart=/usr/bin/env gunicorn -c /var/www/lknails/gunicorn.conf.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
