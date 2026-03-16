@@ -498,9 +498,9 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   padding-bottom: 0.35rem;
 }
 .calendar-table {
-  min-width: 1120px;
+  min-width: 1540px;
   display: grid;
-  grid-template-columns: repeat(7, minmax(180px, 1fr));
+  grid-template-columns: repeat(7, minmax(220px, 1fr));
   gap: 0.9rem;
 }
 .calendar-table-head,
@@ -531,7 +531,7 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 }
 .calendar-entry {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 0.75rem;
   padding: 0.85rem;
   margin-bottom: 0.75rem;
@@ -556,9 +556,14 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 .calendar-entry-body strong {
   display: block;
   margin-bottom: 0.25rem;
+  overflow-wrap: anywhere;
 }
 .calendar-entry-body p {
   margin: 0.18rem 0;
+  overflow-wrap: anywhere;
+}
+.calendar-entry-body {
+  min-width: 0;
 }
 .calendar-entry-actions {
   display: flex;
