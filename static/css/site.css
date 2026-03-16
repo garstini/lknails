@@ -626,14 +626,26 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 }
 .service-checkbox {
   appearance: none;
-  width: 1.15rem;
-  height: 1.15rem;
-  border-radius: 999px;
-  border: 2px solid rgba(196, 148, 165, 0.9);
-  background: white;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 0.4rem;
+  border: 1.5px solid rgba(196, 148, 165, 0.75);
+  background: rgba(255, 255, 255, 0.95);
   margin-top: 0.3rem;
   align-self: flex-start;
-  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+.service-checkbox::after {
+  content: "";
+  width: 0.38rem;
+  height: 0.7rem;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(45deg) scale(0.7);
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 .service-pick-main {
   display: flex;
@@ -656,9 +668,14 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   box-shadow: 0 18px 36px rgba(177, 108, 130, 0.14);
 }
 .service-pick-card.is-selected .service-checkbox {
-  background: var(--accent-deep);
-  border-color: var(--accent-deep);
-  box-shadow: 0 0 0 4px rgba(158, 83, 111, 0.12);
+  background: linear-gradient(180deg, #d99ab0, #b96b87);
+  border-color: #b96b87;
+  box-shadow: 0 0 0 4px rgba(185, 107, 135, 0.1);
+  transform: translateY(-1px);
+}
+.service-pick-card.is-selected .service-checkbox::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
 }
 .service-pick-copy {
   display: grid;
