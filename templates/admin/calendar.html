@@ -19,21 +19,31 @@
       <a class="button ghost" href="{% url 'admin_calendar' %}">{% trans "Current week" %}</a>
       <a class="button ghost" href="{% url 'admin_calendar' %}?week_start={{ next_week|date:'Y-m-d' }}">{% trans "Next week" %}</a>
     </div>
-    <div class="calendar-grid">
-      {% for day in week_days %}
-        <article class="calendar-day">
-          <h2>{{ day|date:"D d.m" }}</h2>
-          {% for booking in calendar_bookings|get_item:day %}
-            <div class="calendar-entry">
-              <strong>{{ booking.starts_at|date:"H:i" }} {{ booking.customer_name }}</strong>
-              <p>{{ booking.total_duration_minutes }} {% trans "minutes" %} • {{ booking.total_price|euro }}</p>
-              <p>{{ booking.reference }}</p>
-            </div>
-          {% empty %}
-            <p class="summary-note">{% trans "No appointments." %}</p>
-          {% endfor %}
-        </article>
-      {% endfor %}
+    <div class="calendar-table-shell">
+      <div class="calendar-table">
+        {% for day in week_days %}
+          <div class="calendar-table-head">
+            <strong>{{ day|date:"D" }}</strong>
+            <span>{{ day|date:"d.m.Y" }}</span>
+          </div>
+        {% endfor %}
+        {% for day in week_days %}
+          <div class="calendar-table-cell">
+            {% for booking in calendar_bookings|get_item:day %}
+              <article class="calendar-entry">
+                <div class="calendar-entry-time">{{ booking.starts_at|date:"H:i" }}</div>
+                <div class="calendar-entry-body">
+                  <strong>{{ booking.customer_name }}</strong>
+                  <p>{{ booking.total_duration_minutes }} {% trans "minutes" %} • {{ booking.total_price|euro }}</p>
+                  <p>{{ booking.reference }}</p>
+                </div>
+              </article>
+            {% empty %}
+              <p class="summary-note">{% trans "No appointments." %}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
     </div>
   </section>
 {% endblock %}
