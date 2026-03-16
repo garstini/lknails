@@ -47,6 +47,32 @@ input, textarea, select {
   font: 600 0.92rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
   letter-spacing: 0.02em;
 }
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.language-switcher form {
+  margin: 0;
+}
+.language-flag {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(230, 211, 216, 0.95);
+  background: rgba(255,255,255,0.92);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(113, 75, 93, 0.08);
+}
+.language-flag.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(207, 127, 151, 0.16);
+}
 .brand {
   font: 700 1.15rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
   letter-spacing: 0.08em;

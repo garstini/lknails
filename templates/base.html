@@ -35,17 +35,21 @@
         <a href="{% url 'booking_create' %}">{% trans "Booking" %}</a>
         <a href="/admin/">{% trans "Admin" %}</a>
       </nav>
-      <form class="language-switcher" action="{% url 'set_language' %}" method="post">
-        {% csrf_token %}
-        <input name="next" type="hidden" value="{{ request.get_full_path }}">
-        <select name="language" onchange="this.form.submit()">
-          {% get_current_language as LANGUAGE_CODE %}
-          {% get_available_languages as LANGUAGES %}
-          {% for code, name in LANGUAGES %}
-            <option value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{{ name }}</option>
-          {% endfor %}
-        </select>
-      </form>
+      {% get_current_language as CURRENT_LANGUAGE_CODE %}
+      <div class="language-switcher" aria-label="{% trans 'Language switcher' %}">
+        <form action="{% url 'set_language' %}" method="post">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.get_full_path }}">
+          <input type="hidden" name="language" value="en">
+          <button type="submit" class="language-flag {% if CURRENT_LANGUAGE_CODE == 'en' %}is-active{% endif %}" aria-label="English">🇬🇧</button>
+        </form>
+        <form action="{% url 'set_language' %}" method="post">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.get_full_path }}">
+          <input type="hidden" name="language" value="de">
+          <button type="submit" class="language-flag {% if CURRENT_LANGUAGE_CODE == 'de' %}is-active{% endif %}" aria-label="Deutsch">🇩🇪</button>
+        </form>
+      </div>
     </div>
   </header>
 
