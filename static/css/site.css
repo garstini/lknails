@@ -434,17 +434,33 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   border-radius: 20px;
   padding-inline: 0.9rem;
 }
-.service-selector {
-  max-height: 34rem;
-  overflow-y: auto;
-  padding-right: 0.35rem;
+.service-selector-panel {
   margin-bottom: 1.25rem;
+  padding: 0.85rem;
+  border-radius: 24px;
+  border: 1px solid rgba(230, 211, 216, 0.92);
+  background: rgba(255, 251, 252, 0.72);
+}
+.service-selector-hint {
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font: 600 0.84rem/1.4 "Avenir Next", "Segoe UI", sans-serif;
+}
+.service-selector {
+  max-height: 30rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scrollbar-gutter: stable;
 }
 .service-selector::-webkit-scrollbar {
   width: 10px;
 }
 .service-selector::-webkit-scrollbar-thumb {
   background: rgba(177, 108, 130, 0.24);
+  border-radius: 999px;
+}
+.service-selector::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.5);
   border-radius: 999px;
 }
 .booking-date-grid,

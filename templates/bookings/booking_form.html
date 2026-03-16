@@ -37,43 +37,46 @@
           </label>
         </div>
 
-        <div class="service-selector">
-          {% for category, subcategories in grouped_services.items %}
-            <section class="service-group" data-category="{{ category|lower }}">
-              <h2>{{ category }}</h2>
-              {% for subcategory, items in subcategories.items %}
-                <div class="subcategory-block">
-                  <h3>{{ subcategory }}</h3>
-                  {% for service in items %}
-                    <div class="check-card service-pick-card" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
-                      <input
-                        class="service-checkbox"
-                        type="checkbox"
-                        name="services"
-                        value="{{ service.id }}"
-                        data-duration="{{ service.duration_minutes }}"
-                        data-price="{{ service.current_price }}"
-                        data-name="{{ service.name }}"
-                        data-category-label="{{ category }}"
-                        {% if service.id in selected_service_ids %}checked{% endif %}
-                      >
-                      <button type="button" class="service-pick-main">
-                        <span class="service-pick-copy">
-                          <strong>{{ service.name }}</strong>
-                          <small class="service-description">{{ service.short_description }}</small>
-                          <small>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</small>
-                        </span>
-                      </button>
-                      <button type="button" class="service-pick-action">{% trans "Add to cart" %}</button>
-                    </div>
-                  {% endfor %}
-                </div>
-              {% endfor %}
-            </section>
-          {% endfor %}
-          {% if form.services.errors %}
-            <div class="field-error">{{ form.services.errors }}</div>
-          {% endif %}
+        <div class="service-selector-panel">
+          <div class="service-selector-hint">{% trans "Scroll inside this area to browse all available services." %}</div>
+          <div class="service-selector">
+            {% for category, subcategories in grouped_services.items %}
+              <section class="service-group" data-category="{{ category|lower }}">
+                <h2>{{ category }}</h2>
+                {% for subcategory, items in subcategories.items %}
+                  <div class="subcategory-block">
+                    <h3>{{ subcategory }}</h3>
+                    {% for service in items %}
+                      <div class="check-card service-pick-card" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
+                        <input
+                          class="service-checkbox"
+                          type="checkbox"
+                          name="services"
+                          value="{{ service.id }}"
+                          data-duration="{{ service.duration_minutes }}"
+                          data-price="{{ service.current_price }}"
+                          data-name="{{ service.name }}"
+                          data-category-label="{{ category }}"
+                          {% if service.id in selected_service_ids %}checked{% endif %}
+                        >
+                        <button type="button" class="service-pick-main">
+                          <span class="service-pick-copy">
+                            <strong>{{ service.name }}</strong>
+                            <small class="service-description">{{ service.short_description }}</small>
+                            <small>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</small>
+                          </span>
+                        </button>
+                        <button type="button" class="service-pick-action">{% trans "Add to cart" %}</button>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endfor %}
+              </section>
+            {% endfor %}
+            {% if form.services.errors %}
+              <div class="field-error">{{ form.services.errors }}</div>
+            {% endif %}
+          </div>
         </div>
 
         <div class="field-grid booking-date-grid">
