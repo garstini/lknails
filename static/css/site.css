@@ -619,15 +619,19 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 .service-pick-card {
   position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "check content"
+    "check action";
+  column-gap: 0.95rem;
+  row-gap: 0.75rem;
+  align-items: start;
   padding: 0.95rem 1rem;
   margin-bottom: 0.65rem;
   border-radius: 18px;
   border: 1px solid rgba(230, 211, 216, 0.85);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(113, 75, 93, 0.05);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(252, 247, 248, 0.94));
+  box-shadow: 0 6px 18px rgba(113, 75, 93, 0.05);
   transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
 .service-checkbox {
@@ -637,7 +641,8 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   border-radius: 0.4rem;
   border: 1.5px solid rgba(196, 148, 165, 0.75);
   background: rgba(255, 255, 255, 0.95);
-  align-self: center;
+  grid-area: check;
+  align-self: start;
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -654,6 +659,7 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   transition: opacity 0.16s ease, transform 0.16s ease;
 }
 .service-pick-main {
+  grid-area: content;
   display: flex;
   align-items: center;
   min-width: 0;
@@ -674,10 +680,9 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   box-shadow: 0 18px 36px rgba(177, 108, 130, 0.14);
 }
 .service-pick-card.is-selected .service-checkbox {
-  background: linear-gradient(180deg, #d99ab0, #b96b87);
-  border-color: #b96b87;
-  box-shadow: 0 0 0 4px rgba(185, 107, 135, 0.1);
-  transform: translateY(-1px);
+  background: linear-gradient(180deg, #e8bfd0, #d794af);
+  border-color: #d794af;
+  box-shadow: 0 0 0 4px rgba(215, 148, 175, 0.1);
 }
 .service-pick-card.is-selected .service-checkbox::after {
   opacity: 1;
@@ -729,26 +734,28 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   border-color: rgba(196, 148, 165, 0.85);
 }
 .service-pick-action {
-  align-self: center;
-  padding: 0.6rem 1rem;
+  grid-area: action;
+  justify-self: start;
+  align-self: start;
+  padding: 0.55rem 0.9rem;
   border-radius: 999px;
   background: rgba(255,255,255,0.95);
   border: 1px solid var(--line);
   color: var(--accent-deep);
-  white-space: nowrap;
-  font: 700 0.8rem/1.1 "Avenir Next", "Segoe UI", sans-serif;
+  white-space: normal;
+  font: 700 0.76rem/1.1 "Avenir Next", "Segoe UI", sans-serif;
   cursor: pointer;
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 .service-pick-card.is-selected .service-pick-action {
-  background: var(--accent-deep);
-  color: white;
-  border-color: transparent;
+  background: rgba(215, 148, 175, 0.16);
+  color: var(--accent-deep);
+  border-color: rgba(215, 148, 175, 0.55);
 }
 .service-pick-card.is-selected {
-  border-color: rgba(177, 108, 130, 0.5);
-  background: rgba(244, 227, 233, 0.35);
-  box-shadow: 0 4px 16px rgba(177, 108, 130, 0.12);
+  border-color: rgba(215, 148, 175, 0.48);
+  background: linear-gradient(180deg, rgba(255, 252, 253, 0.98), rgba(248, 236, 241, 0.92));
+  box-shadow: 0 10px 24px rgba(177, 108, 130, 0.1);
 }
 .service-pick-card.is-selected::before {
   content: "";
@@ -756,7 +763,7 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   inset: 0 auto 0 0;
   width: 3px;
   border-radius: 18px 0 0 18px;
-  background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+  background: linear-gradient(180deg, #efc8d7, #d794af);
 }
 .service-selector-panel {
   margin-bottom: 1.25rem;
@@ -1070,10 +1077,16 @@ select,
   .booking-summary-sticky { position: static; }
   .service-pick-card {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "check"
+      "content"
+      "action";
+    row-gap: 0.8rem;
   }
   .service-pick-action {
     width: 100%;
     min-width: 0;
+    justify-self: stretch;
   }
   .menu-service-card {
     grid-template-columns: 1fr;
