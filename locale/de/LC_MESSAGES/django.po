@@ -1,0 +1,286 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lknails\n"
+"POT-Creation-Date: 2026-03-16 15:20+0700\n"
+"PO-Revision-Date: 2026-03-16 15:20+0700\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Services"
+msgstr "Leistungen"
+
+msgid "Gallery"
+msgstr "Galerie"
+
+msgid "Booking"
+msgstr "Termin"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Social"
+msgstr "Social Media"
+
+msgid "Visit us"
+msgstr "Besuchen Sie uns"
+
+msgid "Add your Google Maps embed URL in site settings."
+msgstr "Fügen Sie die Google-Maps-Einbettungs-URL in den Seiteneinstellungen ein."
+
+msgid "Modern salon website"
+msgstr "Moderner Salon-Auftritt"
+
+msgid "Soft beauty, cleaner booking, stronger first impression."
+msgstr "Sanfte Beauty-Ästhetik, klarere Buchung und ein stärkerer erster Eindruck."
+
+msgid "LK Nails & Lashes now presents services, promotions and appointments in a clearer, calmer and more premium customer journey."
+msgstr "LK Nails & Lashes präsentiert Leistungen, Aktionen und Termine jetzt in einer klareren, ruhigeren und hochwertigeren Customer Journey."
+
+msgid "Book now"
+msgstr "Jetzt buchen"
+
+msgid "View services"
+msgstr "Leistungen ansehen"
+
+msgid "Browse gallery"
+msgstr "Galerie ansehen"
+
+msgid "minute slots"
+msgstr "Minuten-Slots"
+
+msgid "languages"
+msgstr "Sprachen"
+
+msgid "ready structure"
+msgstr "fertige Struktur"
+
+msgid "Atmosphere"
+msgstr "Atmosphäre"
+
+msgid "Elegant frontend designed for women who want clarity, softness and speed."
+msgstr "Elegantes Frontend für Kundinnen, die Klarheit, Leichtigkeit und Schnelligkeit schätzen."
+
+msgid "Lashes"
+msgstr "Wimpern"
+
+msgid "Nails"
+msgstr "Nägel"
+
+msgid "Top booked"
+msgstr "Am häufigsten gebucht"
+
+msgid "Popular services"
+msgstr "Beliebte Leistungen"
+
+msgid "Fresh activity"
+msgstr "Aktuelle Aktivität"
+
+msgid "Recent booking flow snapshot"
+msgstr "Aktuelle Buchungsübersicht"
+
+msgid "Bookings will appear here after customers begin using the form."
+msgstr "Hier erscheinen Buchungen, sobald Kundinnen das Formular nutzen."
+
+msgid "Booking flow"
+msgstr "Buchungsablauf"
+
+msgid "One appointment, multiple services, clear timing."
+msgstr "Ein Termin, mehrere Leistungen, klare Zeitplanung."
+
+msgid "Guests can combine lashes and nails in a single booking. The interface calculates the total duration, total price, and suggests free appointment slots based on staff capacity."
+msgstr "Kundinnen können Wimpern- und Nagelleistungen in einer Buchung kombinieren. Die Oberfläche berechnet Gesamtdauer, Gesamtpreis und schlägt freie Termine anhand der Kapazität vor."
+
+msgid "Transparent totals"
+msgstr "Transparente Summen"
+
+msgid "Duration and price update as services are selected."
+msgstr "Dauer und Preis aktualisieren sich beim Auswählen der Leistungen."
+
+msgid "Germany timezone"
+msgstr "Deutsche Zeitzone"
+
+msgid "Appointments and availability are evaluated in Europe/Berlin."
+msgstr "Termine und Verfügbarkeiten werden in Europe/Berlin berechnet."
+
+msgid "Parallel capacity control"
+msgstr "Parallele Kapazitätskontrolle"
+
+msgid "The system respects staff count and 15-minute scheduling blocks."
+msgstr "Das System berücksichtigt Mitarbeiterzahl und 15-Minuten-Buchungsblöcke."
+
+msgid "Featured"
+msgstr "Empfohlen"
+
+msgid "Selected salon favorites"
+msgstr "Ausgewählte Salon-Favoriten"
+
+msgid "Mark services as featured in admin to show them here."
+msgstr "Markieren Sie Leistungen im Admin als empfohlen, damit sie hier erscheinen."
+
+msgid "Visit the salon"
+msgstr "Besuchen Sie den Salon"
+
+msgid "Store information ready for local SEO and quick contact."
+msgstr "Standortinformationen für lokale SEO und schnellen Kontakt."
+
+msgid "Contact details"
+msgstr "Kontaktdaten"
+
+msgid "Social and discovery"
+msgstr "Social und Sichtbarkeit"
+
+msgid "Keep this section connected to your real business details in admin."
+msgstr "Halten Sie diesen Bereich im Admin mit Ihren echten Unternehmensdaten aktuell."
+
+msgid "Service menu"
+msgstr "Leistungsübersicht"
+
+msgid "Treatments for nails and lashes"
+msgstr "Behandlungen für Nägel und Wimpern"
+
+msgid "Portfolio"
+msgstr "Portfolio"
+
+msgid "Nails and lashes gallery"
+msgstr "Nagel- und Wimpern-Galerie"
+
+msgid "Use this page to showcase your best sets, textures, colours, and before/after work. Uploaded service images will appear here automatically."
+msgstr "Nutzen Sie diese Seite, um Ihre besten Sets, Texturen, Farben und Vorher/Nachher-Arbeiten zu zeigen. Hochgeladene Servicebilder erscheinen hier automatisch."
+
+msgid "Designed for inspiration"
+msgstr "Für Inspiration gestaltet"
+
+msgid "A cleaner gallery layout helps customers understand your style before they book."
+msgstr "Ein klareres Galerie-Layout hilft Kundinnen, Ihren Stil vor der Buchung zu verstehen."
+
+msgid "Ready for real salon photos"
+msgstr "Bereit für echte Salonfotos"
+
+msgid "As soon as you upload service images in admin, this page becomes your portfolio wall."
+msgstr "Sobald Sie Servicebilder im Admin hochladen, wird diese Seite zu Ihrer Portfolio-Wand."
+
+msgid "Online booking"
+msgstr "Online-Buchung"
+
+msgid "Choose multiple services in one appointment"
+msgstr "Wählen Sie mehrere Leistungen in einem Termin"
+
+msgid "Totals update instantly so the guest sees the full duration and estimated cost before confirming."
+msgstr "Summen werden sofort aktualisiert, damit Kundinnen vor der Bestätigung die Gesamtdauer und die geschätzten Kosten sehen."
+
+msgid "1. Enter contact"
+msgstr "1. Kontaktdaten eingeben"
+
+msgid "2. Select services"
+msgstr "2. Leistungen wählen"
+
+msgid "3. Choose free time"
+msgstr "3. Freie Uhrzeit wählen"
+
+msgid "Filter by category"
+msgstr "Nach Kategorie filtern"
+
+msgid "All categories"
+msgstr "Alle Kategorien"
+
+msgid "Search service"
+msgstr "Leistung suchen"
+
+msgid "Type to filter services"
+msgstr "Zum Filtern eingeben"
+
+msgid "Add to cart"
+msgstr "Zum Warenkorb"
+
+msgid "Added"
+msgstr "Hinzugefügt"
+
+msgid "Confirm booking"
+msgstr "Termin bestätigen"
+
+msgid "Booking summary"
+msgstr "Buchungsübersicht"
+
+msgid "Timezone"
+msgstr "Zeitzone"
+
+msgid "Selected services"
+msgstr "Ausgewählte Leistungen"
+
+msgid "Your selected services will appear here."
+msgstr "Ihre ausgewählten Leistungen erscheinen hier."
+
+msgid "Total duration"
+msgstr "Gesamtdauer"
+
+msgid "Estimated total"
+msgstr "Geschätzte Summe"
+
+msgid "Suggested free slots"
+msgstr "Vorgeschlagene freie Zeiten"
+
+msgid "Choose a date and services to load available times."
+msgstr "Wählen Sie ein Datum und Leistungen, um freie Zeiten zu laden."
+
+msgid "Checking availability..."
+msgstr "Verfügbarkeit wird geprüft..."
+
+msgid "No free slots for this service combination on the selected date."
+msgstr "Für diese Leistungskombination sind an diesem Datum keine freien Zeiten verfügbar."
+
+msgid "Slots are organised in %(slot)s minute steps with a maximum of %(capacity)s concurrent bookings."
+msgstr "Zeitslots sind in %(slot)s-Minuten-Schritten organisiert, mit maximal %(capacity)s parallelen Buchungen."
+
+msgid "minutes"
+msgstr "Minuten"
+
+msgid "Select"
+msgstr "Auswählen"
+
+msgid "Booking received"
+msgstr "Buchung erhalten"
+
+msgid "Thank you. Your appointment request was submitted."
+msgstr "Vielen Dank. Ihre Terminanfrage wurde gesendet."
+
+msgid "Your booking reference is %(ref)s."
+msgstr "Ihre Buchungsreferenz ist %(ref)s."
+
+msgid "Customer"
+msgstr "Kundin"
+
+msgid "Appointment"
+msgstr "Termin"
+
+msgid "Back to homepage"
+msgstr "Zur Startseite"
+
+msgid "Please select at least one service."
+msgstr "Bitte wählen Sie mindestens eine Leistung aus."
+
+msgid "Please select a future appointment time."
+msgstr "Bitte wählen Sie einen Termin in der Zukunft."
+
+msgid "The salon is closed on this day."
+msgstr "Der Salon ist an diesem Tag geschlossen."
+
+msgid "Selected services do not fit into working hours."
+msgstr "Die gewählten Leistungen passen nicht in die Öffnungszeiten."
+
+msgid "This time slot is fully booked. Please choose another time."
+msgstr "Dieser Zeitslot ist ausgebucht. Bitte wählen Sie eine andere Uhrzeit."
+
+msgid "Your booking was submitted successfully."
+msgstr "Ihre Buchung wurde erfolgreich gesendet."
+
+msgid "Test email sent successfully."
+msgstr "Test-E-Mail wurde erfolgreich gesendet."
+
+msgid "Test email could not be sent. Check SMTP settings in Site Settings."
+msgstr "Test-E-Mail konnte nicht gesendet werden. Bitte prüfen Sie die SMTP-Einstellungen."
