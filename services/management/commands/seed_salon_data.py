@@ -50,7 +50,18 @@ class Command(BaseCommand):
             defaults={
                 "name": "Admin booking notification",
                 "subject": "New booking {{ booking_reference }}",
-                "body": "New booking from {{ customer_name }} for {{ services }} at {{ start_at }}.",
+                "body": (
+                    "New booking {{ booking_reference }}\n\n"
+                    "Customer: {{ customer_name }}\n"
+                    "Phone: {{ phone }}\n"
+                    "Email: {{ email }}\n"
+                    "Appointment date: {{ appointment_date }}\n"
+                    "Appointment time: {{ appointment_time }}\n"
+                    "Total duration: {{ total_duration }} minutes\n"
+                    "Total price: {{ total_price }}\n"
+                    "Services:\n{{ service_lines }}\n\n"
+                    "Note: {{ note }}"
+                ),
             },
         )
         EmailTemplate.objects.get_or_create(
@@ -58,7 +69,17 @@ class Command(BaseCommand):
             defaults={
                 "name": "Customer confirmation",
                 "subject": "Booking confirmation {{ booking_reference }}",
-                "body": "Hi {{ customer_name }}, your booking for {{ services }} is confirmed for {{ start_at }}.",
+                "body": (
+                    "Hello {{ customer_name }},\n\n"
+                    "Your booking {{ booking_reference }} has been received by {{ site_name }}.\n"
+                    "Appointment date: {{ appointment_date }}\n"
+                    "Appointment time: {{ appointment_time }}\n"
+                    "Total duration: {{ total_duration }} minutes\n"
+                    "Total price: {{ total_price }}\n"
+                    "Services:\n{{ service_lines }}\n\n"
+                    "Note: {{ note }}\n\n"
+                    "Thank you,\n{{ site_name }}"
+                ),
             },
         )
 

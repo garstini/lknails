@@ -82,7 +82,10 @@ class EmailTemplate(models.Model):
     template_type = models.CharField(max_length=32, choices=TemplateType.choices, unique=True)
     subject = models.CharField(max_length=200)
     body = models.TextField(
-        help_text=_("Supported placeholders: customer_name, booking_reference, services, total_price, start_at")
+        help_text=_(
+            "Supported placeholders: customer_name, booking_reference, services, service_lines, total_price, "
+            "total_duration, start_at, appointment_date, appointment_time, phone, email, note, site_name"
+        )
     )
 
     def __str__(self):

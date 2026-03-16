@@ -258,19 +258,44 @@ class BookingCreateView(FormView):
 
     def send_booking_emails(self, booking):
         site_settings = get_site_settings()
-        services_text = ", ".join(booking.items.values_list("service_name", flat=True))
+        items = list(booking.items.all())
+        services_text = ", ".join(item.service_name for item in items)
+        service_lines = "\n".join(
+            f"- {item.service_name} | {item.category}/{item.subcategory} | {item.duration_minutes} min | {item.price}"
+            for item in items
+        )
+        localized_start = timezone.localtime(booking.starts_at)
         admin_email = site_settings.contact_email or site_settings.smtp_username or "admin@lknailslashes.de"
         email_context = {
             "customer_name": booking.customer_name,
             "booking_reference": booking.reference,
             "services": services_text,
             "total_price": booking.total_price,
-            "start_at": timezone.localtime(booking.starts_at),
+            "total_duration": booking.total_duration_minutes,
+            "start_at": localized_start,
+            "appointment_date": localized_start.strftime("%Y-%m-%d"),
+            "appointment_time": localized_start.strftime("%H:%M"),
+            "phone": booking.phone,
+            "email": booking.email,
+            "note": booking.note or "-",
+            "service_lines": service_lines,
+            "site_name": site_settings.site_name,
         }
         admin_subject, admin_body = render_email_template(
             "admin_booking",
             f"New booking {booking.reference}",
-            f"{booking.customer_name} booked {services_text} for {timezone.localtime(booking.starts_at)}.",
+            (
+                f"New booking {booking.reference}\n\n"
+                f"Customer: {booking.customer_name}\n"
+                f"Phone: {booking.phone}\n"
+                f"Email: {booking.email}\n"
+                f"Appointment date: {email_context['appointment_date']}\n"
+                f"Appointment time: {email_context['appointment_time']}\n"
+                f"Total duration: {booking.total_duration_minutes} minutes\n"
+                f"Total price: {booking.total_price}\n"
+                f"Services:\n{service_lines}\n\n"
+                f"Note: {booking.note or '-'}"
+            ),
             email_context,
         )
         send_configured_email(
@@ -283,7 +308,17 @@ class BookingCreateView(FormView):
         customer_subject, customer_body = render_email_template(
             "customer_confirmation",
             f"Booking confirmation {booking.reference}",
-            f"Thank you {booking.customer_name}. Your booking for {services_text} starts at {timezone.localtime(booking.starts_at)}.",
+            (
+                f"Hello {booking.customer_name},\n\n"
+                f"Your booking {booking.reference} has been received.\n"
+                f"Appointment date: {email_context['appointment_date']}\n"
+                f"Appointment time: {email_context['appointment_time']}\n"
+                f"Total duration: {booking.total_duration_minutes} minutes\n"
+                f"Total price: {booking.total_price}\n"
+                f"Services:\n{service_lines}\n\n"
+                f"Note: {booking.note or '-'}\n\n"
+                f"Thank you,\n{site_settings.site_name}"
+            ),
             email_context,
         )
         send_configured_email(
