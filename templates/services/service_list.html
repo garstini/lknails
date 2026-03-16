@@ -32,9 +32,19 @@
             <h3>{{ subcategory }}</h3>
             <div class="table-like">
               {% for service in items %}
-                <article class="service-row menu-service-row" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
-                  <div>
+                <article class="service-row menu-service-row menu-service-card" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
+                  <div class="menu-service-visual">
+                    {% if service.primary_image and service.primary_image.image %}
+                      <img class="menu-service-image" src="{{ service.primary_image.image.url }}" alt="{{ service.primary_image.alt_text|default:service.name }}">
+                    {% else %}
+                      <div class="menu-service-image menu-service-image-placeholder {{ service.gallery_tone }}">
+                        <span>{{ category }}</span>
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="menu-service-copy">
                     <h4>{{ service.name }}</h4>
+                    <p class="service-description">{{ service.short_description }}</p>
                     <p>{{ service.duration_minutes }} {% trans "minutes" %}</p>
                   </div>
                   <div class="service-row-price">

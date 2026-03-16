@@ -56,6 +56,16 @@ class Service(models.Model):
         }
         return tones.get(self.category, "tone-neutral")
 
+    @property
+    def short_description(self):
+        if self.description:
+            return self.description
+        if self.category == "Wimpern":
+            return f"{self.subcategory} treatment focused on a soft, defined lash finish with salon comfort."
+        if self.category == "Nägel":
+            return f"{self.subcategory} nail service designed for polished detail, shape and long-lasting wear."
+        return "A premium salon treatment tailored for comfort, beauty and a polished result."
+
     def __str__(self):
         return self.name
 

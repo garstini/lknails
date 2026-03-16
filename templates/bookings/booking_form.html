@@ -29,7 +29,12 @@
           <label>{{ form.phone.label }}{{ form.phone }}</label>
           <label>{{ form.email.label }}{{ form.email }}</label>
           <label>{{ form.appointment_date.label }}{{ form.appointment_date }}</label>
-          <label>{{ form.appointment_time.label }}{{ form.appointment_time }}</label>
+          <label>
+            {{ form.appointment_time.label }}
+            <select id="id_appointment_time" name="appointment_time" required>
+              <option value="">{% trans "Select an available time" %}</option>
+            </select>
+          </label>
           <label class="full">{{ form.note.label }}{{ form.note }}</label>
         </div>
         {% for field in form %}
@@ -76,9 +81,10 @@
                       >
                       <span class="service-pick-copy">
                         <strong>{{ service.name }}</strong>
+                        <small class="service-description">{{ service.short_description }}</small>
                         <small>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</small>
                       </span>
-                      <span class="service-pick-action">{% trans "Add to cart" %}</span>
+                      <button type="button" class="service-pick-action">{% trans "Add to cart" %}</button>
                     </label>
                   {% endfor %}
                 </div>
@@ -220,8 +226,10 @@
       slotContainer.innerHTML = '<p class="summary-note">{% trans "Checking availability..." %}</p>';
       const response = await fetch(`${slotsUrl}?${params.toString()}`);
       const data = await response.json();
+      timeInput.innerHTML = `<option value="">{% trans "Select an available time" %}</option>`;
       if (!data.slots.length) {
         slotContainer.innerHTML = '<p class="summary-note">{% trans "No free slots for this service combination on the selected date." %}</p>';
+        timeInput.value = '';
         return;
       }
 
@@ -235,10 +243,23 @@
           timeInput.value = slot.value;
         });
         slotContainer.appendChild(button);
+        const option = document.createElement('option');
+        option.value = slot.value;
+        option.textContent = slot.label;
+        timeInput.appendChild(option);
       });
     }
 
     boxes.forEach((box) => box.addEventListener('change', updateTotals));
+    document.querySelectorAll('.service-pick-action').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        const card = button.closest('.service-pick-card');
+        const checkbox = card.querySelector('.service-checkbox');
+        checkbox.checked = !checkbox.checked;
+        updateTotals();
+      });
+    });
     dateInput.addEventListener('change', updateTotals);
     serviceFilter.addEventListener('change', applyServiceFilters);
     serviceSearch.addEventListener('input', applyServiceFilters);

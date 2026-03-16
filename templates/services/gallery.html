@@ -34,6 +34,7 @@
           <div class="gallery-copy">
             <p class="service-meta">{{ service.category }} / {{ service.subcategory }}</p>
             <h3>{{ service.name }}</h3>
+            <p class="service-description">{{ service.short_description }}</p>
             <p>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</p>
           </div>
         </article>
