@@ -240,6 +240,16 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   margin: 0.55rem 0 0.75rem;
   font: 500 0.93rem/1.5 "Avenir Next", "Segoe UI", sans-serif;
 }
+.service-group {
+  margin-top: 2.4rem;
+}
+.service-group:first-of-type {
+  margin-top: 1.4rem;
+}
+.service-group > h2 {
+  margin-bottom: 1rem;
+  padding-left: 0.2rem;
+}
 .metric { font-size: 2rem; font-weight: 700; color: var(--accent-deep); margin: 0; }
 .service-meta, .service-stats, .summary-note, .site-footer, .field-error { color: var(--muted); }
 .service-card-footer {
