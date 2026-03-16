@@ -468,6 +468,74 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 .booking-contact-grid {
   margin-bottom: 1.2rem;
 }
+.booking-date-picker {
+  display: grid;
+  gap: 0.8rem;
+}
+.date-picker-shell {
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(230, 211, 216, 0.95);
+}
+.date-picker-header,
+.date-weekdays,
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.45rem;
+  align-items: center;
+}
+.date-picker-header {
+  grid-template-columns: auto 1fr auto;
+  margin-bottom: 0.9rem;
+}
+.date-picker-header strong {
+  text-align: center;
+}
+.date-nav-button {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 999px;
+  width: 2.2rem;
+  height: 2.2rem;
+  cursor: pointer;
+}
+.date-nav-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.date-weekdays {
+  margin-bottom: 0.65rem;
+}
+.date-weekdays span {
+  text-align: center;
+  color: var(--muted);
+  font: 600 0.8rem/1.3 "Avenir Next", "Segoe UI", sans-serif;
+}
+.date-cell {
+  border: 1px solid rgba(230, 211, 216, 0.9);
+  background: white;
+  color: var(--text);
+  border-radius: 14px;
+  min-height: 2.6rem;
+  cursor: pointer;
+  font: 600 0.92rem/1 "Avenir Next", "Segoe UI", sans-serif;
+}
+.date-cell.is-active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.date-cell.is-disabled {
+  background: rgba(248, 243, 244, 0.8);
+  color: #b7aab0;
+  border-color: rgba(230, 211, 216, 0.75);
+  cursor: not-allowed;
+}
+.date-cell-empty {
+  min-height: 2.6rem;
+}
 .cart-panel {
   margin: 1rem 0 1.2rem;
   padding: 1rem 0 1.1rem;
