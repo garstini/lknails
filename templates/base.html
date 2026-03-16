@@ -29,10 +29,10 @@
     <div class="shell header-inner">
       <a class="brand" href="{% url 'home' %}">LK Nails & Lashes</a>
       <nav class="nav">
+        <a href="{% url 'home' %}">{% trans "Home" %}</a>
         <a href="{% url 'service_list' %}">{% trans "Services" %}</a>
         <a href="{% url 'gallery' %}">{% trans "Gallery" %}</a>
         <a href="{% url 'booking_create' %}">{% trans "Booking" %}</a>
-        <a href="{% url 'admin_dashboard' %}">{% trans "Dashboard" %}</a>
         <a href="/admin/">{% trans "Admin" %}</a>
       </nav>
       <form class="language-switcher" action="{% url 'set_language' %}" method="post">

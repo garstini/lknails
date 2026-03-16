@@ -1,0 +1,84 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    .login-card {
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #ead7dd;
+      border-radius: 28px;
+      box-shadow: 0 24px 60px rgba(113, 75, 93, 0.12);
+      overflow: hidden;
+    }
+    .login-hero {
+      padding: 2rem 2rem 1.2rem;
+      background: linear-gradient(135deg, #fff7f3, #f4d8df);
+    }
+    .login-hero p {
+      margin: 0 0 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.75rem;
+      color: #9e536f;
+      font-weight: 700;
+    }
+    .login-hero h1 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.1;
+      color: #33232e;
+    }
+    .login-body { padding: 1.8rem 2rem 2rem; }
+    .login-body .form-row { margin-bottom: 1rem; }
+    .login-body input {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: 14px;
+      border: 1px solid #e6d3d8;
+    }
+    .login-help { color: #806774; margin-bottom: 1.25rem; }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div id="content-main">
+    <div class="login-card">
+      <div class="login-hero">
+        <p>{% trans "Admin access" %}</p>
+        <h1>{% trans "Sign in to manage bookings, services and salon settings." %}</h1>
+      </div>
+      <div class="login-body">
+        {% if form.errors and not form.non_field_errors %}
+          <p class="errornote">{% trans "Please correct the error below." %}</p>
+        {% endif %}
+        {% if form.non_field_errors %}
+          {% for error in form.non_field_errors %}
+            <p class="errornote">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+        <p class="login-help">{% trans "Use your administrator credentials to access the salon management area." %}</p>
+        <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+          <div class="form-row">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+          </div>
+          <div class="form-row">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            <input type="hidden" name="next" value="{{ next }}">
+          </div>
+          {% url 'admin_password_reset' as password_reset_url %}
+          {% if password_reset_url %}
+            <div class="password-reset-link">
+              <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+            </div>
+          {% endif %}
+          <div class="submit-row">
+            <input type="submit" value="{% trans 'Log in' %}">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

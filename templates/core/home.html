@@ -85,25 +85,6 @@
   </section>
 
   <section class="section shell">
-    <div class="section-heading">
-      <p class="eyebrow">{% trans "Fresh activity" %}</p>
-      <h2>{% trans "Recent booking flow snapshot" %}</h2>
-    </div>
-    <div class="card-grid activity-grid">
-      {% for booking in latest_bookings %}
-        <article class="service-card booking-activity-card">
-          <p class="service-meta">{{ booking.reference }}</p>
-          <h3>{{ booking.customer_name }}</h3>
-          <p>{{ booking.starts_at|date:"d.m.Y H:i" }}</p>
-          <p class="price-new">{{ booking.total_price|default:"0"|euro }}</p>
-        </article>
-      {% empty %}
-        <p>{% trans "Bookings will appear here after customers begin using the form." %}</p>
-      {% endfor %}
-    </div>
-  </section>
-
-  <section class="section shell">
     <div class="split-feature">
       <div class="feature-panel feature-panel-editorial">
         <p class="eyebrow">{% trans "Booking flow" %}</p>

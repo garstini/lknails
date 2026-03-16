@@ -1,10 +1,15 @@
-{% extends "base.html" %}
+{% extends "admin/base_site.html" %}
 {% load i18n site_tags %}
 
 {% block title %}{% trans "Dashboard" %} | LK Nails & Lashes{% endblock %}
 
 {% block content %}
-  <section class="section shell">
+  <div class="admin-shortcuts">
+    <a href="{% url 'admin:index' %}">{% trans "Admin home" %}</a>
+    <a href="{% url 'admin_calendar' %}">{% trans "Calendar" %}</a>
+    <a href="/">{% trans "View site" %}</a>
+  </div>
+  <section class="section">
     <div class="section-heading">
       <p class="eyebrow">{% trans "Admin overview" %}</p>
       <h1>{% trans "Booking and service dashboard" %}</h1>

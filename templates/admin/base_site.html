@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}LK Nails & Lashes Admin{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    :root {
+      --admin-accent: #9e536f;
+      --admin-accent-soft: #f4d8df;
+      --admin-bg: #fff8f5;
+      --admin-text: #33232e;
+      --admin-line: #e6d3d8;
+    }
+    body.login, body { background: linear-gradient(180deg, #fffdfb 0%, var(--admin-bg) 100%); }
+    #header { background: linear-gradient(135deg, #7f425a, var(--admin-accent)); color: white; }
+    #branding h1, #branding h1 a:link, #branding h1 a:visited {
+      color: white;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .module h2, .module caption, .inline-group h2 { background: #f7e7ec; color: var(--admin-text); }
+    div.breadcrumbs { background: #f0d7df; color: var(--admin-text); }
+    div.breadcrumbs a { color: #6f3f53; }
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+      background: linear-gradient(135deg, #7f425a, var(--admin-accent));
+      border: 0;
+      border-radius: 999px;
+    }
+    .admin-shortcuts {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      margin: 1rem 0;
+      border: 1px solid var(--admin-line);
+      border-radius: 16px;
+      background: white;
+    }
+    .admin-shortcuts a {
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      background: var(--admin-accent-soft);
+      color: #6f3f53;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .login #container { background: transparent; }
+    .login #content { padding: 0; }
+    .login #content-main { max-width: 520px; margin: 4rem auto; }
+    .login .form-row { padding: 0; }
+  </style>
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name"><a href="{% url 'admin:index' %}">LK Nails & Lashes Admin</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
