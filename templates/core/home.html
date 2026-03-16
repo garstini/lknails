@@ -22,12 +22,12 @@
           <p class="eyebrow">{% trans "Atmosphere" %}</p>
           <h2>{% trans "Elegant frontend designed for women who want clarity, softness and speed." %}</h2>
         </article>
-        <article class="hero-card hero-card-small">
+        <a class="hero-card hero-card-small hero-card-link" href="{% url 'service_list' %}?category=wimpern">
           <span>{% trans "Lashes" %}</span>
-        </article>
-        <article class="hero-card hero-card-small hero-card-accent">
+        </a>
+        <a class="hero-card hero-card-small hero-card-small hero-card-accent hero-card-link" href="{% url 'service_list' %}?category=nägel">
           <span>{% trans "Nails" %}</span>
-        </article>
+        </a>
       </div>
     </div>
   </section>

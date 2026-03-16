@@ -72,6 +72,8 @@
     const menuSearch = document.getElementById('service-menu-search');
     const menuRows = Array.from(document.querySelectorAll('.menu-service-row'));
     const menuGroups = Array.from(document.querySelectorAll('.service-group'));
+    const params = new URLSearchParams(window.location.search);
+    const initialCategory = (params.get('category') || '').trim().toLowerCase();
 
     function filterMenu() {
       const categoryValue = menuCategory.value.trim().toLowerCase();
@@ -88,6 +90,9 @@
       });
     }
 
+    if (initialCategory) {
+      menuCategory.value = initialCategory;
+    }
     menuCategory.addEventListener('change', filterMenu);
     menuSearch.addEventListener('input', filterMenu);
     filterMenu();
