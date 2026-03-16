@@ -8,7 +8,7 @@ from django.utils import timezone
 from zoneinfo import ZoneInfo
 
 from bookings.models import Booking
-from bookings.views import is_booking_available
+from bookings.views import get_available_start_slots, get_booking_timezone, is_booking_available
 from core.models import SiteSettings, WorkingHour
 from services.models import Service
 
@@ -129,6 +129,22 @@ class BookingAvailabilityTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "closed on the selected day", status_code=200)
+
+    def test_today_slots_do_not_include_past_times(self):
+        germany_now = timezone.now().astimezone(get_booking_timezone())
+        today = germany_now.date()
+        weekday = today.weekday()
+        if weekday == 6:
+            return
+        working_hour = WorkingHour.objects.get(weekday=weekday)
+        working_hour.is_open = True
+        working_hour.open_time = time(0, 0)
+        working_hour.close_time = time(23, 45)
+        working_hour.save()
+
+        slots = get_available_start_slots(today, 60)
+        if slots:
+            self.assertGreaterEqual(slots[0], germany_now.replace(second=0, microsecond=0))
 
     def test_booking_success_page_shows_latest_booking_details(self):
         starts_at = timezone.now() + timedelta(days=1)

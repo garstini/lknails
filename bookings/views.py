@@ -73,6 +73,10 @@ def get_booking_timezone():
     return ZoneInfo(get_site_settings().timezone or settings.TIME_ZONE)
 
 
+def get_germany_now():
+    return timezone.now().astimezone(get_booking_timezone())
+
+
 def combine_local_datetime(appointment_date, appointment_time):
     combined = datetime.combine(appointment_date, appointment_time)
     return timezone.make_aware(combined, get_booking_timezone())
@@ -97,10 +101,21 @@ def get_available_slots(target_date):
 
     slots = []
     current = day_start
+    germany_now = get_germany_now()
+    if target_date == germany_now.date():
+        current = max(current, round_up_to_next_slot(germany_now, slot_minutes))
     while current + timedelta(minutes=slot_minutes) <= day_end:
         slots.append(current)
         current += timedelta(minutes=slot_minutes)
     return slots
+
+
+def round_up_to_next_slot(dt_value, slot_minutes):
+    dt_value = dt_value.replace(second=0, microsecond=0)
+    remainder = dt_value.minute % slot_minutes
+    if remainder or dt_value.second or dt_value.microsecond:
+        dt_value += timedelta(minutes=slot_minutes - remainder if remainder else slot_minutes)
+    return dt_value.replace(second=0, microsecond=0)
 
 
 def get_available_start_slots(target_date, duration_minutes):
