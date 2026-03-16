@@ -16,20 +16,6 @@
           <a class="button ghost" href="{% url 'service_list' %}">{% trans "View services" %}</a>
           <a class="button ghost" href="{% url 'gallery' %}">{% trans "Browse gallery" %}</a>
         </div>
-        <div class="hero-metrics">
-          <div>
-            <strong>15</strong>
-            <span>{% trans "minute slots" %}</span>
-          </div>
-          <div>
-            <strong>2</strong>
-            <span>{% trans "languages" %}</span>
-          </div>
-          <div>
-            <strong>SEO</strong>
-            <span>{% trans "ready structure" %}</span>
-          </div>
-        </div>
       </div>
       <div class="hero-showcase">
         <article class="hero-card hero-card-large">
@@ -78,7 +64,7 @@
         </article>
         <article class="mini-feature">
           <strong>{% trans "Fast online booking" %}</strong>
-          <p>{% trans "Guests can build a service bundle, see totals and choose real available slots." %}</p>
+          <p>{% trans "Guests can build a service bundle, see totals and choose a free appointment time in a simple flow." %}</p>
         </article>
       </div>
     </div>
@@ -89,7 +75,7 @@
       <div class="feature-panel feature-panel-editorial">
         <p class="eyebrow">{% trans "Booking flow" %}</p>
         <h2>{% trans "One appointment, multiple services, clear timing." %}</h2>
-        <p>{% trans "Guests can combine lashes and nails in a single booking. The interface calculates the total duration, total price, and suggests free appointment slots based on staff capacity." %}</p>
+        <p>{% trans "Guests can combine lashes and nails in a single booking. The interface calculates the total duration, total price, and then shows free times that fit the selected services." %}</p>
       </div>
       <div class="feature-list">
         <article class="mini-feature">
@@ -97,12 +83,12 @@
           <p>{% trans "Duration and price update as services are selected." %}</p>
         </article>
         <article class="mini-feature">
-          <strong>{% trans "Germany timezone" %}</strong>
-          <p>{% trans "Appointments and availability are evaluated in Europe/Berlin." %}</p>
+          <strong>{% trans "Clear time choice" %}</strong>
+          <p>{% trans "Available times appear only after the guest chooses the services they want." %}</p>
         </article>
         <article class="mini-feature">
-          <strong>{% trans "Parallel capacity control" %}</strong>
-          <p>{% trans "The system respects staff count and 15-minute scheduling blocks." %}</p>
+          <strong>{% trans "Reliable availability" %}</strong>
+          <p>{% trans "Shown times already take salon availability into account before the booking is confirmed." %}</p>
         </article>
       </div>
     </div>
@@ -127,7 +113,7 @@
   <section class="section shell">
     <div class="section-heading">
       <p class="eyebrow">{% trans "Visit the salon" %}</p>
-      <h2>{% trans "Store information ready for local SEO and quick contact." %}</h2>
+      <h2>{% trans "Store information and quick contact." %}</h2>
     </div>
     <div class="booking-layout info-layout">
       <article class="booking-form info-card">

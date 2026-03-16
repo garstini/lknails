@@ -454,6 +454,34 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   font: 700 0.95rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
   color: var(--accent-deep);
 }
+.booking-time-picker {
+  display: grid;
+  gap: 0.8rem;
+}
+.booking-time-label {
+  font-weight: 700;
+}
+.selected-slot-display {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(230, 211, 216, 0.95);
+}
+.selected-slot-display strong {
+  color: var(--accent-deep);
+}
+.selected-slot-display span {
+  color: var(--text);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
+.selected-slot-display.is-empty strong {
+  color: var(--text);
+}
+.selected-slot-display.is-empty span {
+  color: var(--muted);
+}
 .slot-list {
   display: flex;
   flex-wrap: wrap;
@@ -470,6 +498,12 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   font: inherit;
 }
 .slot-chip:hover { border-color: var(--accent); color: var(--accent-deep); }
+.slot-chip.is-active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 12px 24px rgba(177, 108, 130, 0.18);
+}
 .summary-row-stack { align-items: flex-start; flex-direction: column; }
 .flash-stack { padding-top: 1rem; }
 .flash {

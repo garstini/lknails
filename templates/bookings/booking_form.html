@@ -89,11 +89,18 @@
         </div>
 
         <div class="field-grid booking-time-grid">
-          <label class="full">
-            {{ form.appointment_time.label }}
-            <select id="id_appointment_time" name="appointment_time" required disabled>
-              <option value="">{% trans "Select an available time" %}</option>
-            </select>
+          <label class="full booking-time-picker">
+            <span class="booking-time-label">{{ form.appointment_time.label }}</span>
+            <input type="hidden" id="id_appointment_time" name="appointment_time" value="{{ form.appointment_time.value|default:'' }}" required>
+            <div id="selected-slot-display" class="selected-slot-display is-empty">
+              {% if form.appointment_time.value %}
+                <strong>{% trans "Selected time" %}</strong>
+                <span>{{ form.appointment_time.value }}</span>
+              {% else %}
+                <strong>{% trans "No time selected yet" %}</strong>
+                <span>{% trans "Choose your services first, then pick one of the free times below." %}</span>
+              {% endif %}
+            </div>
             <small id="time-help" class="summary-note">{% trans "Choose at least one service to unlock available times." %}</small>
           </label>
         </div>
@@ -140,12 +147,45 @@
     const cartContainer = document.getElementById('selected-services-cart');
     const dateInput = document.getElementById('id_appointment_date');
     const timeInput = document.getElementById('id_appointment_time');
+    const selectedSlotDisplay = document.getElementById('selected-slot-display');
     const timeHelp = document.getElementById('time-help');
     const slotContainer = document.getElementById('available-slots');
     const slotsUrl = "{% url 'available_slots' %}";
     const serviceFilter = document.getElementById('service-category-filter');
     const serviceCards = Array.from(document.querySelectorAll('.check-card'));
     const serviceGroups = Array.from(document.querySelectorAll('.service-group'));
+    let currentSlots = [];
+
+    function renderSelectedSlot(label) {
+      if (!label) {
+        selectedSlotDisplay.classList.add('is-empty');
+        selectedSlotDisplay.innerHTML = `
+          <strong>{% trans "No time selected yet" %}</strong>
+          <span>{% trans "Choose your services first, then pick one of the free times below." %}</span>
+        `;
+        return;
+      }
+
+      selectedSlotDisplay.classList.remove('is-empty');
+      selectedSlotDisplay.innerHTML = `
+        <strong>{% trans "Selected time" %}</strong>
+        <span>${label}</span>
+      `;
+    }
+
+    function clearSelectedSlot() {
+      timeInput.value = '';
+      renderSelectedSlot('');
+    }
+
+    function markActiveSlot() {
+      const selectedValue = timeInput.value;
+      slotContainer.querySelectorAll('.slot-chip').forEach((button) => {
+        button.classList.toggle('is-active', selectedValue && button.dataset.value === selectedValue);
+      });
+      const selectedSlot = currentSlots.find((slot) => slot.value === selectedValue);
+      renderSelectedSlot(selectedSlot ? selectedSlot.label : '');
+    }
 
     function updateTotals() {
       let duration = 0;
@@ -172,11 +212,12 @@
       });
       durationOutput.textContent = `${duration} {% trans "minutes" %}`;
       priceOutput.textContent = `${price.toFixed(2).replace('.', ',')} €`;
-      timeInput.disabled = !selectedItems.length;
       if (!selectedItems.length) {
-        timeInput.innerHTML = `<option value="">{% trans "Select an available time" %}</option>`;
+        currentSlots = [];
+        clearSelectedSlot();
         timeHelp.textContent = "{% trans 'Choose at least one service to unlock available times.' %}";
       } else if (!dateInput.value) {
+        clearSelectedSlot();
         timeHelp.textContent = "{% trans 'Choose a date to load the available time slots.' %}";
       } else {
         timeHelp.textContent = "{% trans 'Select one of the available appointment times.' %}";
@@ -224,41 +265,45 @@
     async function loadAvailableSlots(selectedIds) {
       const dateValue = dateInput.value;
       if (!dateValue || !selectedIds.length) {
+        currentSlots = [];
         slotContainer.innerHTML = '<p class="summary-note">{% trans "Choose a date and services to load available times." %}</p>';
-        timeInput.value = '';
+        clearSelectedSlot();
         return;
       }
 
       const params = new URLSearchParams({ date: dateValue });
       selectedIds.forEach((id) => params.append('services', id));
 
+      const previousValue = timeInput.value;
       slotContainer.innerHTML = '<p class="summary-note">{% trans "Checking availability..." %}</p>';
       const response = await fetch(`${slotsUrl}?${params.toString()}`);
       const data = await response.json();
-      timeInput.innerHTML = `<option value="">{% trans "Select an available time" %}</option>`;
+      currentSlots = data.slots || [];
       if (!data.slots.length) {
         slotContainer.innerHTML = '<p class="summary-note">{% trans "No free slots for this service combination on the selected date." %}</p>';
-        timeInput.value = '';
+        clearSelectedSlot();
         timeHelp.textContent = "{% trans 'No free appointment times were found for the selected services on this date.' %}";
         return;
       }
 
       slotContainer.innerHTML = '';
+      if (!currentSlots.some((slot) => slot.value === previousValue)) {
+        timeInput.value = '';
+      }
       timeHelp.textContent = "{% trans 'Select one of the available appointment times.' %}";
       data.slots.slice(0, 12).forEach((slot) => {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'slot-chip';
         button.textContent = slot.label;
+        button.dataset.value = slot.value;
         button.addEventListener('click', () => {
           timeInput.value = slot.value;
+          markActiveSlot();
         });
         slotContainer.appendChild(button);
-        const option = document.createElement('option');
-        option.value = slot.value;
-        option.textContent = slot.label;
-        timeInput.appendChild(option);
       });
+      markActiveSlot();
     }
 
     boxes.forEach((box) => box.addEventListener('change', updateTotals));
