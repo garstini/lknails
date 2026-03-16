@@ -258,6 +258,117 @@ msgstr "Kundin"
 msgid "Appointment"
 msgstr "Termin"
 
+msgid "1. Select services"
+msgstr "1. Leistungen wählen"
+
+msgid "2. Choose date"
+msgstr "2. Datum wählen"
+
+msgid "4. Enter contact"
+msgstr "4. Kontaktdaten eingeben"
+
+msgid "Scroll inside this area to browse all available services."
+msgstr "In diesem Bereich scrollen, um alle verfügbaren Leistungen zu sehen."
+
+msgid "Only current or future working days are available, based on Germany time."
+msgstr "Es sind nur heutige oder zukünftige Arbeitstage nach deutscher Zeit verfügbar."
+
+msgid "Selected date"
+msgstr "Gewähltes Datum"
+
+msgid "No date selected yet"
+msgstr "Noch kein Datum gewählt"
+
+msgid "Choose a working day from the calendar below."
+msgstr "Wählen Sie unten im Kalender einen Arbeitstag aus."
+
+msgid "Mon"
+msgstr "Mo"
+
+msgid "Tue"
+msgstr "Di"
+
+msgid "Wed"
+msgstr "Mi"
+
+msgid "Thu"
+msgstr "Do"
+
+msgid "Fri"
+msgstr "Fr"
+
+msgid "Sat"
+msgstr "Sa"
+
+msgid "Sun"
+msgstr "So"
+
+msgid "Previous month"
+msgstr "Vorheriger Monat"
+
+msgid "Next month"
+msgstr "Nächster Monat"
+
+msgid "Not selected yet"
+msgstr "Noch nicht gewählt"
+
+msgid "Customer details"
+msgstr "Kundendaten"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Note"
+msgstr "Notiz"
+
+msgid "Not provided yet"
+msgstr "Noch nicht angegeben"
+
+msgid "No note yet"
+msgstr "Noch keine Notiz"
+
+msgid "Choose at least one service to unlock available times."
+msgstr "Wählen Sie mindestens eine Leistung, um verfügbare Zeiten zu sehen."
+
+msgid "Choose a date to load the available time slots."
+msgstr "Wählen Sie ein Datum, um verfügbare Zeiten zu laden."
+
+msgid "Select one of the available appointment times."
+msgstr "Wählen Sie eine der verfügbaren Terminzeiten."
+
+msgid "Please choose today or a future date in Germany time."
+msgstr "Bitte wählen Sie heute oder ein zukünftiges Datum nach deutscher Zeit."
+
+msgid "Past dates are not available."
+msgstr "Vergangene Daten sind nicht verfügbar."
+
+msgid "The salon is closed on the selected day."
+msgstr "Der Salon ist am gewählten Tag geschlossen."
+
+msgid "Please choose a day when the salon is open."
+msgstr "Bitte wählen Sie einen Tag, an dem der Salon geöffnet ist."
+
+msgid "The salon is closed on this date. Please choose another day."
+msgstr "Der Salon ist an diesem Datum geschlossen. Bitte wählen Sie einen anderen Tag."
+
+msgid "No free appointment times were found for the selected services on this date."
+msgstr "Für die ausgewählten Leistungen wurden an diesem Datum keine freien Termine gefunden."
+
+msgid "Selected time"
+msgstr "Gewählte Uhrzeit"
+
+msgid "No time selected yet"
+msgstr "Noch keine Uhrzeit gewählt"
+
+msgid "Choose your services first, then pick one of the free times below."
+msgstr "Wählen Sie zuerst Ihre Leistungen und danach unten eine freie Uhrzeit."
+
 msgid "Back to homepage"
 msgstr "Zur Startseite"
 

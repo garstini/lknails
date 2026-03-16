@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n site_tags %}
+{% load i18n site_tags l10n %}
 
 {% block title %}{% trans "Booking" %} | LK Nails & Lashes{% endblock %}
 
@@ -54,7 +54,7 @@
                           name="services"
                           value="{{ service.id }}"
                           data-duration="{{ service.duration_minutes }}"
-                          data-price="{{ service.current_price }}"
+                          data-price="{{ service.current_price|unlocalize }}"
                           data-name="{{ service.name }}"
                           data-category-label="{{ category }}"
                           {% if service.id in selected_service_ids %}checked{% endif %}
