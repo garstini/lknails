@@ -62,6 +62,18 @@ class Command(BaseCommand):
                     "Services:\n{{ service_lines }}\n\n"
                     "Note: {{ note }}"
                 ),
+                "html_body": (
+                    "<h2>New booking {{ booking_reference }}</h2>"
+                    "<p><strong>Customer:</strong> {{ customer_name }}</p>"
+                    "<p><strong>Phone:</strong> {{ phone }}</p>"
+                    "<p><strong>Email:</strong> {{ email }}</p>"
+                    "<p><strong>Appointment date:</strong> {{ appointment_date }}</p>"
+                    "<p><strong>Appointment time:</strong> {{ appointment_time }}</p>"
+                    "<p><strong>Total duration:</strong> {{ total_duration }} minutes</p>"
+                    "<p><strong>Total price:</strong> {{ total_price }}</p>"
+                    "<p><strong>Services:</strong></p><pre>{{ service_lines }}</pre>"
+                    "<p><strong>Note:</strong> {{ note }}</p>"
+                ),
             },
         )
         EmailTemplate.objects.get_or_create(
@@ -79,6 +91,17 @@ class Command(BaseCommand):
                     "Services:\n{{ service_lines }}\n\n"
                     "Note: {{ note }}\n\n"
                     "Thank you,\n{{ site_name }}"
+                ),
+                "html_body": (
+                    "<h2>Hello {{ customer_name }},</h2>"
+                    "<p>Your booking <strong>{{ booking_reference }}</strong> has been received by {{ site_name }}.</p>"
+                    "<p><strong>Appointment date:</strong> {{ appointment_date }}</p>"
+                    "<p><strong>Appointment time:</strong> {{ appointment_time }}</p>"
+                    "<p><strong>Total duration:</strong> {{ total_duration }} minutes</p>"
+                    "<p><strong>Total price:</strong> {{ total_price }}</p>"
+                    "<p><strong>Services:</strong></p><pre>{{ service_lines }}</pre>"
+                    "<p><strong>Note:</strong> {{ note }}</p>"
+                    "<p>Thank you,<br>{{ site_name }}</p>"
                 ),
             },
         )

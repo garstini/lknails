@@ -87,6 +87,12 @@ class EmailTemplate(models.Model):
             "total_duration, start_at, appointment_date, appointment_time, phone, email, note, site_name"
         )
     )
+    html_body = models.TextField(
+        blank=True,
+        help_text=_(
+            "Optional HTML version of the email. Supports the same placeholders as body."
+        ),
+    )
 
     def __str__(self):
         return self.name

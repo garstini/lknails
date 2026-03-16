@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.mail import EmailMessage, get_connection
+from django.core.mail import EmailMultiAlternatives, get_connection
 
 from core.models import EmailLog, SiteSettings
 
@@ -19,17 +19,19 @@ def build_email_connection(site_settings=None):
     return get_connection(backend=settings.EMAIL_BACKEND, fail_silently=True)
 
 
-def send_configured_email(subject, body, recipient_list, site_settings=None, template_type=""):
+def send_configured_email(subject, body, recipient_list, site_settings=None, template_type="", html_body=""):
     site_settings = site_settings or SiteSettings.objects.first()
     from_email = site_settings.default_from_email if site_settings else settings.DEFAULT_FROM_EMAIL
     connection = build_email_connection(site_settings)
-    message = EmailMessage(
+    message = EmailMultiAlternatives(
         subject=subject,
         body=body,
         from_email=from_email,
         to=recipient_list,
         connection=connection,
     )
+    if html_body:
+        message.attach_alternative(html_body, "text/html")
     try:
         sent_count = message.send(fail_silently=False)
         status = EmailLog.Status.SENT if sent_count else EmailLog.Status.FAILED

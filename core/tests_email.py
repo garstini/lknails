@@ -33,3 +33,9 @@ class EmailConfigTests(TestCase):
         email_log = send_configured_email("Subject", "Body", ["guest@example.com"], template_type="smtp_test")
         self.assertEqual(email_log.recipient_list, "guest@example.com")
         self.assertEqual(email_log.template_type, "smtp_test")
+
+    @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+    def test_html_email_is_attached_when_provided(self):
+        SiteSettings.objects.create(site_name="LK")
+        send_configured_email("Subject", "Body", ["guest@example.com"], html_body="<p>Hello</p>")
+        self.assertEqual(mail.outbox[0].alternatives[0].content, "<p>Hello</p>")

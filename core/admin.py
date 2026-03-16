@@ -57,6 +57,7 @@ class WorkingHourAdmin(admin.ModelAdmin):
 @admin.register(EmailTemplate)
 class EmailTemplateAdmin(admin.ModelAdmin):
     list_display = ("name", "template_type", "subject")
+    fields = ("name", "template_type", "subject", "body", "html_body")
 
 
 @admin.register(EmailLog)

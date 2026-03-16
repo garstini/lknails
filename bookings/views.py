@@ -166,11 +166,12 @@ def render_email_template(template_type, fallback_subject, fallback_body, contex
 
     email_template = EmailTemplate.objects.filter(template_type=template_type).first()
     if not email_template:
-        return fallback_subject, fallback_body
+        return fallback_subject, fallback_body, ""
     template_context = Context(context)
     subject = Template(email_template.subject).render(template_context).strip()
     body = Template(email_template.body).render(template_context).strip()
-    return subject or fallback_subject, body or fallback_body
+    html_body = Template(email_template.html_body).render(template_context).strip() if email_template.html_body else ""
+    return subject or fallback_subject, body or fallback_body, html_body
 
 
 class BookingCreateView(FormView):
@@ -281,7 +282,20 @@ class BookingCreateView(FormView):
             "service_lines": service_lines,
             "site_name": site_settings.site_name,
         }
-        admin_subject, admin_body = render_email_template(
+        admin_html = (
+            "<h2>New booking {{ booking_reference }}</h2>"
+            "<p><strong>Customer:</strong> {{ customer_name }}</p>"
+            "<p><strong>Phone:</strong> {{ phone }}</p>"
+            "<p><strong>Email:</strong> {{ email }}</p>"
+            "<p><strong>Appointment date:</strong> {{ appointment_date }}</p>"
+            "<p><strong>Appointment time:</strong> {{ appointment_time }}</p>"
+            "<p><strong>Total duration:</strong> {{ total_duration }} minutes</p>"
+            "<p><strong>Total price:</strong> {{ total_price }}</p>"
+            "<p><strong>Services:</strong></p>"
+            "<pre>{{ service_lines }}</pre>"
+            "<p><strong>Note:</strong> {{ note }}</p>"
+        )
+        admin_subject, admin_body, admin_html_body = render_email_template(
             "admin_booking",
             f"New booking {booking.reference}",
             (
@@ -304,8 +318,21 @@ class BookingCreateView(FormView):
             [admin_email],
             site_settings=site_settings,
             template_type="admin_booking",
+            html_body=admin_html_body or Template(admin_html).render(Context(email_context)).strip(),
         )
-        customer_subject, customer_body = render_email_template(
+        customer_html = (
+            "<h2>Hello {{ customer_name }},</h2>"
+            "<p>Your booking <strong>{{ booking_reference }}</strong> has been received by {{ site_name }}.</p>"
+            "<p><strong>Appointment date:</strong> {{ appointment_date }}</p>"
+            "<p><strong>Appointment time:</strong> {{ appointment_time }}</p>"
+            "<p><strong>Total duration:</strong> {{ total_duration }} minutes</p>"
+            "<p><strong>Total price:</strong> {{ total_price }}</p>"
+            "<p><strong>Services:</strong></p>"
+            "<pre>{{ service_lines }}</pre>"
+            "<p><strong>Note:</strong> {{ note }}</p>"
+            "<p>Thank you,<br>{{ site_name }}</p>"
+        )
+        customer_subject, customer_body, customer_html_body = render_email_template(
             "customer_confirmation",
             f"Booking confirmation {booking.reference}",
             (
@@ -327,6 +354,7 @@ class BookingCreateView(FormView):
             [booking.email],
             site_settings=site_settings,
             template_type="customer_confirmation",
+            html_body=customer_html_body or Template(customer_html).render(Context(email_context)).strip(),
         )
 
 
@@ -454,6 +482,7 @@ def dashboard_view(request):
                 [recipient],
                 site_settings=site_settings,
                 template_type="smtp_test",
+                html_body="<p>This is a <strong>test email</strong> from the LK Nails & Lashes booking system.</p>",
             )
             if email_log.status == "sent":
                 messages.success(request, _("Test email sent successfully."))
