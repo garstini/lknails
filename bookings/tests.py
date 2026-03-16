@@ -170,6 +170,17 @@ class BookingAvailabilityTests(TestCase):
 
     def test_admin_calendar_requires_staff_and_renders(self):
         user = get_user_model().objects.create_user("calendar", password="pass", is_staff=True)
+        booking = Booking.objects.create(
+            customer_name="Calendar Guest",
+            phone="123",
+            email="calendar@example.com",
+            starts_at=timezone.now() + timedelta(days=1),
+            ends_at=timezone.now() + timedelta(days=1, hours=1),
+            total_duration_minutes=60,
+            total_price=Decimal("35.00"),
+        )
         self.client.force_login(user)
         response = self.client.get(reverse("admin_calendar"))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, reverse("admin:bookings_booking_change", args=[booking.pk]))
+        self.assertContains(response, reverse("admin:bookings_booking_delete", args=[booking.pk]))

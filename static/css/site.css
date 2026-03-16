@@ -560,6 +560,40 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 .calendar-entry-body p {
   margin: 0.18rem 0;
 }
+.calendar-entry-actions {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+}
+.calendar-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(244, 227, 233, 0.9);
+  color: var(--accent-deep);
+  font: 700 0.74rem/1 "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+.calendar-action-link:hover {
+  background: rgba(229, 196, 207, 0.95);
+  color: var(--accent-deep);
+  transform: translateY(-1px);
+}
+.calendar-action-link.danger {
+  background: rgba(84, 28, 48, 0.1);
+  color: #8b2648;
+}
+.calendar-action-link.danger:hover {
+  background: rgba(139, 38, 72, 0.14);
+  color: #7d1f3f;
+}
 .stack-form {
   display: grid;
   gap: 1rem;

@@ -39,6 +39,10 @@
                   <strong>{{ booking.customer_name }}</strong>
                   <p>{{ booking.total_duration_minutes }} {% trans "minutes" %} • {{ booking.total_price|euro }}</p>
                   <p>{{ booking.reference }} • {{ booking.status|title }}</p>
+                  <div class="calendar-entry-actions">
+                    <a class="calendar-action-link" href="{% url 'admin:bookings_booking_change' booking.pk %}">{% trans "Edit" %}</a>
+                    <a class="calendar-action-link danger" href="{% url 'admin:bookings_booking_delete' booking.pk %}">{% trans "Delete" %}</a>
+                  </div>
                 </div>
               </article>
             {% empty %}
