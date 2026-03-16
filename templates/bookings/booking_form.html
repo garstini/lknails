@@ -19,23 +19,11 @@
         {% endif %}
 
         <div class="booking-form-intro">
-          <div class="booking-pill">{% trans "1. Enter contact" %}</div>
-          <div class="booking-pill">{% trans "2. Select services" %}</div>
+          <div class="booking-pill">{% trans "1. Select services" %}</div>
+          <div class="booking-pill">{% trans "2. Choose date" %}</div>
           <div class="booking-pill">{% trans "3. Choose free time" %}</div>
+          <div class="booking-pill">{% trans "4. Enter contact" %}</div>
         </div>
-
-        <div class="field-grid">
-          <label>{{ form.customer_name.label }}{{ form.customer_name }}</label>
-          <label>{{ form.phone.label }}{{ form.phone }}</label>
-          <label>{{ form.email.label }}{{ form.email }}</label>
-          <label>{{ form.appointment_date.label }}{{ form.appointment_date }}</label>
-          <label class="full">{{ form.note.label }}{{ form.note }}</label>
-        </div>
-        {% for field in form %}
-          {% if field.errors and field.name != "services" %}
-            <div class="field-error">{{ field.errors }}</div>
-          {% endif %}
-        {% endfor %}
 
         <div class="service-toolbar">
           <label>
@@ -88,6 +76,14 @@
           {% endif %}
         </div>
 
+        <div class="field-grid booking-date-grid">
+          <label class="full">
+            {{ form.appointment_date.label }}
+            {{ form.appointment_date }}
+            <small class="summary-note">{% trans "Only current or future days are available, based on Germany time." %}</small>
+          </label>
+        </div>
+
         <div class="field-grid booking-time-grid">
           <label class="full booking-time-picker">
             <span class="booking-time-label">{{ form.appointment_time.label }}</span>
@@ -104,6 +100,18 @@
             <small id="time-help" class="summary-note">{% trans "Choose at least one service to unlock available times." %}</small>
           </label>
         </div>
+
+        <div class="field-grid booking-contact-grid">
+          <label>{{ form.customer_name.label }}{{ form.customer_name }}</label>
+          <label>{{ form.phone.label }}{{ form.phone }}</label>
+          <label>{{ form.email.label }}{{ form.email }}</label>
+          <label class="full">{{ form.note.label }}{{ form.note }}</label>
+        </div>
+        {% for field in form %}
+          {% if field.errors and field.name != "services" %}
+            <div class="field-error">{{ field.errors }}</div>
+          {% endif %}
+        {% endfor %}
 
         <button class="button primary booking-submit" type="submit">{% trans "Confirm booking" %}</button>
       </form>

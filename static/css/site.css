@@ -425,6 +425,24 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   border-radius: 20px;
   padding-inline: 0.9rem;
 }
+.service-selector {
+  max-height: 34rem;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+.service-selector::-webkit-scrollbar {
+  width: 10px;
+}
+.service-selector::-webkit-scrollbar-thumb {
+  background: rgba(177, 108, 130, 0.24);
+  border-radius: 999px;
+}
+.booking-date-grid,
+.booking-time-grid,
+.booking-contact-grid {
+  margin-bottom: 1.2rem;
+}
 .cart-panel {
   margin: 1rem 0 1.2rem;
   padding: 1rem 0 1.1rem;

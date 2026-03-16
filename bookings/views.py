@@ -42,7 +42,8 @@ class BookingForm(forms.Form):
         self.fields["customer_name"].widget.attrs.update({"placeholder": "Anna Mustermann"})
         self.fields["phone"].widget.attrs.update({"placeholder": "+49 ..."})
         self.fields["email"].widget.attrs.update({"placeholder": "name@example.com"})
-        self.fields["appointment_date"].widget.attrs.update({"min": timezone.localdate().isoformat()})
+        germany_today = timezone.now().astimezone(get_booking_timezone()).date()
+        self.fields["appointment_date"].widget.attrs.update({"min": germany_today.isoformat()})
 
 
 class TestEmailForm(forms.Form):
