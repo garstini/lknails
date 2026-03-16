@@ -38,7 +38,13 @@
         </div>
 
         <div class="service-selector-panel">
-          <div class="service-selector-hint">{% trans "Scroll inside this area to browse all available services." %}</div>
+          <div class="service-selector-header">
+            <div>
+              <strong>{% trans "Service menu" %}</strong>
+              <p class="service-selector-hint">{% trans "Scroll inside this area to browse all available services." %}</p>
+            </div>
+            <span class="service-selector-badge">{% trans "Tap cards to add" %}</span>
+          </div>
           <div class="service-selector">
             {% for category, subcategories in grouped_services.items %}
               <section class="service-group" data-category="{{ category|lower }}">
@@ -61,9 +67,13 @@
                         >
                         <button type="button" class="service-pick-main">
                           <span class="service-pick-copy">
+                            <small class="service-pick-tag">{{ category }}{% if subcategory and subcategory != "-" %} • {{ subcategory }}{% endif %}</small>
                             <strong>{{ service.name }}</strong>
                             <small class="service-description">{{ service.short_description }}</small>
-                            <small>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</small>
+                            <span class="service-pick-meta">
+                              <small class="service-meta-pill">{{ service.duration_minutes }} {% trans "minutes" %}</small>
+                              <small class="service-meta-pill service-meta-pill-price">{{ service.current_price|euro }}</small>
+                            </span>
                           </span>
                         </button>
                         <button type="button" class="service-pick-action">{% trans "Add to cart" %}</button>
