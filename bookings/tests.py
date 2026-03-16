@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+from zoneinfo import ZoneInfo
 
 from bookings.models import Booking
 from bookings.views import is_booking_available
@@ -94,6 +95,40 @@ class BookingAvailabilityTests(TestCase):
         labels = [slot["label"] for slot in payload["slots"]]
         self.assertIn("09:00", labels)
         self.assertNotIn("15:15", labels)
+
+    def test_booking_rejects_past_date_in_germany_timezone(self):
+        germany_today = timezone.now().astimezone(ZoneInfo("Europe/Berlin")).date()
+        response = self.client.post(
+            reverse("booking_create"),
+            {
+                "customer_name": "Past Guest",
+                "phone": "123",
+                "email": "past@example.com",
+                "appointment_date": (germany_today - timedelta(days=1)).isoformat(),
+                "appointment_time": "10:00",
+                "services": [self.service.pk],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "future date", status_code=200)
+
+    def test_booking_rejects_closed_day(self):
+        today = timezone.now().astimezone(ZoneInfo("Europe/Berlin")).date()
+        days_until_sunday = (6 - today.weekday()) % 7
+        sunday = today + timedelta(days=days_until_sunday or 7)
+        response = self.client.post(
+            reverse("booking_create"),
+            {
+                "customer_name": "Closed Guest",
+                "phone": "123",
+                "email": "closed@example.com",
+                "appointment_date": sunday.isoformat(),
+                "appointment_time": "10:00",
+                "services": [self.service.pk],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "closed on the selected day", status_code=200)
 
     def test_booking_success_page_shows_latest_booking_details(self):
         starts_at = timezone.now() + timedelta(days=1)

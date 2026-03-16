@@ -82,7 +82,15 @@
         <div class="field-grid booking-date-grid">
           <label class="full">
             {{ form.appointment_date.label }}
-            {{ form.appointment_date }}
+            <input
+              type="date"
+              name="appointment_date"
+              id="id_appointment_date"
+              value="{{ form.appointment_date.value|default:'' }}"
+              min="{{ form.appointment_date.field.widget.attrs.min }}"
+              data-closed-weekdays="{{ closed_weekdays|join:',' }}"
+              required
+            >
             <small class="summary-note">{% trans "Only current or future days are available, based on Germany time." %}</small>
           </label>
         </div>
@@ -165,6 +173,10 @@
     const serviceFilter = document.getElementById('service-category-filter');
     const serviceCards = Array.from(document.querySelectorAll('.check-card'));
     const serviceGroups = Array.from(document.querySelectorAll('.service-group'));
+    const closedWeekdays = (dateInput.dataset.closedWeekdays || '')
+      .split(',')
+      .filter(Boolean)
+      .map((value) => Number(value));
     let currentSlots = [];
 
     function renderSelectedSlot(label) {
@@ -187,6 +199,35 @@
     function clearSelectedSlot() {
       timeInput.value = '';
       renderSelectedSlot('');
+    }
+
+    function validateSelectedDate() {
+      if (!dateInput.value) {
+        return true;
+      }
+
+      const minDate = dateInput.min;
+      if (minDate && dateInput.value < minDate) {
+        dateInput.value = '';
+        currentSlots = [];
+        clearSelectedSlot();
+        slotContainer.innerHTML = '<p class="summary-note">{% trans "Please choose today or a future date in Germany time." %}</p>';
+        timeHelp.textContent = "{% trans 'Past dates are not available.' %}";
+        return false;
+      }
+
+      const chosenDate = new Date(`${dateInput.value}T12:00:00`);
+      const weekday = (chosenDate.getDay() + 6) % 7;
+      if (closedWeekdays.includes(weekday)) {
+        dateInput.value = '';
+        currentSlots = [];
+        clearSelectedSlot();
+        slotContainer.innerHTML = '<p class="summary-note">{% trans "The salon is closed on the selected day." %}</p>';
+        timeHelp.textContent = "{% trans 'Please choose a day when the salon is open.' %}";
+        return false;
+      }
+
+      return true;
     }
 
     function markActiveSlot() {
@@ -223,6 +264,10 @@
       });
       durationOutput.textContent = `${duration} {% trans "minutes" %}`;
       priceOutput.textContent = `${price.toFixed(2).replace('.', ',')} €`;
+      if (!validateSelectedDate()) {
+        renderCart(selectedItems);
+        return;
+      }
       if (!selectedItems.length) {
         currentSlots = [];
         clearSelectedSlot();

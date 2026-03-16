@@ -45,6 +45,15 @@ class BookingForm(forms.Form):
         germany_today = timezone.now().astimezone(get_booking_timezone()).date()
         self.fields["appointment_date"].widget.attrs.update({"min": germany_today.isoformat()})
 
+    def clean_appointment_date(self):
+        appointment_date = self.cleaned_data["appointment_date"]
+        germany_today = timezone.now().astimezone(get_booking_timezone()).date()
+        if appointment_date < germany_today:
+            raise forms.ValidationError(_("Please choose today or a future date in Germany time."))
+        if not get_working_hour(appointment_date):
+            raise forms.ValidationError(_("The salon is closed on the selected day."))
+        return appointment_date
+
 
 class TestEmailForm(forms.Form):
     recipient = forms.EmailField()
@@ -170,6 +179,7 @@ class BookingCreateView(FormView):
         context["site_settings"] = get_site_settings()
         context["selected_service_ids"] = selected_service_ids
         context["service_categories"] = list(context["grouped_services"].keys())
+        context["closed_weekdays"] = list(WorkingHour.objects.filter(is_open=False).values_list("weekday", flat=True))
         return context
 
     def form_valid(self, form):
