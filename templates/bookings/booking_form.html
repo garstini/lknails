@@ -26,6 +26,13 @@
         </div>
 
         <div class="service-toolbar">
+          <label class="service-search-label">
+            {% trans "Search services" %}
+            <div class="service-search-wrap">
+              <svg class="service-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" id="service-search" class="service-search-input" placeholder="{% trans 'e.g. Classic, Gel, Lashes…' %}" autocomplete="off">
+            </div>
+          </label>
           <label>
             {% trans "Filter by category" %}
             <select id="service-category-filter">
@@ -43,7 +50,10 @@
               <strong>{% trans "Service menu" %}</strong>
               <p class="service-selector-hint">{% trans "Scroll inside this area to browse all available services." %}</p>
             </div>
-            <span class="service-selector-badge">{% trans "Tap cards to add" %}</span>
+            <div class="service-selector-badges">
+              <span class="service-selector-badge">{% trans "Tap cards to add" %}</span>
+              <span class="service-selected-count" id="service-selected-count" hidden>0 {% trans "selected" %}</span>
+            </div>
           </div>
           <div class="service-selector">
             {% for category, subcategories in grouped_services.items %}
@@ -246,6 +256,8 @@
     const slotContainer = document.getElementById('available-slots');
     const slotsUrl = "{% url 'available_slots' %}";
     const serviceFilter = document.getElementById('service-category-filter');
+    const serviceSearch = document.getElementById('service-search');
+    const serviceSelectedCount = document.getElementById('service-selected-count');
     const serviceCards = Array.from(document.querySelectorAll('.check-card'));
     const serviceGroups = Array.from(document.querySelectorAll('.service-group'));
     const closedWeekdays = (dateInput.dataset.closedWeekdays || '')
@@ -456,6 +468,10 @@
 
     function renderCart(selectedItems) {
       cartCount.textContent = selectedItems.length;
+      if (serviceSelectedCount) {
+        serviceSelectedCount.textContent = `${selectedItems.length} {% trans "selected" %}`;
+        serviceSelectedCount.hidden = selectedItems.length === 0;
+      }
       if (!selectedItems.length) {
         cartContainer.innerHTML = '<p class="summary-note">{% trans "Your selected services will appear here." %}</p>';
         return;
@@ -478,10 +494,14 @@
 
     function applyServiceFilters() {
       const categoryValue = serviceFilter.value.trim().toLowerCase();
+      const searchValue = serviceSearch ? serviceSearch.value.trim().toLowerCase() : '';
 
       serviceCards.forEach((card) => {
         const matchesCategory = !categoryValue || card.dataset.categoryName === categoryValue;
-        card.style.display = matchesCategory ? '' : 'none';
+        const matchesSearch = !searchValue
+          || card.dataset.serviceName.includes(searchValue)
+          || card.dataset.subcategoryName.includes(searchValue);
+        card.style.display = (matchesCategory && matchesSearch) ? '' : 'none';
       });
 
       serviceGroups.forEach((group) => {
@@ -569,6 +589,7 @@
       renderDateGrid();
     });
     serviceFilter.addEventListener('change', applyServiceFilters);
+    if (serviceSearch) serviceSearch.addEventListener('input', applyServiceFilters);
     applyServiceFilters();
     renderCustomerSummary();
     renderSelectedDate();
