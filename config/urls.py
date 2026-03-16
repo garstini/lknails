@@ -15,6 +15,8 @@ urlpatterns = [
     path("sitemap.xml", sitemap_xml, name="sitemap_xml"),
     path("health/", health_check, name="health_check"),
     path("api/available-slots/", available_slots_view, name="available_slots"),
+    path("admin/dashboard/", dashboard_view),
+    path("admin/calendar/", calendar_view),
 ]
 
 urlpatterns += i18n_patterns(

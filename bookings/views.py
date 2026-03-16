@@ -273,14 +273,26 @@ class BookingCreateView(FormView):
             f"{booking.customer_name} booked {services_text} for {timezone.localtime(booking.starts_at)}.",
             email_context,
         )
-        send_configured_email(admin_subject, admin_body, [admin_email], site_settings=site_settings)
+        send_configured_email(
+            admin_subject,
+            admin_body,
+            [admin_email],
+            site_settings=site_settings,
+            template_type="admin_booking",
+        )
         customer_subject, customer_body = render_email_template(
             "customer_confirmation",
             f"Booking confirmation {booking.reference}",
             f"Thank you {booking.customer_name}. Your booking for {services_text} starts at {timezone.localtime(booking.starts_at)}.",
             email_context,
         )
-        send_configured_email(customer_subject, customer_body, [booking.email], site_settings=site_settings)
+        send_configured_email(
+            customer_subject,
+            customer_body,
+            [booking.email],
+            site_settings=site_settings,
+            template_type="customer_confirmation",
+        )
 
 
 class BookingSuccessView(TemplateView):
@@ -401,13 +413,14 @@ def dashboard_view(request):
         if test_email_form.is_valid():
             recipient = test_email_form.cleaned_data["recipient"]
             site_settings = get_site_settings()
-            sent = send_configured_email(
+            email_log = send_configured_email(
                 "LK Nails & Lashes SMTP test",
                 "This is a test email from the LK Nails & Lashes booking system.",
                 [recipient],
                 site_settings=site_settings,
+                template_type="smtp_test",
             )
-            if sent:
+            if email_log.status == "sent":
                 messages.success(request, _("Test email sent successfully."))
             else:
                 messages.error(request, _("Test email could not be sent. Check SMTP settings in Site Settings."))

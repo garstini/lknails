@@ -87,3 +87,24 @@ class EmailTemplate(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class EmailLog(models.Model):
+    class Status(models.TextChoices):
+        SENT = "sent", _("Sent")
+        FAILED = "failed", _("Failed")
+
+    subject = models.CharField(max_length=200)
+    recipient_list = models.TextField(help_text=_("Comma-separated recipient emails"))
+    from_email = models.CharField(max_length=255, blank=True)
+    body = models.TextField(blank=True)
+    template_type = models.CharField(max_length=32, blank=True)
+    status = models.CharField(max_length=16, choices=Status.choices)
+    error_message = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.get_status_display()} - {self.subject}"

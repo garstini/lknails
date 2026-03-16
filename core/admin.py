@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 
-from core.models import EmailTemplate, SiteSettings, WorkingHour
+from core.models import EmailLog, EmailTemplate, SiteSettings, WorkingHour
 
 
 class SiteSettingsAdminForm(forms.ModelForm):
@@ -57,3 +57,11 @@ class WorkingHourAdmin(admin.ModelAdmin):
 @admin.register(EmailTemplate)
 class EmailTemplateAdmin(admin.ModelAdmin):
     list_display = ("name", "template_type", "subject")
+
+
+@admin.register(EmailLog)
+class EmailLogAdmin(admin.ModelAdmin):
+    list_display = ("created_at", "status", "subject", "recipient_list", "template_type")
+    list_filter = ("status", "template_type", "created_at")
+    search_fields = ("subject", "recipient_list", "error_message")
+    readonly_fields = ("created_at",)
