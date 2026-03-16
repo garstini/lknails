@@ -318,7 +318,7 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 }
 .service-toolbar {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: minmax(220px, 320px);
   gap: 1rem;
   margin-bottom: 1.25rem;
 }
@@ -375,7 +375,6 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   gap: 1rem;
   align-items: center;
   padding: 1rem 0;
-  cursor: pointer;
 }
 .service-checkbox {
   appearance: none;
@@ -385,6 +384,14 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   border: 1px solid var(--line);
   background: white;
   margin-top: 0;
+}
+.service-pick-main {
+  display: block;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 .service-pick-card.is-selected .service-checkbox {
   background: var(--accent-deep);
@@ -412,6 +419,11 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   background: linear-gradient(135deg, var(--accent-deep), var(--accent));
   color: white;
   border-color: transparent;
+}
+.service-pick-card.is-selected {
+  background: rgba(255,255,255,0.68);
+  border-radius: 20px;
+  padding-inline: 0.9rem;
 }
 .cart-panel {
   margin: 1rem 0 1.2rem;

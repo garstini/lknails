@@ -29,12 +29,6 @@
           <label>{{ form.phone.label }}{{ form.phone }}</label>
           <label>{{ form.email.label }}{{ form.email }}</label>
           <label>{{ form.appointment_date.label }}{{ form.appointment_date }}</label>
-          <label>
-            {{ form.appointment_time.label }}
-            <select id="id_appointment_time" name="appointment_time" required>
-              <option value="">{% trans "Select an available time" %}</option>
-            </select>
-          </label>
           <label class="full">{{ form.note.label }}{{ form.note }}</label>
         </div>
         {% for field in form %}
@@ -53,10 +47,6 @@
               {% endfor %}
             </select>
           </label>
-          <label>
-            {% trans "Search service" %}
-            <input type="search" id="service-search" placeholder="{% trans 'Type to filter services' %}">
-          </label>
         </div>
 
         <div class="service-selector">
@@ -67,7 +57,7 @@
                 <div class="subcategory-block">
                   <h3>{{ subcategory }}</h3>
                   {% for service in items %}
-                    <label class="check-card service-pick-card" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
+                    <div class="check-card service-pick-card" data-service-name="{{ service.name|lower }}" data-category-name="{{ category|lower }}" data-subcategory-name="{{ subcategory|lower }}">
                       <input
                         class="service-checkbox"
                         type="checkbox"
@@ -79,13 +69,15 @@
                         data-category-label="{{ category }}"
                         {% if service.id in selected_service_ids %}checked{% endif %}
                       >
-                      <span class="service-pick-copy">
-                        <strong>{{ service.name }}</strong>
-                        <small class="service-description">{{ service.short_description }}</small>
-                        <small>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</small>
-                      </span>
+                      <button type="button" class="service-pick-main">
+                        <span class="service-pick-copy">
+                          <strong>{{ service.name }}</strong>
+                          <small class="service-description">{{ service.short_description }}</small>
+                          <small>{{ service.duration_minutes }} {% trans "minutes" %} • {{ service.current_price|euro }}</small>
+                        </span>
+                      </button>
                       <button type="button" class="service-pick-action">{% trans "Add to cart" %}</button>
-                    </label>
+                    </div>
                   {% endfor %}
                 </div>
               {% endfor %}
@@ -94,6 +86,16 @@
           {% if form.services.errors %}
             <div class="field-error">{{ form.services.errors }}</div>
           {% endif %}
+        </div>
+
+        <div class="field-grid booking-time-grid">
+          <label class="full">
+            {{ form.appointment_time.label }}
+            <select id="id_appointment_time" name="appointment_time" required disabled>
+              <option value="">{% trans "Select an available time" %}</option>
+            </select>
+            <small id="time-help" class="summary-note">{% trans "Choose at least one service to unlock available times." %}</small>
+          </label>
         </div>
 
         <button class="button primary booking-submit" type="submit">{% trans "Confirm booking" %}</button>
@@ -138,10 +140,10 @@
     const cartContainer = document.getElementById('selected-services-cart');
     const dateInput = document.getElementById('id_appointment_date');
     const timeInput = document.getElementById('id_appointment_time');
+    const timeHelp = document.getElementById('time-help');
     const slotContainer = document.getElementById('available-slots');
     const slotsUrl = "{% url 'available_slots' %}";
     const serviceFilter = document.getElementById('service-category-filter');
-    const serviceSearch = document.getElementById('service-search');
     const serviceCards = Array.from(document.querySelectorAll('.check-card'));
     const serviceGroups = Array.from(document.querySelectorAll('.service-group'));
 
@@ -170,6 +172,15 @@
       });
       durationOutput.textContent = `${duration} {% trans "minutes" %}`;
       priceOutput.textContent = `${price.toFixed(2).replace('.', ',')} €`;
+      timeInput.disabled = !selectedItems.length;
+      if (!selectedItems.length) {
+        timeInput.innerHTML = `<option value="">{% trans "Select an available time" %}</option>`;
+        timeHelp.textContent = "{% trans 'Choose at least one service to unlock available times.' %}";
+      } else if (!dateInput.value) {
+        timeHelp.textContent = "{% trans 'Choose a date to load the available time slots.' %}";
+      } else {
+        timeHelp.textContent = "{% trans 'Select one of the available appointment times.' %}";
+      }
       renderCart(selectedItems);
       loadAvailableSlots(selectedIds);
     }
@@ -198,13 +209,10 @@
 
     function applyServiceFilters() {
       const categoryValue = serviceFilter.value.trim().toLowerCase();
-      const searchValue = serviceSearch.value.trim().toLowerCase();
 
       serviceCards.forEach((card) => {
         const matchesCategory = !categoryValue || card.dataset.categoryName === categoryValue;
-        const haystack = `${card.dataset.serviceName} ${card.dataset.subcategoryName} ${card.dataset.categoryName}`;
-        const matchesSearch = !searchValue || haystack.includes(searchValue);
-        card.style.display = matchesCategory && matchesSearch ? '' : 'none';
+        card.style.display = matchesCategory ? '' : 'none';
       });
 
       serviceGroups.forEach((group) => {
@@ -217,6 +225,7 @@
       const dateValue = dateInput.value;
       if (!dateValue || !selectedIds.length) {
         slotContainer.innerHTML = '<p class="summary-note">{% trans "Choose a date and services to load available times." %}</p>';
+        timeInput.value = '';
         return;
       }
 
@@ -230,10 +239,12 @@
       if (!data.slots.length) {
         slotContainer.innerHTML = '<p class="summary-note">{% trans "No free slots for this service combination on the selected date." %}</p>';
         timeInput.value = '';
+        timeHelp.textContent = "{% trans 'No free appointment times were found for the selected services on this date.' %}";
         return;
       }
 
       slotContainer.innerHTML = '';
+      timeHelp.textContent = "{% trans 'Select one of the available appointment times.' %}";
       data.slots.slice(0, 12).forEach((slot) => {
         const button = document.createElement('button');
         button.type = 'button';
@@ -251,6 +262,15 @@
     }
 
     boxes.forEach((box) => box.addEventListener('change', updateTotals));
+    document.querySelectorAll('.service-pick-main').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        const card = button.closest('.service-pick-card');
+        const checkbox = card.querySelector('.service-checkbox');
+        checkbox.checked = !checkbox.checked;
+        updateTotals();
+      });
+    });
     document.querySelectorAll('.service-pick-action').forEach((button) => {
       button.addEventListener('click', (event) => {
         event.preventDefault();
@@ -262,7 +282,6 @@
     });
     dateInput.addEventListener('change', updateTotals);
     serviceFilter.addEventListener('change', applyServiceFilters);
-    serviceSearch.addEventListener('input', applyServiceFilters);
     applyServiceFilters();
     updateTotals();
   </script>
