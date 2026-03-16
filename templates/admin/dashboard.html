@@ -10,97 +10,108 @@
     <a href="/">{% trans "View site" %}</a>
   </div>
   <section class="section">
-    <div class="section-heading">
-      <p class="eyebrow">{% trans "Admin overview" %}</p>
-      <h1>{% trans "Booking and service dashboard" %}</h1>
+    <div class="admin-hero">
+      <div class="admin-hero-copy">
+        <p class="eyebrow">{% trans "Admin overview" %}</p>
+        <h1>{% trans "Booking and service dashboard" %}</h1>
+        <p class="lead">{% trans "Track bookings, revenue, live utilization and service demand in one place." %}</p>
+      </div>
+      <div class="admin-hero-actions">
+        <a class="button primary" href="{% url 'admin_calendar' %}">{% trans "Open calendar" %}</a>
+        <a class="button ghost" href="/admin/core/sitesettings/1/change/">{% trans "Site settings" %}</a>
+      </div>
     </div>
 
-    <div class="card-grid metrics-grid">
-      <article class="service-card">
-        <h3>{% trans "Confirmed" %}</h3>
+    <div class="admin-kpi-grid">
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "Confirmed" %}</span>
         <p class="metric">{{ booking_status_counts.confirmed }}</p>
       </article>
-      <article class="service-card">
-        <h3>{% trans "Pending" %}</h3>
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "Pending" %}</span>
         <p class="metric">{{ booking_status_counts.pending }}</p>
       </article>
-      <article class="service-card">
-        <h3>{% trans "Cancelled" %}</h3>
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "Cancelled" %}</span>
         <p class="metric">{{ booking_status_counts.cancelled }}</p>
       </article>
-      <article class="service-card">
-        <h3>{% trans "This week" %}</h3>
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "This week" %}</span>
         <p class="metric">{{ period_totals.week }}</p>
       </article>
-      <article class="service-card">
-        <h3>{% trans "This month" %}</h3>
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "This month" %}</span>
         <p class="metric">{{ period_totals.month }}</p>
       </article>
-      <article class="service-card">
-        <h3>{% trans "This year" %}</h3>
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "This year" %}</span>
         <p class="metric">{{ period_totals.year }}</p>
       </article>
-      <article class="service-card">
-        <h3>{% trans "Today revenue" %}</h3>
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "Today revenue" %}</span>
         <p class="metric">{{ revenue_totals.today|euro }}</p>
       </article>
-      <article class="service-card">
-        <h3>{% trans "Month revenue" %}</h3>
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "Month revenue" %}</span>
         <p class="metric">{{ revenue_totals.month|euro }}</p>
       </article>
-      <article class="service-card">
-        <h3>{% trans "Live capacity" %}</h3>
+      <article class="admin-kpi-card">
+        <span class="admin-kpi-label">{% trans "Live capacity" %}</span>
         <p class="metric">{{ live_capacity.active_now }}/{{ live_capacity.capacity }}</p>
       </article>
     </div>
 
-    <div class="booking-layout">
-      <article class="booking-form">
+    <div class="admin-dashboard-grid">
+      <article class="admin-panel">
         <h2>{% trans "Today's appointments" %}</h2>
-        {% for booking in today_bookings %}
-          <div class="service-row">
-            <div>
-              <strong>{{ booking.customer_name }}</strong>
-              <p>{{ booking.starts_at|date:"H:i" }} • {{ booking.total_duration_minutes }} {% trans "minutes" %}</p>
+        <div class="admin-list">
+          {% for booking in today_bookings %}
+            <div class="admin-list-row">
+              <div>
+                <strong>{{ booking.customer_name }}</strong>
+                <p>{{ booking.starts_at|date:"H:i" }} • {{ booking.total_duration_minutes }} {% trans "minutes" %}</p>
+              </div>
+              <div class="admin-list-meta">{{ booking.total_price|euro }}</div>
             </div>
-            <div>{{ booking.total_price|euro }}</div>
-          </div>
-        {% empty %}
-          <p>{% trans "No appointments today." %}</p>
-        {% endfor %}
+          {% empty %}
+            <p class="summary-note">{% trans "No appointments today." %}</p>
+          {% endfor %}
+        </div>
       </article>
 
-      <article class="booking-summary">
+      <article class="admin-panel admin-panel-tinted">
         <h2>{% trans "Top booked services" %}</h2>
-        {% for service in top_services %}
-          <div class="service-row">
-            <div>
-              <strong>{{ service.name }}</strong>
-              <p>{{ service.category }} / {{ service.subcategory }}</p>
+        <div class="admin-list">
+          {% for service in top_services %}
+            <div class="admin-list-row">
+              <div>
+                <strong>{{ service.name }}</strong>
+                <p>{{ service.category }} / {{ service.subcategory }}</p>
+              </div>
+              <div class="admin-list-meta">{{ service.booking_count }}</div>
             </div>
-            <div>{{ service.booking_count }}</div>
-          </div>
-        {% empty %}
-          <p>{% trans "No data yet." %}</p>
-        {% endfor %}
+          {% empty %}
+            <p class="summary-note">{% trans "No data yet." %}</p>
+          {% endfor %}
+        </div>
       </article>
     </div>
 
-    <div class="split-feature dashboard-strip">
-      <article class="feature-panel">
-        <p class="eyebrow">{% trans "Utilization" %}</p>
+    <div class="admin-insight-grid dashboard-strip">
+      <article class="admin-insight-card">
+        <span class="eyebrow">{% trans "Utilization" %}</span>
         <h2>{{ live_capacity.utilization_percent }}%</h2>
         <p>{% trans "Current utilization based on active bookings versus configured parallel staff capacity." %}</p>
       </article>
-      <article class="feature-panel">
-        <p class="eyebrow">{% trans "Weekly revenue" %}</p>
+      <article class="admin-insight-card admin-insight-card-accent">
+        <span class="eyebrow">{% trans "Weekly revenue" %}</span>
         <h2>{{ revenue_totals.week|euro }}</h2>
         <p>{% trans "Gross booked amount for appointments in the current week." %}</p>
       </article>
     </div>
 
-    <div class="booking-layout dashboard-strip">
-      <article class="booking-form">
+    <div class="admin-dashboard-grid dashboard-strip">
+      <article class="admin-panel">
         <h2>{% trans "SMTP status" %}</h2>
         <p>
           {% if smtp_ready %}
@@ -114,7 +125,7 @@
           <a class="button ghost" href="{% url 'admin_calendar' %}">{% trans "Open calendar" %}</a>
         </p>
       </article>
-      <article class="booking-summary">
+      <article class="admin-panel admin-panel-tinted">
         <h2>{% trans "Send test email" %}</h2>
         <form method="post" class="stack-form">
           {% csrf_token %}

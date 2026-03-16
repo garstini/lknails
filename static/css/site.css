@@ -340,6 +340,116 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
 .tone-nails { background: linear-gradient(135deg, #d68ba3, #f3c8d3); }
 .tone-neutral { background: linear-gradient(135deg, #b59ea7, #dccfd4); }
 .gallery-copy { padding: 1rem 1.1rem 1.25rem; }
+.admin-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: end;
+  padding: 1.8rem 2rem;
+  margin-bottom: 1.5rem;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.65), transparent 26%),
+    linear-gradient(145deg, rgba(255,255,255,0.98), rgba(246,231,236,0.92));
+  border: 1px solid rgba(255,255,255,0.88);
+  box-shadow: var(--shadow);
+}
+.admin-hero-copy h1 {
+  max-width: 12ch;
+  margin-bottom: 0.75rem;
+}
+.admin-hero-copy .lead {
+  max-width: 52ch;
+}
+.admin-hero-actions {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.admin-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.admin-kpi-card,
+.admin-panel,
+.admin-insight-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(250,239,235,0.92));
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+.admin-kpi-card {
+  padding: 1.2rem 1.25rem;
+}
+.admin-kpi-label {
+  display: inline-block;
+  margin-bottom: 0.55rem;
+  color: var(--muted);
+  font: 700 0.8rem/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.admin-panel {
+  padding: 1.4rem 1.5rem;
+}
+.admin-panel-tinted {
+  background: linear-gradient(180deg, rgba(250,242,244,0.98), rgba(244,231,225,0.92));
+}
+.admin-list {
+  display: grid;
+  gap: 0.8rem;
+}
+.admin-list-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.76);
+  border: 1px solid rgba(230, 211, 216, 0.88);
+}
+.admin-list-row p {
+  margin: 0.2rem 0 0;
+}
+.admin-list-meta {
+  padding: 0.38rem 0.65rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+  font: 700 0.82rem/1.1 "Avenir Next", "Segoe UI", sans-serif;
+  white-space: nowrap;
+}
+.admin-insight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.admin-insight-card {
+  padding: 1.6rem 1.7rem;
+}
+.admin-insight-card h2 {
+  margin: 0.35rem 0 0.5rem;
+}
+.admin-insight-card-accent {
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.25), transparent 28%),
+    linear-gradient(135deg, #a95f7f, #d693a9);
+  color: white;
+}
+.admin-insight-card-accent .eyebrow,
+.admin-insight-card-accent p,
+.admin-insight-card-accent h2 {
+  color: white;
+}
 .gallery-intro {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -388,7 +498,7 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   padding-bottom: 0.35rem;
 }
 .calendar-table {
-  min-width: 980px;
+  min-width: 1120px;
   display: grid;
   grid-template-columns: repeat(7, minmax(180px, 1fr));
   gap: 0.9rem;
@@ -401,8 +511,10 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   box-shadow: var(--shadow);
 }
 .calendar-table-head {
-  padding: 1rem 1rem 0.95rem;
+  padding: 1.1rem 1rem 1rem;
   text-align: center;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,236,240,0.94));
 }
 .calendar-table-head strong {
   display: block;
@@ -414,7 +526,7 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   font: 600 0.85rem/1.3 "Avenir Next", "Segoe UI", sans-serif;
 }
 .calendar-table-cell {
-  min-height: 320px;
+  min-height: 380px;
   padding: 0.9rem;
 }
 .calendar-entry {
@@ -424,8 +536,9 @@ h3 { font-size: 1.25rem; margin-bottom: 0.55rem; }
   padding: 0.85rem;
   margin-bottom: 0.75rem;
   border-radius: 18px;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.9);
   border: 1px solid rgba(230, 211, 216, 0.9);
+  box-shadow: 0 10px 22px rgba(113, 75, 93, 0.08);
 }
 .calendar-entry:last-child {
   margin-bottom: 0;
@@ -775,8 +888,12 @@ select,
   font-family: "Avenir Next", "Segoe UI", sans-serif;
 }
 @media (max-width: 860px) {
-  .hero-grid, .booking-layout, .footer-grid, .card-grid, .field-grid, .split-feature, .service-toolbar, .confirmation-grid, .gallery-grid, .calendar-grid, .hero-showcase, .gallery-intro, .hero-metrics {
+  .hero-grid, .booking-layout, .footer-grid, .card-grid, .field-grid, .split-feature, .service-toolbar, .confirmation-grid, .gallery-grid, .calendar-grid, .hero-showcase, .gallery-intro, .hero-metrics, .admin-kpi-grid, .admin-dashboard-grid, .admin-insight-grid {
     grid-template-columns: 1fr;
+  }
+  .admin-hero {
+    flex-direction: column;
+    align-items: start;
   }
   .header-inner { flex-wrap: wrap; }
   .slot-list { justify-content: flex-start; }

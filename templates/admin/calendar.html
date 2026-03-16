@@ -10,9 +10,12 @@
     <a href="/">{% trans "View site" %}</a>
   </div>
   <section class="section">
-    <div class="section-heading">
-      <p class="eyebrow">{% trans "Admin calendar" %}</p>
-      <h1>{% trans "Weekly appointment view" %}</h1>
+    <div class="admin-hero">
+      <div class="admin-hero-copy">
+        <p class="eyebrow">{% trans "Admin calendar" %}</p>
+        <h1>{% trans "Weekly appointment view" %}</h1>
+        <p class="lead">{% trans "Review appointments across the week in a structured schedule layout." %}</p>
+      </div>
     </div>
     <div class="hero-actions calendar-nav">
       <a class="button ghost" href="{% url 'admin_calendar' %}?week_start={{ previous_week|date:'Y-m-d' }}">{% trans "Previous week" %}</a>
@@ -35,7 +38,7 @@
                 <div class="calendar-entry-body">
                   <strong>{{ booking.customer_name }}</strong>
                   <p>{{ booking.total_duration_minutes }} {% trans "minutes" %} • {{ booking.total_price|euro }}</p>
-                  <p>{{ booking.reference }}</p>
+                  <p>{{ booking.reference }} • {{ booking.status|title }}</p>
                 </div>
               </article>
             {% empty %}
