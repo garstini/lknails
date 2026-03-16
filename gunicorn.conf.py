@@ -3,5 +3,5 @@ workers = 3
 threads = 2
 timeout = 60
 wsgi_app = "config.wsgi:application"
-accesslog = "-"
-errorlog = "-"
+accesslog = None
+errorlog = None
