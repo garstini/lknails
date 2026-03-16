@@ -1,0 +1,11 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div class="admin-shortcuts">
+    <a href="/admin/dashboard/">Dashboard</a>
+    <a href="/admin/calendar/">Calendar</a>
+    <a href="/">Public Site</a>
+  </div>
+  {{ block.super }}
+{% endblock %}
